@@ -1,0 +1,19 @@
+{
+  "style_reference": "user provided colour and multi-panel examples",
+  "numerical_inputs_changed": false,
+  "manuscript_edited": false,
+  "new_figures": 7,
+  "normalization": "minimum metric / model metric *100; case agreement 100*max(0,1-absolute relative error)",
+  "palette": {
+    "adopted": "#DD2DAA",
+    "HistGBR": "#0453A0",
+    "XGBoost": "#7B3864",
+    "LightGBM": "#5D9FDB",
+    "RandomForest": "#66C2A5",
+    "ExtraTrees": "#ABDDA4",
+    "ElasticNet": "#F46D43",
+    "Poisson_GLM": "#FDAE61",
+    "seasonal_naive": "#9198A3",
+    "blend50": "#5E4FA2"
+  }
+}
