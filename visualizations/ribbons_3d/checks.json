@@ -1,0 +1,13 @@
+{
+  "figures": 4,
+  "data_sources": "existing frozen model and adopted-menu records",
+  "new_training": false,
+  "manuscript_edits": false,
+  "fill_baseline": 0,
+  "point_interpolation": "straight lines only",
+  "output_formats": [
+    "PNG450dpi",
+    "SVG",
+    "CSV"
+  ]
+}
