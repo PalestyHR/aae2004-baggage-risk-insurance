@@ -55,6 +55,25 @@ $$
 
 这些是误差，不是准确率。2026已被多轮查看，属于探索性回测；8月是用户指定的最新可验证月，训练截至7月。1–8月较大误差仍保留，不能仅用8月成绩声称长期稳定。没有验证国泰实际精度或永久丢失概率。
 
+### 2026年1至8月完整测试集 Baseline Comparison
+
+共同测试样本为101个航司月case。下面Rate两项均为加权指标，单位件/千件；Count WAPE为百分比。所有数量预测使用相同的已选行李量预测，未提前使用目标月实际行李量。
+
+| Method | n | Rate weighted MAE ↓ | Rate weighted RMSE ↓ | Count WAPE (%) ↓ |
+|---|---:|---:|---:|---:|
+| Seasonal naive (same month last year) | 101 | 0.860345 | 0.999467 | 20.354 |
+| 50/50 recent-seasonal blend | 101 | 0.697223 | 0.887871 | 17.977 |
+| ElasticNet | 101 | 0.716507 | 0.991806 | 17.742 |
+| Poisson GLM (exposure-weighted fit) | 101 | 0.706555 | 1.004255 | 18.040 |
+| Random Forest | 101 | 0.659568 | 0.925244 | 16.665 |
+| Extra Trees | 101 | 0.678233 | 0.903590 | 17.155 |
+| Histogram Gradient Boosting | 101 | 0.620367 | 0.845798 | 16.155 |
+| LightGBM (symmetric squared loss) | 101 | 0.647520 | 0.875529 | 15.969 |
+| XGBoost (squared loss) | 101 | 0.635317 | 0.882772 | 16.012 |
+| Adopted LightGBM (under:over = 1:2) | 101 | 0.637574 | 0.886649 | 15.836 |
+
+全周期加权MAE最低为Histogram Gradient Boosting；采用模型的数量WAPE最低，但并非所有指标都最好。8月单月0.347635不能替代完整期0.637574。完整非加权误差、偏差及方法说明见[独立对比表](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)，全精度数据见`results/baseline_comparison_2026_01_08.csv`。
+
 ## 模型二 索赔转换与套餐优化
 
 拟议单位：一名旅客、一件托运行李、一次单程直飞。D为超过12小时且最终归入延误结算；L为最终确认丢失。已付D后进入L，只补差额，最终累计不超过L金额。既有承运人责任不因购买产品而消失。
