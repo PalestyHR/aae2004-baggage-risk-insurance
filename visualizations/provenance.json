@@ -1,0 +1,16 @@
+{
+  "conclusion": "Show convergence and held-out behavior of the frozen August model, plus already computed product trade-offs.",
+  "backend": "Python matplotlib",
+  "archetype": "quantitative grid",
+  "exports": [
+    "PNG 450dpi",
+    "editable-text SVG",
+    "CSV"
+  ],
+  "model1_provenance": "recovered by predicting with prefixes of the saved 200-tree GBDT; original fit did not save per-round evaluation history",
+  "model1_sets": "training targets before Aug2026; Aug2026 held-out diagnostic. No validation set, early stopping or test-based re-selection added.",
+  "model2_provenance": "finite-grid Pareto/scenario outputs; not a trained loss curve",
+  "fixed_iteration": 200,
+  "no_fitting": true,
+  "no_new_efficacy_claim": true
+}

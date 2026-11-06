@@ -29,6 +29,8 @@ python -m unittest discover -s tests -v
 
 Optional scenario simulation: `python scripts/simulate_selected_menu.py`.
 
+Curves and editable source data are in `visualizations/`. Install `requirements-viz.txt` and run `python scripts/export_visualization_curves.py` to regenerate them. Per-round risk diagnostics are reconstructed from frozen tree prefixes; they are not original saved training logs.
+
 Reproduced outputs go under `results/reproduced_*` (ignored by Git), preserving `results/reference`. The risk script also exports a text LightGBM model and preprocessing JSON in `models/`; no pickle is required. The insurance script uses reproduced forecasts when available, otherwise the frozen reference interface.
 
 ## Files

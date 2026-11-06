@@ -1,0 +1,22 @@
+{
+  "iteration_count": 200,
+  "training_cases": 1214,
+  "test_cases": 12,
+  "last_iteration_test_metrics": {
+    "iteration": 200,
+    "set": "test_august",
+    "n": 12,
+    "asymmetric_objective_mean_raw": 0.18271348991284483,
+    "MSE_raw": 0.39351621455739894,
+    "MAE_deployed": 0.5097079508947002,
+    "RMSE_deployed": 0.6273087075415094,
+    "weighted_MAE_deployed": 0.3476354269167175,
+    "weighted_RMSE_deployed": 0.49013177082051873,
+    "weighted_bias_deployed": 0.05342068300798054
+  },
+  "recovery_check": "PASS: final predictions reproduce frozen model",
+  "plots": 5,
+  "no_test_based_iteration_selection": true,
+  "model_sha256": "0bb74854f8b647d702cc4853db78d4767970f3c834ea8d59cce6a178ce68dc37",
+  "matplotlib_version": "3.11.2"
+}
