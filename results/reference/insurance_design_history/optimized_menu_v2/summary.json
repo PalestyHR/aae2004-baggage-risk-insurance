@@ -1,0 +1,10 @@
+{
+  "candidate_count": 1836,
+  "feasible_count": 98,
+  "pareto_count": 7,
+  "selected_id": "M0775",
+  "checks": "all scenario accounting identities; selected independently reconciled via insurance_model; nondominance checked against all feasible points",
+  "extra_sensitivity_negative_cases": 31,
+  "extra_sensitivity_count": 108,
+  "source_forecast_sha256": "50e29cca2bf3f4794e147393997243aaa50ccf2c51bdf07a4fcf350f182094f6"
+}

@@ -1,0 +1,1 @@
+PASS: both pricing rules each have 8181 case rows in 81 matched groups; prices in range; contributions independently reconciled. Actual target rates used only for post-pricing cost evaluation. Fixed rule constant within each carrier.

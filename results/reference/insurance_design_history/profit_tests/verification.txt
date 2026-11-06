@@ -1,0 +1,1 @@
+PASS: base 12, primary sensitivity 324 and claim-share sensitivity108 accounting/ratios independently recomputed; sales <= eligible opportunities; break-even purchase thresholds reconcile. Monte Carlo means checked against analytic expectations in runner.

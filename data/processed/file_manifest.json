@@ -1,0 +1,97 @@
+[
+  {
+    "file": "airport_month_observed.csv",
+    "sha256": "700da1030e1eca5bdb3c376c5f8d90e0d877de49b49c33ca36386480433eb376",
+    "bytes": 1550069
+  },
+  {
+    "file": "carrier_month_observed_NOT_model_input.csv",
+    "sha256": "0d963f9d20a4040f9965db7b17e65b1bcddc113dff3c63b6879fbfec99a9f632",
+    "bytes": 673257
+  },
+  {
+    "file": "column_inventory.csv",
+    "sha256": "7a54d6fd7e4db4d38fbdc479ba889b203c6bb9311be6b1e1a713e8b2147f8e90",
+    "bytes": 1589
+  },
+  {
+    "file": "data_dictionary.csv",
+    "sha256": "d628724cc129fa635a3d538b01aa502b0ad9a743aa7c7aae6939bb597c28b9d2",
+    "bytes": 5665
+  },
+  {
+    "file": "lag1\\all_real.csv",
+    "sha256": "d6f65b251e9d0393aabf248f1dc5cedde9c064b35020c1707625388669a79471",
+    "bytes": 836840
+  },
+  {
+    "file": "lag1\\excluded_rows.csv",
+    "sha256": "c1abf731f45a6545e591fb9514a57b85380823fb8f09c788249347a3cf918459",
+    "bytes": 12117
+  },
+  {
+    "file": "lag1\\synthetic_train_optional.csv",
+    "sha256": "1c08f85a31a037fd80cf228b17e836d97203b15e2f64a457d90aae50993b89a5",
+    "bytes": 145150
+  },
+  {
+    "file": "lag1\\test_real.csv",
+    "sha256": "59a15ca50fa90e7b12c06899b9f4c3fe5cc7fb302fdf6f075ecd0e4353314f4a",
+    "bytes": 58690
+  },
+  {
+    "file": "lag1\\train_real.csv",
+    "sha256": "3ea4a8093ca898c6fe7d09ee2ff5548104cf29be7951da57b1997f185359d2b9",
+    "bytes": 666311
+  },
+  {
+    "file": "lag1\\train_with_synthetic_OPTIONAL.csv",
+    "sha256": "b90786e2545c195a8a1ababfa4b8938043d1068b22aa8248e41f4e6f9edd7bed",
+    "bytes": 813320
+  },
+  {
+    "file": "lag1\\validation_real.csv",
+    "sha256": "9767c020b29dced324ef07b61004be4eca3761b1ef9092ed896dadf4916ea523",
+    "bytes": 113863
+  },
+  {
+    "file": "lag3\\all_real.csv",
+    "sha256": "fa63f2c666385b0915a8e40b036b6c2e7d049417e7625409f3a73d5415b5efbc",
+    "bytes": 840707
+  },
+  {
+    "file": "lag3\\excluded_rows.csv",
+    "sha256": "c1abf731f45a6545e591fb9514a57b85380823fb8f09c788249347a3cf918459",
+    "bytes": 12117
+  },
+  {
+    "file": "lag3\\synthetic_train_optional.csv",
+    "sha256": "096b8f2c2dcd8309d1c182da1452d7526bfbca519bbdfc83a6daa0ac74586d6b",
+    "bytes": 144988
+  },
+  {
+    "file": "lag3\\test_real.csv",
+    "sha256": "652853e1b115134992b8ae725e046bcb02f598dfe37b0eb70fb7c6c7440746b7",
+    "bytes": 58736
+  },
+  {
+    "file": "lag3\\train_real.csv",
+    "sha256": "84ed67fe4ccc4a23e9f6539c0826930e42379804c47d7dfe5f920047a5b4c3cc",
+    "bytes": 666535
+  },
+  {
+    "file": "lag3\\train_with_synthetic_OPTIONAL.csv",
+    "sha256": "aeb7f556539cad565c2f175b2b1a913d6c26e6e02b5f1baa47c979469dfdc174",
+    "bytes": 813382
+  },
+  {
+    "file": "lag3\\validation_real.csv",
+    "sha256": "db9558a7a1735a70cb3bb39de6cdb9062b9a85a480c3cecc0ba9cef1b3f71be7",
+    "bytes": 117460
+  },
+  {
+    "file": "weather_airport_month_observed.csv",
+    "sha256": "8118f0ad8e858721e709b5ae992db9908a20760ff4c498acce233280aa68397c",
+    "bytes": 128010
+  }
+]

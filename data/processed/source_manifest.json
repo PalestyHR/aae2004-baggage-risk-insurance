@@ -1,0 +1,1546 @@
+{
+  "prepared_date": "2026-11-06",
+  "delay": {
+    "url": "https://www.transtats.bts.gov/OT_Delay/ot_delaycause1_DL.aspx?8n4=9ur4r%20Brn4z106u%20or69rr0%20FHFFM%20NaQ%20FHGFD",
+    "selection": {
+      "Carrier": "All",
+      "Airport": "All",
+      "PeriodFrom": 24229,
+      "PeriodTo": 24320
+    },
+    "sha256": "80e0b8a740bf71b8c0236053c0abcc68282da56b3b6833a7238ed11e231b549f",
+    "file": "delay_raw.zip"
+  },
+  "t100": [
+    {
+      "year": 2019,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2019,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2019.zip",
+      "bytes": 3141707,
+      "sha256": "e089cca3dffefdca3c355e32908b82b8231f8d7ad33611786442193386536856",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:50:57Z"
+    },
+    {
+      "year": 2020,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2020,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2020.zip",
+      "bytes": 2366653,
+      "sha256": "ce69688043f2708f13fd0048d49d5d9e164933fa8bd7a9fc30fef4165bd4eddb",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:50:52Z"
+    },
+    {
+      "year": 2021,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2021,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2021.zip",
+      "bytes": 3007199,
+      "sha256": "981a5283ad58a3e9b2456c2c62cb45e386c21b65371160167c7a80347769cacd",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:51:14Z"
+    },
+    {
+      "year": 2022,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2022,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2022.zip",
+      "bytes": 3232653,
+      "sha256": "360d9de240f07a516b613efd5a3784a075d1a646974036c7bcfe32acb779a370",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:51:18Z"
+    },
+    {
+      "year": 2023,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2023,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2023.zip",
+      "bytes": 3343434,
+      "sha256": "97da555814fa3a6e89db3e41c5a15279236bc9ddbd5e6336769fa8e4227ece1d",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:51:34Z"
+    },
+    {
+      "year": 2024,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2024,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2024.zip",
+      "bytes": 3464073,
+      "sha256": "663a966cfbe2c4741b2501554fbf4d9bd1948a2920496485080c3dcd989d56aa",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:51:40Z"
+    },
+    {
+      "year": 2025,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2025,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2025.zip",
+      "bytes": 3601640,
+      "sha256": "9e32dd28c45a9fa261494e6e7decfa9a3442728cdc21e68ae6726a0bc65ececf",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:51:55Z"
+    },
+    {
+      "year": 2026,
+      "url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=GEE&QO_fu146_anzr=Nv4%20Pn44vr45",
+      "form": {
+        "year": 2026,
+        "period": "All"
+      },
+      "path": "raw_t100\\t100_2026.zip",
+      "bytes": 2158350,
+      "sha256": "d401cb80eb888b3c2d30274c6d9a7d65b04dd8e02bae77bb0cc6feafa4411912",
+      "members": [
+        "T_T100D_SEGMENT_ALL_CARRIER.csv"
+      ],
+      "retrieved_utc": "2026-11-06T09:51:56Z"
+    }
+  ],
+  "weather": [
+    {
+      "airport": "ORD",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72530094846.csv",
+      "file": "raw_weather\\ORD_2019.csv",
+      "bytes": 93384,
+      "sha256": "bd8ac56ef3c744b05148eb5c22a6d64b5b179077ebf19ef1577eb45af4271919",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72530094846.csv",
+      "file": "raw_weather\\ORD_2020.csv",
+      "bytes": 93639,
+      "sha256": "6187dd71a20b941b10b1f9e29d67fe0d588a3757c31f125f032e65652373a218",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72530094846.csv",
+      "file": "raw_weather\\ORD_2021.csv",
+      "bytes": 93384,
+      "sha256": "f985028abbc0d28f83a4a99532cf1be23480a567c89e32a777489a66d25cf7af",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72530094846.csv",
+      "file": "raw_weather\\ORD_2022.csv",
+      "bytes": 93384,
+      "sha256": "a7260190f627d39d34fd3845402c812017ea1976346b4b4275dba3eddb0c1190",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72530094846.csv",
+      "file": "raw_weather\\ORD_2023.csv",
+      "bytes": 93384,
+      "sha256": "8859961efadefb25671bc849547e1a876162f4cf74ef18b9ad9ee2d5f428a1a3",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72530094846.csv",
+      "file": "raw_weather\\ORD_2024.csv",
+      "bytes": 93639,
+      "sha256": "8f7b913b18585dc6d8fec8495c05f8d8b1cc33c4024982fad288dbc120f5ca85",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72530094846.csv",
+      "file": "raw_weather\\ORD_2025.csv",
+      "bytes": 60744,
+      "sha256": "9e8df112ec6152da624b47c207d4be260c453640b03ec6ae72cfd7717dff088d",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ORD",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72530094846.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "ATL",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72219013874.csv",
+      "file": "raw_weather\\ATL_2019.csv",
+      "bytes": 98129,
+      "sha256": "01d0b6705508cc9028427d92b5b15fb4eb6ceed5cf19b3f00a9926387478572e",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72219013874.csv",
+      "file": "raw_weather\\ATL_2020.csv",
+      "bytes": 98397,
+      "sha256": "97f76b1d983c2228a1fad877cda7752fff909f1e58765486f83ca3f8f06db38e",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72219013874.csv",
+      "file": "raw_weather\\ATL_2021.csv",
+      "bytes": 98129,
+      "sha256": "50aa62046d0ae9aa4d347a21ee3849d68be591c1528cbbe901afde22526bd60c",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72219013874.csv",
+      "file": "raw_weather\\ATL_2022.csv",
+      "bytes": 98129,
+      "sha256": "3fc5c7b0e9b28395f10db8ffe140b40ef1c171908780ff5790b7ffe2710ae9ee",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72219013874.csv",
+      "file": "raw_weather\\ATL_2023.csv",
+      "bytes": 98129,
+      "sha256": "b0403f5abbe686a02c3fc78fa8b0d7b31b76d62c1051e485dc22a9a794c9e2fd",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72219013874.csv",
+      "file": "raw_weather\\ATL_2024.csv",
+      "bytes": 98397,
+      "sha256": "90c5bc4953074208f0703e578bfa70a4e3a8f68dea576eb84f41a677b12668ec",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72219013874.csv",
+      "file": "raw_weather\\ATL_2025.csv",
+      "bytes": 64361,
+      "sha256": "019ed97121c2a4d5af59cddc1db0733b3dcbcba71d466b389fca4a2ab4f9b604",
+      "status": "downloaded"
+    },
+    {
+      "airport": "ATL",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72219013874.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "DFW",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72259003927.csv",
+      "file": "raw_weather\\DFW_2019.csv",
+      "bytes": 88274,
+      "sha256": "1a239fa68803e65b9afae27d86040c125382b3b9f4231429492b6fd179a83568",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72259003927.csv",
+      "file": "raw_weather\\DFW_2020.csv",
+      "bytes": 88515,
+      "sha256": "cf2ef8ea7c8b835b827cd4d48dd3ca51193423174dfb8d2c6f4058d98af76146",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72259003927.csv",
+      "file": "raw_weather\\DFW_2021.csv",
+      "bytes": 88274,
+      "sha256": "029e7c562a13abd2aa612b883322ccb1d9b408929fcd9bdb9a6085927b72f213",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72259003927.csv",
+      "file": "raw_weather\\DFW_2022.csv",
+      "bytes": 88274,
+      "sha256": "989a0749f3190eaa242fc737ff70ccaef2f5d1f3c1cb7bf7e1111d17679c8aa6",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72259003927.csv",
+      "file": "raw_weather\\DFW_2023.csv",
+      "bytes": 88274,
+      "sha256": "57e8ef9497fb140bec6a56444b77f3cb974e3513776f38d6ac1346c657f816f4",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72259003927.csv",
+      "file": "raw_weather\\DFW_2024.csv",
+      "bytes": 88515,
+      "sha256": "84083767ebc574d40899d2a540058248fded5dbe0526842b6bdbd8a933a9ffea",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72259003927.csv",
+      "file": "raw_weather\\DFW_2025.csv",
+      "bytes": 57908,
+      "sha256": "87a0addfa1656cda5ec5d075164baf5452147912767b6af4a54370563f80990b",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DFW",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72259003927.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "DEN",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72565003017.csv",
+      "file": "raw_weather\\DEN_2019.csv",
+      "bytes": 91559,
+      "sha256": "e1dcaed3b1815d10cc23637679dc82b90ca01e6d6ae7818bb4826164f51570a3",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72565003017.csv",
+      "file": "raw_weather\\DEN_2020.csv",
+      "bytes": 91809,
+      "sha256": "8db08bb569dab452bd04074a7d6513bed6a3a11fac877f30e270fdbb4f0ac1be",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72565003017.csv",
+      "file": "raw_weather\\DEN_2021.csv",
+      "bytes": 91559,
+      "sha256": "5f9b78c0c067913f7afa7572a2d778ccf93f7bfc9bc147e818b7e05eb69bc572",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72565003017.csv",
+      "file": "raw_weather\\DEN_2022.csv",
+      "bytes": 91559,
+      "sha256": "25e400220cf66bb7f466172e8dc29abe61c0aaeba7b1ede36500bbf995288682",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72565003017.csv",
+      "file": "raw_weather\\DEN_2023.csv",
+      "bytes": 91559,
+      "sha256": "c0fec24dc07238e6e7b1a1f66a7ca74dd46171b362e4753991dcc80395aec3b5",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72565003017.csv",
+      "file": "raw_weather\\DEN_2024.csv",
+      "bytes": 91809,
+      "sha256": "07d2f6f50829d69248e477820deffebe221986fa1e7f29c3cd443e80ed5a2eef",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72565003017.csv",
+      "file": "raw_weather\\DEN_2025.csv",
+      "bytes": 60059,
+      "sha256": "4c0bf54b23247941d0b9866567c10653d10a83b57bbb505bf87ce273d6f06561",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DEN",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72565003017.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "CLT",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72314013881.csv",
+      "file": "raw_weather\\CLT_2019.csv",
+      "bytes": 89734,
+      "sha256": "0003a4cbde91ed7ec49b6211b4a9469cf122c369d50540e1e65f24bff3ca21d5",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72314013881.csv",
+      "file": "raw_weather\\CLT_2020.csv",
+      "bytes": 89979,
+      "sha256": "e30bbe66a15d5e8f1e9f2752ae7218397176931f1b5966a77756a6ad899cfb15",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72314013881.csv",
+      "file": "raw_weather\\CLT_2021.csv",
+      "bytes": 89734,
+      "sha256": "c9d7be71048eddce98a9f52017ac3b72be924829d8d1d76dc63bddf1906c6e6a",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72314013881.csv",
+      "file": "raw_weather\\CLT_2022.csv",
+      "bytes": 89734,
+      "sha256": "5678cdd3195ceaec59c3eaec32676834b84fac25a4068e9c6556444d4a77126f",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72314013881.csv",
+      "file": "raw_weather\\CLT_2023.csv",
+      "bytes": 89734,
+      "sha256": "d6c0cb0653dc0f6c6ade934518f4983f63d4c8f2ed7669e802cb95837b00bad3",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72314013881.csv",
+      "file": "raw_weather\\CLT_2024.csv",
+      "bytes": 89979,
+      "sha256": "177ec6fcce0328d3e882cc28d44d2fb30b951bce7f97c616efd462c62d47e467",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72314013881.csv",
+      "file": "raw_weather\\CLT_2025.csv",
+      "bytes": 58864,
+      "sha256": "a91a9f909ada56a45272ca43accdde19c4b529157be0eb35e9a86424cc2b0d54",
+      "status": "downloaded"
+    },
+    {
+      "airport": "CLT",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72314013881.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "LAX",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72295023174.csv",
+      "file": "raw_weather\\LAX_2019.csv",
+      "bytes": 92289,
+      "sha256": "49de19d7b0db1361ba865050201301eb17ba9a76d3d7480c0a7d4c6285801012",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72295023174.csv",
+      "file": "raw_weather\\LAX_2020.csv",
+      "bytes": 92541,
+      "sha256": "abca10e1117e54617a0db6d1eb4fa2d1a4388b45be2812ef180be5ebe654c7a8",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72295023174.csv",
+      "file": "raw_weather\\LAX_2021.csv",
+      "bytes": 92289,
+      "sha256": "64d9dd243ecc963445fddc86b5c237d33e7e2e3286600488cac5294aae41b5d4",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72295023174.csv",
+      "file": "raw_weather\\LAX_2022.csv",
+      "bytes": 92289,
+      "sha256": "127bc5b5079525d97c1c666d6ea72aed083e90771a9db0bc4c387a1cd7a50bc9",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72295023174.csv",
+      "file": "raw_weather\\LAX_2023.csv",
+      "bytes": 92289,
+      "sha256": "0bd2b810fc112026a5d9324231b4c2ecc5d5d83f05e02be06936b12d04a9a474",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72295023174.csv",
+      "file": "raw_weather\\LAX_2024.csv",
+      "bytes": 92541,
+      "sha256": "f800e3819d17d60d495bea3171f4dc1a24e8dcd2b095f4418b2d000c8aabfd7e",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72295023174.csv",
+      "file": "raw_weather\\LAX_2025.csv",
+      "bytes": 60537,
+      "sha256": "47b4d990ca437519bdde76ae0408b92b5d88aa11ecfd93ce0276307e4374af34",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAX",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72295023174.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "SEA",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72793024233.csv",
+      "file": "raw_weather\\SEA_2019.csv",
+      "bytes": 89004,
+      "sha256": "e883081d842e2c17780fec4c420c06f5764bbd9035fc849d6c5d2283dc839006",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72793024233.csv",
+      "file": "raw_weather\\SEA_2020.csv",
+      "bytes": 89247,
+      "sha256": "eab3dd3a338386e93f0cbe13422ab74b7d89282bc66b7f0c64fd79ad0f6654f0",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72793024233.csv",
+      "file": "raw_weather\\SEA_2021.csv",
+      "bytes": 89004,
+      "sha256": "f9d3b3f625f1c051602f2bf2b840494d7be22a83eb4c20550d4728f6adf43598",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72793024233.csv",
+      "file": "raw_weather\\SEA_2022.csv",
+      "bytes": 89004,
+      "sha256": "fa0ba8aa3ff8576ef041989b56a546a10f614413b6bd6935ce8f710b8572362d",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72793024233.csv",
+      "file": "raw_weather\\SEA_2023.csv",
+      "bytes": 89004,
+      "sha256": "55573c02df64f87e68c56c94db86549d1ac922f9ecceba4af3e14afdcedf376c",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72793024233.csv",
+      "file": "raw_weather\\SEA_2024.csv",
+      "bytes": 89247,
+      "sha256": "648f611add021d1e268b55cd5c1c7e86f28b199c474c175dfaa048d8618a7320",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72793024233.csv",
+      "file": "raw_weather\\SEA_2025.csv",
+      "bytes": 58386,
+      "sha256": "0193bfd8c32d137414983dc3bd4e88be4389a02d693f2f086a2b97cd8494b5cb",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SEA",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72793024233.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "IAH",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72243012960.csv",
+      "file": "raw_weather\\IAH_2019.csv",
+      "bytes": 91924,
+      "sha256": "a1a0bd18062fe7f1ad6814fe2b67b148591d06214e2d1e973f2bc8d1e6f1ce9a",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72243012960.csv",
+      "file": "raw_weather\\IAH_2020.csv",
+      "bytes": 92175,
+      "sha256": "025584295add848c0c380cd96e2e126df194c7612bff0b26e5ac0d11976e3068",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72243012960.csv",
+      "file": "raw_weather\\IAH_2021.csv",
+      "bytes": 91924,
+      "sha256": "a0cfcb01fc0214ac5cf1914cb398cde8020fcaedc0f7761483d084e685fa81c8",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72243012960.csv",
+      "file": "raw_weather\\IAH_2022.csv",
+      "bytes": 91924,
+      "sha256": "e783b515302b63772ea209b48b6745d96ec6f37f13b7f2742f6bef4aedd6db38",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72243012960.csv",
+      "file": "raw_weather\\IAH_2023.csv",
+      "bytes": 91924,
+      "sha256": "994b9c5e0cd0a7abc326d71e4b720375cda8f2837aeb724bd19a4dc848ee40f5",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72243012960.csv",
+      "file": "raw_weather\\IAH_2024.csv",
+      "bytes": 92175,
+      "sha256": "bea8b3328bf4036fd7f4f67db34fffd844e6a189056d4423d2a58b61bda15a65",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72243012960.csv",
+      "file": "raw_weather\\IAH_2025.csv",
+      "bytes": 60298,
+      "sha256": "2fc8f8737d0a575e95b83caa8f908efa97c8d35d89ed0a40ad4bd381accec7ab",
+      "status": "downloaded"
+    },
+    {
+      "airport": "IAH",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72243012960.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "PHX",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72278023183.csv",
+      "file": "raw_weather\\PHX_2019.csv",
+      "bytes": 86084,
+      "sha256": "87de8fefabbe04992fa89462628a9d609fec19b4fd0970d938bad5fdc93a6f8b",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72278023183.csv",
+      "file": "raw_weather\\PHX_2020.csv",
+      "bytes": 85614,
+      "sha256": "a69865ee713778438d6f521bee3aaa252ce0e34e16c1b0090dd248395ee34179",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72278023183.csv",
+      "file": "raw_weather\\PHX_2021.csv",
+      "bytes": 86084,
+      "sha256": "f2ebb3cb66b953697c6984dffdc66c61bbc13438aa5553a2d5a34f03f6d5ea44",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72278023183.csv",
+      "file": "raw_weather\\PHX_2022.csv",
+      "bytes": 86084,
+      "sha256": "56c999c052bb98a3d65e05dd3dac4e05335cb85581dba0410419650af922668c",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72278023183.csv",
+      "file": "raw_weather\\PHX_2023.csv",
+      "bytes": 85614,
+      "sha256": "9cf9303287695988914db9f38ec2e90ab804a560ec990a9a66a00609e0db6c9f",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72278023183.csv",
+      "file": "raw_weather\\PHX_2024.csv",
+      "bytes": 83499,
+      "sha256": "e2119e049894baddf3bbc87d2688944421347bba323e4be6c7b8020b008f4a81",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72278023183.csv",
+      "file": "raw_weather\\PHX_2025.csv",
+      "bytes": 56004,
+      "sha256": "8461b99037db0bfca0076d162b76434dbf6acfbda3ba4604e98c832cebc1241e",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHX",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72278023183.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "DTW",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72537094847.csv",
+      "file": "raw_weather\\DTW_2019.csv",
+      "bytes": 88274,
+      "sha256": "bad2583f3309489d2ea79520befa641668fea12ab6e65edc0938433a7fad7d0b",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72537094847.csv",
+      "file": "raw_weather\\DTW_2020.csv",
+      "bytes": 88515,
+      "sha256": "2744fccc8c3a72278c33f52c4acf4fae857b51ad7f3cb6496a0298641caaf365",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72537094847.csv",
+      "file": "raw_weather\\DTW_2021.csv",
+      "bytes": 88274,
+      "sha256": "fcd43c37c2db502660edbc3c0fd9bc6a3487de1dd629c62cc819bcc839ed11da",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72537094847.csv",
+      "file": "raw_weather\\DTW_2022.csv",
+      "bytes": 88274,
+      "sha256": "2c243fa656d1c7fdb69fb743a1c184d94a6d98c1ca9ae2457e7ebdc55c721f9e",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72537094847.csv",
+      "file": "raw_weather\\DTW_2023.csv",
+      "bytes": 88274,
+      "sha256": "4de03826498c5a8b5fe3e9e5d638e171892a3c96ab008409c20fa8804036e9a7",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72537094847.csv",
+      "file": "raw_weather\\DTW_2024.csv",
+      "bytes": 88515,
+      "sha256": "9b4b39a360f0506c705b0c2eba1351d3641bbea6a25b7a5c4fcef10c5b4b66bf",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72537094847.csv",
+      "file": "raw_weather\\DTW_2025.csv",
+      "bytes": 57908,
+      "sha256": "d594d1c98c8db186bee9d731b99cfb2140c480f381277bd3cd99b417a2f5ecb9",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DTW",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72537094847.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "SFO",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72494023234.csv",
+      "file": "raw_weather\\SFO_2019.csv",
+      "bytes": 93019,
+      "sha256": "2d14421b9ae9400e065deb000bad9a5b7b5b0d5eb91102c9994f2a5ba2661a82",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72494023234.csv",
+      "file": "raw_weather\\SFO_2020.csv",
+      "bytes": 93273,
+      "sha256": "7fbed7ca64e1fe47a260e2b4f00082f6117e1600a18c11b66b56134b8267c302",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72494023234.csv",
+      "file": "raw_weather\\SFO_2021.csv",
+      "bytes": 93019,
+      "sha256": "2156f1f83edeba1d0065942d8c5d66099c6ae34cf96c5c62accefd42cc9f31a7",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72494023234.csv",
+      "file": "raw_weather\\SFO_2022.csv",
+      "bytes": 93019,
+      "sha256": "3540bdcd300e3a76acd2ffcc2a872ba1dffef8061aeec19cdeda95ea7f429db3",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72494023234.csv",
+      "file": "raw_weather\\SFO_2023.csv",
+      "bytes": 93019,
+      "sha256": "8df2119251dc2de36482420b527de487ebc9691fade33ff939b56a75335c6bc5",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72494023234.csv",
+      "file": "raw_weather\\SFO_2024.csv",
+      "bytes": 93273,
+      "sha256": "9bca300f631950c78a4c18f9bf18674c99e8f0d2d98c67a71057a5d347191a6b",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72494023234.csv",
+      "file": "raw_weather\\SFO_2025.csv",
+      "bytes": 61015,
+      "sha256": "b356855e941d16578233038af9dbd9f6d4f5c370132530653089bc54adb526ac",
+      "status": "downloaded"
+    },
+    {
+      "airport": "SFO",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72494023234.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "LGA",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72503014732.csv",
+      "file": "raw_weather\\LGA_2019.csv",
+      "bytes": 86084,
+      "sha256": "8707220a433d075ec2a7cb62176b3daa9b3cc178e96ac6e014119f2e64bcd08a",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72503014732.csv",
+      "file": "raw_weather\\LGA_2020.csv",
+      "bytes": 86319,
+      "sha256": "e61a369176e0dff2236862854c1967251f8c1062758ac63b910960b7cba45be1",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72503014732.csv",
+      "file": "raw_weather\\LGA_2021.csv",
+      "bytes": 86084,
+      "sha256": "059110f5ff7c50488f26800a8122a673df42a8b0a59a047c7671a57ee8736c66",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72503014732.csv",
+      "file": "raw_weather\\LGA_2022.csv",
+      "bytes": 86084,
+      "sha256": "06e274c8e689aa48d4f63051c50e6f9dd0b8abb3250b4bd32ac478a26702ac73",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72503014732.csv",
+      "file": "raw_weather\\LGA_2023.csv",
+      "bytes": 86084,
+      "sha256": "7857caea106949133958fce82af90143b2e16cde6d5cb727b7de948edd043933",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72503014732.csv",
+      "file": "raw_weather\\LGA_2024.csv",
+      "bytes": 86319,
+      "sha256": "3119bd0e91ff8e6af2b32274a0ac698e7d946d2eaf2c77e6c81587f4f37cba2e",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72503014732.csv",
+      "file": "raw_weather\\LGA_2025.csv",
+      "bytes": 56474,
+      "sha256": "af53f61a301230fd7f4490f5f3e3e1fec88b3f07c78a78abe4906fa691696a78",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LGA",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72503014732.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "LAS",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72386023169.csv",
+      "file": "raw_weather\\LAS_2019.csv",
+      "bytes": 91559,
+      "sha256": "9d6473b46391c512f768621a4acd64fc10be8965b423f7dabd742cd57cebaa7d",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72386023169.csv",
+      "file": "raw_weather\\LAS_2020.csv",
+      "bytes": 91809,
+      "sha256": "a7411a2507243510de890e4bdd934ffe43b6c40234a681cfeb40f8a7259846eb",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72386023169.csv",
+      "file": "raw_weather\\LAS_2021.csv",
+      "bytes": 91559,
+      "sha256": "48d57574b21f98ff70baf580f74ea265efc7edb9e7bd7ad1334cde8bd41969e5",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72386023169.csv",
+      "file": "raw_weather\\LAS_2022.csv",
+      "bytes": 91559,
+      "sha256": "098f196cea3655f9537c348880439aabdfa8bf8e63648e1454321f9625c20f1a",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72386023169.csv",
+      "file": "raw_weather\\LAS_2023.csv",
+      "bytes": 91559,
+      "sha256": "2ff9048424c247a6b8d40e4347c80d63f8c92a36ff7ed0d1ffc13ae9092f442f",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72386023169.csv",
+      "file": "raw_weather\\LAS_2024.csv",
+      "bytes": 91809,
+      "sha256": "1d89e084caecb2caa2c7c964034d797e0251cfc4c9b5381cc9ce85a453a95c59",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72386023169.csv",
+      "file": "raw_weather\\LAS_2025.csv",
+      "bytes": 60059,
+      "sha256": "50ade0d1ed5a2c89d868103125cbabb9d3b974ba841a309abea11bdfaf7a4e73",
+      "status": "downloaded"
+    },
+    {
+      "airport": "LAS",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72386023169.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "MSP",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72658014922.csv",
+      "file": "raw_weather\\MSP_2019.csv",
+      "bytes": 95939,
+      "sha256": "cd65ca13d69d13017864f3ab07dfb5bd5979b8593d121ad82c5ef85360ab7cc9",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72658014922.csv",
+      "file": "raw_weather\\MSP_2020.csv",
+      "bytes": 96201,
+      "sha256": "f5f51d43e61bbc01a8a94712d774493f0057e0f29888fc93225290693e1092f0",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72658014922.csv",
+      "file": "raw_weather\\MSP_2021.csv",
+      "bytes": 95939,
+      "sha256": "b1e0e64c327a1f88c4051891a278bc2ead104e625c553668ebaf7793bdbe7b7f",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72658014922.csv",
+      "file": "raw_weather\\MSP_2022.csv",
+      "bytes": 95939,
+      "sha256": "86c546c96f8ddb7c270c34ca06981d6d4faffac8b95265de3c506e77f1e36ab0",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72658014922.csv",
+      "file": "raw_weather\\MSP_2023.csv",
+      "bytes": 95939,
+      "sha256": "707a1b5600177b91114f4fe246683eaf8e8f5e6b28f21fc15e0cdf672f76b764",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72658014922.csv",
+      "file": "raw_weather\\MSP_2024.csv",
+      "bytes": 96201,
+      "sha256": "08cbfc9a035991a91568a2a1fc038ca7b753442eb5b930d5c41a077a272d9641",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72658014922.csv",
+      "file": "raw_weather\\MSP_2025.csv",
+      "bytes": 62403,
+      "sha256": "e72be98e3834b2e416ba7e0daa6a39421feeada2278c65ebad3058c9437f32c0",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MSP",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72658014922.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "EWR",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72502014734.csv",
+      "file": "raw_weather\\EWR_2019.csv",
+      "bytes": 93019,
+      "sha256": "aec0f732748543d2ab7cd341963317480c54e71380b0f0d4bbea48a790261e4a",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72502014734.csv",
+      "file": "raw_weather\\EWR_2020.csv",
+      "bytes": 93273,
+      "sha256": "34f7e3e0da484243a91f0dbbdc4eed287ed0f9bc0f451c6f2aaf8c03a08944a4",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72502014734.csv",
+      "file": "raw_weather\\EWR_2021.csv",
+      "bytes": 93019,
+      "sha256": "ea2507451f8993ff75354c21664fcb44fff807097a55324466ff48686ab0eeb0",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72502014734.csv",
+      "file": "raw_weather\\EWR_2022.csv",
+      "bytes": 93019,
+      "sha256": "d4327c1888a1069a9981e741956758650e6e3674749697bd302517b7f7019149",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72502014734.csv",
+      "file": "raw_weather\\EWR_2023.csv",
+      "bytes": 93019,
+      "sha256": "6caa4a2627728bd08e133cfb985e83a1d0bdff24408cad5691efe223248ef766",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72502014734.csv",
+      "file": "raw_weather\\EWR_2024.csv",
+      "bytes": 93273,
+      "sha256": "b19bfa42a62367caf2b9dccd59e5f708a77298d9c2d319c143ea57aa0b367125",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72502014734.csv",
+      "file": "raw_weather\\EWR_2025.csv",
+      "bytes": 60507,
+      "sha256": "21feeec24f4280b2fc2e265386ebfdac1653f4c4ded36840de640676c90b1274",
+      "status": "downloaded"
+    },
+    {
+      "airport": "EWR",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72502014734.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "PHL",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72408013739.csv",
+      "file": "raw_weather\\PHL_2019.csv",
+      "bytes": 92289,
+      "sha256": "cac78db9529b7af71a93d55c5cc893f6bf1d75439a3f548b09c633f7e520de70",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72408013739.csv",
+      "file": "raw_weather\\PHL_2020.csv",
+      "bytes": 92541,
+      "sha256": "8cd48de0294dbc7c46ae13ce38ce2dd4404c10cdac3cb000ec82eca3d72983c8",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72408013739.csv",
+      "file": "raw_weather\\PHL_2021.csv",
+      "bytes": 92289,
+      "sha256": "c3670724d61ccc31ced4afbbdfcecebe9faa0b40c1e05bb1ba26ddcf822ffc5c",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72408013739.csv",
+      "file": "raw_weather\\PHL_2022.csv",
+      "bytes": 92289,
+      "sha256": "f7490714dec04644b1e2300343273716d9661a35b97cfaf1996a6bd0a2689ec6",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72408013739.csv",
+      "file": "raw_weather\\PHL_2023.csv",
+      "bytes": 92289,
+      "sha256": "ac2e660dc22c491e4a5b85074749ecb31af4dd26c8efdc148fe69b10f168265a",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72408013739.csv",
+      "file": "raw_weather\\PHL_2024.csv",
+      "bytes": 92541,
+      "sha256": "65541fae316267ddc8dbf4fbf91c1e568d241719f13327f69d1d453fe8b54b04",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72408013739.csv",
+      "file": "raw_weather\\PHL_2025.csv",
+      "bytes": 60537,
+      "sha256": "d6bdf648623573011da3a790418de90468f3805bf4d92ebeb21c070918afa0cc",
+      "status": "downloaded"
+    },
+    {
+      "airport": "PHL",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72408013739.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "BOS",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72509014739.csv",
+      "file": "raw_weather\\BOS_2019.csv",
+      "bytes": 92289,
+      "sha256": "0b3fc15bc764a7e87e381b5bbee8c3eb9bd4bf4b321487c3363beea201367332",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72509014739.csv",
+      "file": "raw_weather\\BOS_2020.csv",
+      "bytes": 92541,
+      "sha256": "02d196dd22ac4c317e5b33607d362295fff614b259805a316a6e1d9855823283",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72509014739.csv",
+      "file": "raw_weather\\BOS_2021.csv",
+      "bytes": 92289,
+      "sha256": "7e2df0999d6a04b7d876cf0b1668295cef6b32ba437735c268728a04b6d2d555",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72509014739.csv",
+      "file": "raw_weather\\BOS_2022.csv",
+      "bytes": 92289,
+      "sha256": "46a5ebea26506bfdee1c6b57ad839054f5ada16eafec12cc953c5709a3f42d39",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72509014739.csv",
+      "file": "raw_weather\\BOS_2023.csv",
+      "bytes": 92289,
+      "sha256": "796ba827658250031d124b8fc2f2fdca2e87acb3460b8b4b1dbf6184c8209a86",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72509014739.csv",
+      "file": "raw_weather\\BOS_2024.csv",
+      "bytes": 92541,
+      "sha256": "6ffb3900e28bb3a9e97a7993cd8a040dc95a4a764b8e171c37e77d750fe7a4c7",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72509014739.csv",
+      "file": "raw_weather\\BOS_2025.csv",
+      "bytes": 60537,
+      "sha256": "cbff8a0a4f31948be7cbb62cb5e3e371e05a1fa3fef119c3b514a2a77fbbd831",
+      "status": "downloaded"
+    },
+    {
+      "airport": "BOS",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72509014739.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "DCA",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72405013743.csv",
+      "file": "raw_weather\\DCA_2019.csv",
+      "bytes": 92289,
+      "sha256": "0dbfca5d0227f6dfe537b195aad7b27ecd66d02267bea83aff7cecab0d24d6ed",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72405013743.csv",
+      "file": "raw_weather\\DCA_2020.csv",
+      "bytes": 92541,
+      "sha256": "420a115cbe83d4d0680388e3d35920948437bd8714cb0bfcbd6c3122a15c45b1",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72405013743.csv",
+      "file": "raw_weather\\DCA_2021.csv",
+      "bytes": 92289,
+      "sha256": "f2d72c6902bcecd6ea72324f67b62839a2efaaca77b035a3c871e678c7585332",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72405013743.csv",
+      "file": "raw_weather\\DCA_2022.csv",
+      "bytes": 92289,
+      "sha256": "a5ebc57c18de81e82243d05012bd47878dbce86b3a519c9c2f09620998cddf3d",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72405013743.csv",
+      "file": "raw_weather\\DCA_2023.csv",
+      "bytes": 92289,
+      "sha256": "29364ed313ef97275890378986b960262d802c30c7909e9c604b22ade072d834",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72405013743.csv",
+      "file": "raw_weather\\DCA_2024.csv",
+      "bytes": 92541,
+      "sha256": "087c114172c0a8d214ded977144df5850300e036686b27ba451ccded2ab26ddf",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72405013743.csv",
+      "file": "raw_weather\\DCA_2025.csv",
+      "bytes": 60537,
+      "sha256": "78611414e0454e7d2e6e85b4200e71d798d5865a54d0f480da17d5f2fe0afcd2",
+      "status": "downloaded"
+    },
+    {
+      "airport": "DCA",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72405013743.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "MCO",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/72205012815.csv",
+      "file": "raw_weather\\MCO_2019.csv",
+      "bytes": 90829,
+      "sha256": "52adde36161875e691af5b6798919d8a30eae00f2aa4dcb91412fda772674b59",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/72205012815.csv",
+      "file": "raw_weather\\MCO_2020.csv",
+      "bytes": 91077,
+      "sha256": "e3922897be9d09cb5fc84ce1a589cb72a787732b2d38f762166067c776b1ac9f",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/72205012815.csv",
+      "file": "raw_weather\\MCO_2021.csv",
+      "bytes": 90829,
+      "sha256": "b5f62f2d7eaaedec339530c3f135ba7609ba9eb231e06ca13878c2e3bbad45af",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/72205012815.csv",
+      "file": "raw_weather\\MCO_2022.csv",
+      "bytes": 90829,
+      "sha256": "357353ce9ee286102b2d5ac2208c96b0c1179449afdf2111ca27159d5be055a0",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/72205012815.csv",
+      "file": "raw_weather\\MCO_2023.csv",
+      "bytes": 90829,
+      "sha256": "3d009ae04cc1ed3b55579c3ec8ffd31833aefd7f1abf7c2d3c1ec4b92f3b8448",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/72205012815.csv",
+      "file": "raw_weather\\MCO_2024.csv",
+      "bytes": 91077,
+      "sha256": "d1a0a8ae3df6668131b40c538620dc8e403dd9f34c91708214d317756e4d098b",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/72205012815.csv",
+      "file": "raw_weather\\MCO_2025.csv",
+      "bytes": 59085,
+      "sha256": "f1efc72f339f89dbf3ac30f84f073a202342f51c344d5881ea887f69dfe9c112",
+      "status": "downloaded"
+    },
+    {
+      "airport": "MCO",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/72205012815.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "airport": "JFK",
+      "year": 2019,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2019/74486094789.csv",
+      "file": "raw_weather\\JFK_2019.csv",
+      "bytes": 88639,
+      "sha256": "4e29b1ba03b6e8622bf30d472d30b072a7cf66f14d023e78cbf8a6d05a68eb71",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2020,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2020/74486094789.csv",
+      "file": "raw_weather\\JFK_2020.csv",
+      "bytes": 88881,
+      "sha256": "7ed71e9001b2f6531422d37b895ff3502d570fa3fb848e670c2e45230805dc8c",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2021,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2021/74486094789.csv",
+      "file": "raw_weather\\JFK_2021.csv",
+      "bytes": 88639,
+      "sha256": "177ac375d171bf5426279b22a62efb23de0558fb207214ef48d2a20da31a6cd2",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2022,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2022/74486094789.csv",
+      "file": "raw_weather\\JFK_2022.csv",
+      "bytes": 88639,
+      "sha256": "18c8f6069ee60f1ccf77e001de6a3ed70a3a3d1705e97b9cd71356448f969f68",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2023,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2023/74486094789.csv",
+      "file": "raw_weather\\JFK_2023.csv",
+      "bytes": 88639,
+      "sha256": "a55da874fb384886c971a36e3766a89f80f84353e686e510779ec0cfd6ce4003",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2024,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2024/74486094789.csv",
+      "file": "raw_weather\\JFK_2024.csv",
+      "bytes": 88881,
+      "sha256": "c16355c1c0fe4c017308d2a084d63b49fa6a93405ff3d8a765b195d23b244307",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2025,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2025/74486094789.csv",
+      "file": "raw_weather\\JFK_2025.csv",
+      "bytes": 58147,
+      "sha256": "2c567c76dc0aee1ecf0e348bc98a5138833caf49bdb109fd2ad3b726700970ed",
+      "status": "downloaded"
+    },
+    {
+      "airport": "JFK",
+      "year": 2026,
+      "url": "https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/2026/74486094789.csv",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ],
+  "station_inventory": {
+    "url": "https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv",
+    "sha256": "1994747ab4af1b97e63adb434b4d0d022f2daee76f0c144ea9ab46be2d906604"
+  },
+  "baggage": {
+    "source": "user supplied BTS CSV",
+    "sha256": "85399069a4f11fcd86df71e930f3523b7550ad369d75dd0a32d85fa8c001bf2d"
+  }
+}

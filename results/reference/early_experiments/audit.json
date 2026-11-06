@@ -1,0 +1,160 @@
+{
+  "source_sha256": "85399069a4f11fcd86df71e930f3523b7550ad369d75dd0a32d85fa8c001bf2d",
+  "raw_rows": 2161,
+  "raw_year_min": 2016,
+  "raw_year_max": 2026,
+  "eligible_form1_2019plus": 1442,
+  "supervised_rows_by_year": {
+    "2020": 201,
+    "2021": 192,
+    "2022": 204,
+    "2023": 180,
+    "2024": 180,
+    "2025": 168,
+    "2026": 101
+  },
+  "excluded_no_same_month_prior_year": 216,
+  "excluded_test_rows": 0,
+  "2026_month_counts": {
+    "1": 13,
+    "2": 13,
+    "3": 13,
+    "4": 13,
+    "5": 13,
+    "6": 12,
+    "7": 12,
+    "8": 12
+  },
+  "selected_on_2025_only": {
+    "MISHANDLED_BAGGAGE": "random_forest",
+    "rate": "random_forest"
+  },
+  "metrics": [
+    {
+      "target": "MISHANDLED_BAGGAGE",
+      "year": 2025,
+      "model": "seasonal_naive",
+      "n": 168,
+      "MAE": 3012.5178571428573,
+      "RMSE": 5903.766824683889,
+      "WAPE_percent": 22.211216400303346,
+      "bias_percent": 12.965857863101425
+    },
+    {
+      "target": "MISHANDLED_BAGGAGE",
+      "year": 2025,
+      "model": "ridge",
+      "n": 168,
+      "MAE": 11788.77980442626,
+      "RMSE": 18180.95418366853,
+      "WAPE_percent": 86.91836920096323,
+      "bias_percent": 85.36536415827858
+    },
+    {
+      "target": "MISHANDLED_BAGGAGE",
+      "year": 2025,
+      "model": "random_forest",
+      "n": 168,
+      "MAE": 2772.8578617345047,
+      "RMSE": 4741.500734256391,
+      "WAPE_percent": 20.444209440364784,
+      "bias_percent": 10.266014551474562
+    },
+    {
+      "target": "MISHANDLED_BAGGAGE",
+      "year": 2026,
+      "model": "seasonal_naive",
+      "n": 101,
+      "MAE": 3118.6633663366338,
+      "RMSE": 5144.346568210717,
+      "WAPE_percent": 21.56090595711708,
+      "bias_percent": 8.933553652933655
+    },
+    {
+      "target": "MISHANDLED_BAGGAGE",
+      "year": 2026,
+      "model": "ridge",
+      "n": 101,
+      "MAE": 7034.67766624617,
+      "RMSE": 10874.747718722441,
+      "WAPE_percent": 48.634304438805394,
+      "bias_percent": 47.23489945797564
+    },
+    {
+      "target": "MISHANDLED_BAGGAGE",
+      "year": 2026,
+      "model": "random_forest",
+      "n": 101,
+      "MAE": 3056.3303973326865,
+      "RMSE": 5103.105460669959,
+      "WAPE_percent": 21.12996644077528,
+      "bias_percent": 4.346164374556602
+    },
+    {
+      "target": "rate",
+      "year": 2025,
+      "model": "seasonal_naive",
+      "n": 168,
+      "MAE": 1.048131272469848,
+      "RMSE": 1.4896137498642126,
+      "WAPE_percent": 21.86169277426361,
+      "bias_percent": 7.992224095403785,
+      "exposure_weighted_MAE_per_1000": 0.8826686251296004
+    },
+    {
+      "target": "rate",
+      "year": 2025,
+      "model": "ridge",
+      "n": 168,
+      "MAE": 1.559752539588096,
+      "RMSE": 1.7743761627269758,
+      "WAPE_percent": 32.53297723290031,
+      "bias_percent": 25.832603684707475,
+      "exposure_weighted_MAE_per_1000": 1.2956461114436792
+    },
+    {
+      "target": "rate",
+      "year": 2025,
+      "model": "random_forest",
+      "n": 168,
+      "MAE": 0.854510745236835,
+      "RMSE": 1.1378389903605455,
+      "WAPE_percent": 17.8231981769365,
+      "bias_percent": -1.122631991212108,
+      "exposure_weighted_MAE_per_1000": 0.7462833623112987
+    },
+    {
+      "target": "rate",
+      "year": 2026,
+      "model": "seasonal_naive",
+      "n": 101,
+      "MAE": 0.8348072548078548,
+      "RMSE": 1.011862339951868,
+      "WAPE_percent": 16.944214932116722,
+      "bias_percent": 0.3862783374774977,
+      "exposure_weighted_MAE_per_1000": 0.8603449555543754
+    },
+    {
+      "target": "rate",
+      "year": 2026,
+      "model": "ridge",
+      "n": 101,
+      "MAE": 0.9772147039360334,
+      "RMSE": 1.1722431307357897,
+      "WAPE_percent": 19.834681458450063,
+      "bias_percent": 12.146701239442764,
+      "exposure_weighted_MAE_per_1000": 0.9847648186475255
+    },
+    {
+      "target": "rate",
+      "year": 2026,
+      "model": "random_forest",
+      "n": 101,
+      "MAE": 0.777299434804625,
+      "RMSE": 0.9890797076800378,
+      "WAPE_percent": 15.776969610756298,
+      "bias_percent": -4.449865098926076,
+      "exposure_weighted_MAE_per_1000": 0.7617231300114565
+    }
+  ]
+}

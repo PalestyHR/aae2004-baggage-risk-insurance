@@ -1,0 +1,22 @@
+{
+  "lag1": {
+    "real_split_rows": {
+      "train": 957,
+      "validation": 168,
+      "test": 101
+    },
+    "synthetic_train_copies": 191,
+    "core_features": 30,
+    "checks": "PASS: keys, splits, lag dates, target arithmetic, core missingness, synthetic provenance, LightGBM input smoke test"
+  },
+  "lag3": {
+    "real_split_rows": {
+      "train": 957,
+      "validation": 168,
+      "test": 101
+    },
+    "synthetic_train_copies": 191,
+    "core_features": 30,
+    "checks": "PASS: keys, splits, lag dates, target arithmetic, core missingness, synthetic provenance, LightGBM input smoke test"
+  }
+}

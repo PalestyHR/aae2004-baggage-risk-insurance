@@ -1,0 +1,61 @@
+{
+  "selection": {
+    "design_id": "M0775",
+    "price_A": 3.75,
+    "price_B": 6.0,
+    "price_C": 11.0,
+    "delay_A": 50.0,
+    "delay_B": 100.0,
+    "delay_C": 200.0,
+    "loss_A": 300.0,
+    "loss_B": 600.0,
+    "loss_C": 1200.0,
+    "robust_expected_profit": 2736433.89559219,
+    "robust_margin": 0.3851740137611786,
+    "minimum_operator_profit_all_scenarios": 9070.554763617401,
+    "feasible": true,
+    "norm_robust_expected_profit": 0.7590619701535423,
+    "norm_robust_margin": 0.7442597477453179,
+    "balance_score": 0.7442597477453179
+  },
+  "plans": [
+    {
+      "name": "Basic",
+      "numeric_tier": "A",
+      "price": 3.75,
+      "delay_benefit": 50.0,
+      "loss_benefit": 300.0,
+      "reference": {
+        "price": 3,
+        "delay_benefit": 50,
+        "loss_benefit": 300
+      }
+    },
+    {
+      "name": "Standard",
+      "numeric_tier": "B",
+      "price": 6.0,
+      "delay_benefit": 100.0,
+      "loss_benefit": 600.0,
+      "reference": {
+        "price": 6,
+        "delay_benefit": 100,
+        "loss_benefit": 600
+      }
+    },
+    {
+      "name": "Premium",
+      "numeric_tier": "C",
+      "price": 11.0,
+      "delay_benefit": 200.0,
+      "loss_benefit": 1200.0,
+      "reference": {
+        "price": 11,
+        "delay_benefit": 200,
+        "loss_benefit": 1200
+      }
+    }
+  ],
+  "currency": "USD",
+  "is_final_quote": false
+}

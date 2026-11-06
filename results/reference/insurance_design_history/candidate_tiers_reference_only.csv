@@ -1,0 +1,4 @@
+﻿plan,currency,candidate_price,delay_benefit,loss_benefit,status
+Basic,USD,3,50,300,reference candidate; not approved quote
+Standard,USD,6,100,600,reference candidate; not approved quote
+Premium,USD,11,200,1200,reference candidate; not approved quote

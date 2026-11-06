@@ -1,0 +1,7 @@
+{
+  "risk_records_reproduced": 269,
+  "frozen_booster_roundtrip_cases": 12,
+  "insurance_selected_id": "M0775",
+  "status": "PASS",
+  "note": "Numerical reproduction verifies implementation, not empirical demand/claim assumptions."
+}

@@ -1,0 +1,140 @@
+{
+  "decision_variables": "three independent price multipliers; common delay multiplier; common loss multiplier",
+  "currency": "USD",
+  "price_reference": [
+    3.0,
+    6.0,
+    11.0
+  ],
+  "delay_reference": [
+    50.0,
+    100.0,
+    200.0
+  ],
+  "loss_reference": [
+    300.0,
+    600.0,
+    1200.0
+  ],
+  "price_multiplier_grid": [
+    0.75,
+    1,
+    1.25,
+    1.5,
+    2,
+    2.5,
+    3
+  ],
+  "benefit_multiplier_grid": [
+    1,
+    1.25,
+    1.5
+  ],
+  "objectives": [
+    "min_scenario sum_operator expected_profit",
+    "min_scenario pooled_expected_profit_margin"
+  ],
+  "constraints": [
+    "P1<P2<P3",
+    "D1<D2<D3",
+    "L1<L2<L3",
+    "each L>=D",
+    "benefits at least reference amounts",
+    "every operator expected profit >=0 in all six scenarios"
+  ],
+  "scenarios": [
+    {
+      "name": "beta1.0_base",
+      "beta": 1.0,
+      "rho": 1.0,
+      "sd": 0.5,
+      "sl": 0.05
+    },
+    {
+      "name": "beta1.0_higher",
+      "beta": 1.0,
+      "rho": 2.0,
+      "sd": 0.5,
+      "sl": 0.1
+    },
+    {
+      "name": "beta2.0_base",
+      "beta": 2.0,
+      "rho": 1.0,
+      "sd": 0.5,
+      "sl": 0.05
+    },
+    {
+      "name": "beta2.0_higher",
+      "beta": 2.0,
+      "rho": 2.0,
+      "sd": 0.5,
+      "sl": 0.1
+    },
+    {
+      "name": "beta3.0_base",
+      "beta": 3.0,
+      "rho": 1.0,
+      "sd": 0.5,
+      "sl": 0.05
+    },
+    {
+      "name": "beta3.0_higher",
+      "beta": 3.0,
+      "rho": 2.0,
+      "sd": 0.5,
+      "sl": 0.1
+    }
+  ],
+  "shared_assumptions": {
+    "currency": "USD",
+    "covered_bags": 1,
+    "covered_segments": 1,
+    "eligible_opportunity_fraction": 0.2,
+    "conditional_delay_share": 0.5,
+    "conditional_loss_share": 0.05,
+    "tier_hazard_multipliers": {
+      "Basic": 1.0,
+      "Standard": 1.0,
+      "Premium": 1.0
+    },
+    "risk_states": [
+      {
+        "name": "normal",
+        "probability": 0.98,
+        "hazard_multiplier": 1.0
+      },
+      {
+        "name": "common_disruption",
+        "probability": 0.02,
+        "hazard_multiplier": 6.0
+      }
+    ],
+    "demand": {
+      "reference_purchase_probabilities": {
+        "Basic": 0.05,
+        "Standard": 0.03,
+        "Premium": 0.02
+      },
+      "log_price_sensitivity": 1.0,
+      "log_delay_benefit_sensitivity": 0.1,
+      "log_loss_benefit_sensitivity": 0.1
+    },
+    "variable_cost_per_policy": {
+      "Basic": 0.5,
+      "Standard": 0.5,
+      "Premium": 0.5
+    },
+    "external_expense_rates": {
+      "Basic": 0.25,
+      "Standard": 0.25,
+      "Premium": 0.25
+    },
+    "period_system_cost": 50000.0,
+    "target_period_profit": 0.0
+  },
+  "selection": "among nondominated points maximize min(normalized robust_profit, normalized robust_margin); equal-priority preference, not unique optimum",
+  "risk_forecast": "frozen August2026 forecasts; no model refit and no realized August outcomes used",
+  "business_status": "hypothetical demand, eligible pool and cost assumptions, not Cathay evidence",
+  "caution": "robust only to the six listed scenarios; no guaranteed cash-flow solvency or 95% profit-probability constraint"
+}

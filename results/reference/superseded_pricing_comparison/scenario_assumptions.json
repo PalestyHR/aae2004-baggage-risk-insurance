@@ -1,0 +1,43 @@
+{
+  "run_date": "2026-11-06",
+  "real_inputs": "2026 observed baggage rates and prior predictions; monthly cases are US carrier-months, NOT Cathay claims",
+  "ml_choice": "LightGBM under:over 1:2 selected by 2025 weighted MAE, not by scenario profit",
+  "fixed_risk": "per-carrier pooled observed rate in 2019-2025; frozen across 2026",
+  "simple_risk": "50/50 previous month and previous-year same-month",
+  "eligible_customers_per_case": 10000,
+  "interpretation": "one policy / one bag / one covered trip proxy; not real customer count",
+  "reference_price_hkd": 5,
+  "reference_purchase_probability": 0.1,
+  "unit_variable_cost_hkd": 1,
+  "target_expected_margin": 0.3,
+  "pricing_rule": "round(clip((expected payout + variable cost)/(1-margin),3,12),1)",
+  "price_bounds_hkd": [
+    3,
+    12
+  ],
+  "claim_conversion_grid": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "benefit_hkd_grid": [
+    300,
+    1000,
+    3000
+  ],
+  "logit_price_sensitivity_grid": [
+    0.5,
+    1,
+    2
+  ],
+  "base_case": {
+    "claim_conversion": 0.5,
+    "benefit_hkd": 1000,
+    "beta": 1
+  },
+  "fixed_costs": "excluded; report contribution before fixed overhead/capital/tax. Difference is available budget for incremental implementation cost.",
+  "claim_selection": "buyers assumed same risk as eligible group; no adverse selection",
+  "payouts": "one hypothetical fixed benefit for qualifying mishandling, not actual insurance claims",
+  "no_causal_demand_estimate": true,
+  "no_guaranteed_profit": true
+}

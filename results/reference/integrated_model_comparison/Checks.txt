@@ -1,0 +1,3 @@
+PASS: all nine methods use identical rows within each year; no duplicates; independent weighted MAE reconciliation for all 18 results.
+Training cutoffs are asserted during fitting.
+Warnings: 0; see audit.json.

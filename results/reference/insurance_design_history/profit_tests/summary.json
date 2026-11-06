@@ -1,0 +1,16 @@
+{
+  "base_case_operators": 12,
+  "base_case_profit_positive_operators": 12,
+  "base_case_net_margin_min": 0.20280862786113932,
+  "base_case_net_margin_max": 0.5789564126780009,
+  "base_case_net_margin_pooled_across_separate_cases": 0.5038688018674785,
+  "sensitivity_case_count": 324,
+  "sensitivity_positive_cases": 210,
+  "sensitivity_negative_cases": 114,
+  "sensitivity_min_margin": -7.4061243939257615,
+  "sensitivity_max_margin": 0.6035139427749424,
+  "sensitivity_cases_are_not_probabilities": true,
+  "monte_carlo_profit_prob_min": 0.9797666666666667,
+  "monte_carlo_profit_prob_max": 1.0,
+  "interpretation": "all profit probabilities conditional on assumed sales, claim composition, hazard states and costs; no empirical guarantee"
+}

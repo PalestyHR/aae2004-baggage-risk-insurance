@@ -1,0 +1,13 @@
+﻿period,carrier,risk_rate_per_1000,passenger_segments,bag_loads,predicted_mishandled_bags,training_cutoff,population,forecast_status
+2026-08-01,WN,3.255350277968172,14807533.5,8812018.5,28686.206873435673,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,DL,3.9223657686970714,12806351.5,7552423.0,29623.36544592044,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,AA,7.7870127458701095,11973210.0,6213976.5,48388.31420803733,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,AS,4.826324596929373,3844448.5,2625482.5,12671.430768557622,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,UA,7.021963040150924,10244952.5,5238503.5,36784.57796270125,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,OO,4.929390210681682,4037670.0,2716031.0,13388.376623307979,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,G4,1.3113274030987165,1802218.0,610596.0,800.691267022464,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,OH,4.354670427059096,1164995.0,1096279.0,4773.933741105919,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,MQ,7.2193256032960935,1664273.0,989033.0,7140.151259404745,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,B6,3.6936941141327795,2695019.0,1288448.5,4759.1346408132085,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,F9,4.708076327699857,3046186.0,888741.5,4184.262817594462,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface
+2026-08-01,YX,5.267680341413996,1782743.5,930071.5,4899.319356659427,2026-07-01,"BTS US domestic, not Cathay",retrospective August forecast; no actual August labels in interface

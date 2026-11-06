@@ -1,0 +1,201 @@
+{
+  "choice_on_2025": "XGBoost",
+  "features": [
+    "airline_id",
+    "month_sin",
+    "month_cos",
+    "month_trend",
+    "recent_rate",
+    "rate_mean3",
+    "rate_std3",
+    "rate_change",
+    "rate_year_ago",
+    "recent_bag_volume",
+    "bag_volume_growth",
+    "lag_passenger_segments",
+    "lag_seats",
+    "lag_departures",
+    "lag_scheduled_departures",
+    "lag_seat_occupancy",
+    "lag_arrival_flights",
+    "lag_arrival_delay_rate",
+    "lag_cancel_rate",
+    "lag_diversion_rate",
+    "lag_weather_delay_fraction",
+    "lag_nas_delay_fraction",
+    "lag_late_aircraft_delay_fraction",
+    "lag_delay_minutes_per_arrival",
+    "lag_weather_delay_minutes_per_arrival",
+    "lag_network_airport_passenger_movements",
+    "lag_coverage_airport_passenger_movements",
+    "lag_network_airport_aircraft_movements",
+    "lag_coverage_airport_aircraft_movements",
+    "lag_passenger_growth"
+  ],
+  "warnings": [],
+  "test_has_been_previously_inspected": true,
+  "metrics": [
+    {
+      "year": 2025,
+      "model": "blend50",
+      "n": 168,
+      "weighted_MAE": 0.6301285491696451,
+      "MAE": 0.7068629408532517,
+      "RMSE": 0.9602779968818784,
+      "weighted_bias": 0.18688422702305257
+    },
+    {
+      "year": 2025,
+      "model": "seasonal_naive",
+      "n": 168,
+      "weighted_MAE": 0.8826686251296002,
+      "MAE": 1.048131272469848,
+      "RMSE": 1.4896137498642126,
+      "weighted_bias": 0.4150632389255026
+    },
+    {
+      "year": 2025,
+      "model": "ElasticNet",
+      "n": 168,
+      "weighted_MAE": 0.6100405456086455,
+      "MAE": 0.6577996015149508,
+      "RMSE": 0.9002266998594539,
+      "weighted_bias": 0.0582930770377923
+    },
+    {
+      "year": 2025,
+      "model": "Poisson_GLM",
+      "n": 168,
+      "weighted_MAE": 0.6851403751310297,
+      "MAE": 0.805758775485363,
+      "RMSE": 1.0291661417556712,
+      "weighted_bias": 0.0900541787580211
+    },
+    {
+      "year": 2025,
+      "model": "RandomForest",
+      "n": 168,
+      "weighted_MAE": 0.5162900564200702,
+      "MAE": 0.5470079919656861,
+      "RMSE": 0.7408107013359576,
+      "weighted_bias": 0.22944425056442083
+    },
+    {
+      "year": 2025,
+      "model": "ExtraTrees",
+      "n": 168,
+      "weighted_MAE": 0.5477027354775342,
+      "MAE": 0.5576594395195522,
+      "RMSE": 0.7374336961340691,
+      "weighted_bias": 0.26923038599651633
+    },
+    {
+      "year": 2025,
+      "model": "HistGBR",
+      "n": 168,
+      "weighted_MAE": 0.47880018976447675,
+      "MAE": 0.5458337894683257,
+      "RMSE": 0.7193439952726143,
+      "weighted_bias": 0.13811669004066252
+    },
+    {
+      "year": 2025,
+      "model": "LightGBM",
+      "n": 168,
+      "weighted_MAE": 0.4872205506283653,
+      "MAE": 0.5507717487928657,
+      "RMSE": 0.7110943745535198,
+      "weighted_bias": 0.16879718663780086
+    },
+    {
+      "year": 2025,
+      "model": "XGBoost",
+      "n": 168,
+      "weighted_MAE": 0.477061127365014,
+      "MAE": 0.535991887036941,
+      "RMSE": 0.7098747777766301,
+      "weighted_bias": 0.19103486438954856
+    },
+    {
+      "year": 2026,
+      "model": "blend50",
+      "n": 101,
+      "weighted_MAE": 0.6972232964687762,
+      "MAE": 0.6895328569700346,
+      "RMSE": 0.886785869687862,
+      "weighted_bias": 0.24260167323234658
+    },
+    {
+      "year": 2026,
+      "model": "seasonal_naive",
+      "n": 101,
+      "weighted_MAE": 0.8603449555543755,
+      "MAE": 0.8348072548078548,
+      "RMSE": 1.011862339951868,
+      "weighted_bias": 0.39162535134580123
+    },
+    {
+      "year": 2026,
+      "model": "ElasticNet",
+      "n": 101,
+      "weighted_MAE": 0.7165073989965547,
+      "MAE": 0.7503152969005737,
+      "RMSE": 0.9997196201444862,
+      "weighted_bias": 0.023012885491916744
+    },
+    {
+      "year": 2026,
+      "model": "Poisson_GLM",
+      "n": 101,
+      "weighted_MAE": 0.7065547414035844,
+      "MAE": 0.8094232873445888,
+      "RMSE": 1.0661134212468244,
+      "weighted_bias": 0.02532541832060696
+    },
+    {
+      "year": 2026,
+      "model": "RandomForest",
+      "n": 101,
+      "weighted_MAE": 0.6595677225870844,
+      "MAE": 0.6840801012182024,
+      "RMSE": 0.9323701282367187,
+      "weighted_bias": 0.14282006010817277
+    },
+    {
+      "year": 2026,
+      "model": "ExtraTrees",
+      "n": 101,
+      "weighted_MAE": 0.6782328184314232,
+      "MAE": 0.6728474016180216,
+      "RMSE": 0.8861156626996342,
+      "weighted_bias": 0.23641068970085055
+    },
+    {
+      "year": 2026,
+      "model": "HistGBR",
+      "n": 101,
+      "weighted_MAE": 0.6203673930510915,
+      "MAE": 0.6541726047345502,
+      "RMSE": 0.8546867237759687,
+      "weighted_bias": 0.08785832447412537
+    },
+    {
+      "year": 2026,
+      "model": "LightGBM",
+      "n": 101,
+      "weighted_MAE": 0.6475201737393359,
+      "MAE": 0.672795886030819,
+      "RMSE": 0.8785072746977877,
+      "weighted_bias": 0.11923474902421599
+    },
+    {
+      "year": 2026,
+      "model": "XGBoost",
+      "n": 101,
+      "weighted_MAE": 0.6353173287564381,
+      "MAE": 0.6732128182281588,
+      "RMSE": 0.8945978580034075,
+      "weighted_bias": 0.07964650701163756
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "checks": [
+    "conditional probabilities and mutual exclusivity",
+    "invalid shares rejected",
+    "unknown multiplier not silently set to one",
+    "multiple exposures increase scenario risk",
+    "reference shares reproduced with no purchase",
+    "own price reduces own uptake; shares remain bounded",
+    "whole product accounting and fixed cost counted once",
+    "reference expected payouts correct",
+    "fixed system cost flows through profit",
+    "exposure inconsistency rejected",
+    "unset design config cannot produce fake profit",
+    "conditional benefit ceiling",
+    "zero loss probability not unlimited benefit",
+    "Pareto removes dominated candidate",
+    "Monte Carlo reconciles analytic mean with shared state"
+  ],
+  "n_checks": 15,
+  "fixture_status": "artificial arithmetic fixtures, NOT proposed product calibration",
+  "monte_carlo_mean_reconciliation_only": {
+    "analytic": 343.6841759999999,
+    "simulated": 347.3503166666667,
+    "standard_error": 1.7073067374314246
+  }
+}

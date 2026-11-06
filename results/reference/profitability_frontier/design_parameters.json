@@ -1,0 +1,32 @@
+{
+  "purpose": "design compensation only after finding feasible revenue-cost budget",
+  "variables": {
+    "V": "reported passenger traffic; not automatically eligible policy opportunities",
+    "s": "conversion from passenger traffic to eligible insured itinerary opportunities, unknown",
+    "q": "purchase rate, unknown",
+    "P": "premium to explore, not fixed",
+    "K": "all nonclaim costs on chosen business scope, unknown",
+    "G": "target profit, to set",
+    "C": "expected valid claims among insured policies, unknown",
+    "B": "average benefit to design"
+  },
+  "equations": {
+    "eligible_opportunities": "V*s",
+    "sales": "V*s*q",
+    "revenue": "V*s*q*P",
+    "expected_payout_budget": "V*s*q*P-K-G",
+    "average_benefit_upper_bound": "(V*s*q*P-K-G)/C for C>0 and nonnegative budget",
+    "multi_tier_constraint": "sum_k C_k*B_k <= total_revenue-K-G"
+  },
+  "not_estimated": [
+    "s",
+    "q",
+    "K",
+    "G",
+    "C",
+    "permanent_loss_rate",
+    "Cathay_baggage_exposure"
+  ],
+  "status": "expected-value feasibility only; not a solvency or guaranteed-profit result",
+  "previous_scenario": "50% qualification and HKD1000 benefit withdrawn as product inputs; previous outputs illustrative only"
+}

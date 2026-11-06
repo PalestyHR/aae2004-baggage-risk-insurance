@@ -1,0 +1,64 @@
+LightGBM / XGBoost / Lasso comparison, 2026-11-06
+
+Same data, target, features, expanding window and timing definitions as the
+periodic_learning experiment. Rate units: mishandled bags per 1000 enplaned bags.
+US domestic FORM-1 data, 2019 onwards. 2026 Jan-Aug: 101 carrier-months.
+Raw source unchanged. 2026 has already been inspected: exploratory comparison.
+
+Models: Lasso; LightGBM; XGBoost; Lasso followed by LightGBM residual fitting;
+Lasso followed by XGBoost residual fitting. These are additive residual models,
+not stacking. The second stage fits training residuals of a regularized linear
+model; performance is evaluated on future months, not those training residuals.
+
+Preprocessing: numerical features standardized within each training fit only;
+carrier ID one-hot encoded. Both stages use identical transformed features.
+Final predictions max(prediction,0), a ReLU-like output constraint. No neural
+network or hidden ReLU layers. No ablation of standardization or clipping was
+performed, so no performance gain can be attributed to these individually.
+
+Lasso alpha chosen from [0.001,0.01,0.1] with rolling 2024 validation only:
+d=1 selects .001, d=3 selects .1. Alpha shared with residual combinations;
+not an exhaustive joint optimization of combination models.
+Both tree models: 200 estimators, learning_rate=.03, maximum depth 3,
+lambda L2 penalty 1, seed 42. LightGBM: 7 leaves, minimum child samples 20.
+XGBoost: min_child_weight 20, histogram trees, squared-error objective.
+Equal sample weights in fitting. Test exposure weights are evaluation-only.
+
+Availability: d=1 has target t data through t-1; d=3 through t-3.
+These are assumed availability scenarios, not actual release-date reconstruction.
+Lasso tuning uses 2024 Jan-Dec for d=1 and Jan-Oct for d=3.
+New model/mode selection uses 2025 Jan-Dec for d=1, Jan-Oct for d=3, ensuring
+validation labels precede the first 2026 origin's availability cutoff.
+Selected among new candidates BEFORE test evaluation:
+d=1: updating LightGBM; d=3: fixed XGBoost.
+All other 2026 candidate results are retained, not used for retrospective choice.
+
+Fixed model: fit once at the first 2026 forecast origin, receive refreshed
+monthly predictors thereafter. Updating model: refit monthly on available labels.
+Both receive identical inputs. This isolates refitting from input refresh.
+
+2026 weighted MAE (lower is better), fixed / monthly refit:
+                            d=1                  d=3
+Lasso                 .789623 / .780535    .993047 / 1.002025
+LightGBM              .632564 / .623668    .750446 / .755434
+XGBoost               .643990 / .661229    .708436 / .771133
+Lasso + LightGBM      .696599 / .682480    .760806 / .886717
+Lasso + XGBoost       .679919 / .693718    .724761 / .906857
+Earlier RF reference  .646944 / .654087    .723527 / .765321
+
+Interpretation: timely-data monthly LightGBM improves weighted MAE over fixed
+LightGBM by about 1.4%, and updating RF by about 4.7%. However unweighted RMSE
+is slightly worse after LightGBM refitting (.865995 vs .856610). Improvement is
+metric-specific. For d=3 the fixed XGBoost is strongest; monthly refitting hurts.
+No Lasso residual combination beats its standalone tree counterpart here.
+No confidence interval or statistical-significance claim is established.
+Modest data, correlated months/carriers, single seed and limited hyperparameter
+settings do not establish general superiority or rule out other combinations.
+No Cathay generalization, insurance pricing validity or loss reduction tested.
+
+Verification: matched rows, forecast availability cutoffs, finite nonnegative
+predictions, identical first-month fixed/update outputs, independent recomputation
+of weighted MAE for all 20 comparisons.
+
+Outputs: summary_2026.csv, validation_2025.csv, alpha_validation_2024.csv,
+monthly_2026.csv, predictions_2026.csv, audit.json. Code ../boosting_comparison.py.

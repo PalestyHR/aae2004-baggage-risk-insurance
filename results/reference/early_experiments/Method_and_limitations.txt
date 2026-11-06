@@ -1,0 +1,78 @@
+BTS baggage forecasting: initial temporal holdout experiment
+Run date: 2026-11-06
+
+SOURCE AND SCOPE
+User-supplied T_MISHANDLED_BAGGAGE.csv, 2161 rows, 2016-2026.
+The latest observation is August 2026. Preserve the source unchanged.
+Retain 2019 onward, FORM-1 operating-carrier records only (1442 rows).
+FORM-2 codeshare records are excluded to avoid mixing reporting populations.
+Before 2019, the reported measure was passenger reports, not the current bag count.
+Mishandled baggage includes lost, delayed, damaged and pilfered baggage.
+This is US domestic carrier-month data, not Cathay data or passenger claims data.
+
+TARGETS
+1. Monthly mishandled bag count per operating carrier.
+2. Monthly mishandled bags per 1000 enplaned bags.
+Rates use baggage exposure, not passengers. Missing values are not zeros.
+
+DESIGN
+Each feature row uses carrier ID, month sine/cosine, year trend, and the same
+carrier's previous-year same-month count, rate and enplaned baggage volume.
+All 2026 features are based on calendar information and 2025 observations.
+No actual 2026 counts, volumes or rates are used for prediction or training.
+No within-2026 updating occurs. This is a frozen-model multi-horizon test,
+not a rolling one-month-ahead deployment simulation.
+216 rows without prior-year same-month history are excluded, including the
+2019 initialization year. No 2026 rows are excluded by this rule.
+Training examples 2020-2024: 957; validation 2025: 168.
+Select count model by validation WAPE and rate model by exposure-weighted MAE.
+Refit on 2020-2025 (1125 examples), test on 2026 Jan-Aug (101 examples).
+2019 observations supply lagged features. 2026 observations are never used
+to choose models or hyperparameters. All candidate test scores are retained.
+
+MODELS
+Seasonal naive: use last year's same-month value.
+Ridge: alpha=10, standardized numerical inputs and one-hot carrier ID.
+Random forest: 300 trees, minimum leaf size 8, random_state=42.
+Both learned models fit log1p(target), then invert with expm1 and clip at zero.
+The resulting predictions are not guaranteed conditional mean estimates;
+log transformation can bias aggregate forecasts. Rate is capped at 1000.
+This is a small initial comparison, not an exhaustive model search.
+
+RESULTS
+Both targets selected random forest using 2025 validation only.
+2026 count WAPE: naive 21.5609%, ridge 48.6343%, random forest 21.1300%.
+Count MAE: naive 3118.66, ridge 7034.68, random forest 3056.33 bags/carrier-month.
+Count RMSE: naive 5144.35, ridge 10874.75, random forest 5103.11.
+Rate exposure-weighted MAE per 1000 bags:
+naive 0.860345, ridge 0.984765, random forest 0.761723.
+WAPE = sum(abs(predicted-observed))/sum(observed); it is NOT classification
+accuracy and 1-WAPE must not be described as predictive accuracy.
+Exposure weights use test volumes for evaluation ONLY, not as predictors.
+
+LIMITATIONS
+101 carrier-month observations are correlated, not 101 independent trials.
+Carrier coverage varies by month; totals describe observed records only.
+Only eight 2026 months are available. No confidence intervals or evidence of
+statistical significance has been established. Count improvement is small.
+Pandemic years are included and may cause structural instability.
+This retrospectively uses a downloaded historical snapshot. Publication lags
+and historical revisions are not reconstructed; it is not a real-time-vintage
+backtest available on 1 January 2026.
+Carrier-level monthly counts do not reveal route, passenger, delay duration,
+permanent loss, insurance purchase, claim eligibility or claim severity.
+US domestic results cannot establish performance for Cathay's network.
+Rate per bag-segment is not the probability a passenger claims on an itinerary.
+Pricing needs separately justified coverage, frequency conversion, severity,
+selection effects and risk assumptions. Do not equate mishandling with payout.
+
+FILES
+metrics.csv: all validation and test scores.
+predictions.csv: individual carrier-month predictions and observations.
+excluded_rows.csv: records without the required lag history.
+audit.json: sample counts, source hash, selected models and scores.
+run_analysis.py: reproducible analysis script (requires pandas and scikit-learn).
+
+OFFICIAL DEFINITIONS
+https://transtats.bts.gov/Fields.asp?gnoyr_VQ=GGD
+https://www.bts.gov/content/mishandled-baggage-reports-filed-passengers-largest-us-air-carriersa

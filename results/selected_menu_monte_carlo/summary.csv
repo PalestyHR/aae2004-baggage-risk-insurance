@@ -1,0 +1,7 @@
+scenario,cases,minimum_profit_probability,maximum_profit_probability,minimum_05_profit_quantile
+beta1.0_base,12,0.9798,1.0,25505.309375
+beta1.0_higher,12,0.9782333333333333,1.0,9955.084375
+beta2.0_base,12,0.9797666666666667,1.0,22078.159375
+beta2.0_higher,12,0.9793,1.0,6921.665625
+beta3.0_base,12,0.98,1.0,19327.1
+beta3.0_higher,12,0.9780333333333333,1.0,4638.1125

@@ -1,0 +1,89 @@
+{
+  "all_financial_and_conversion_inputs": "ASSUMPTIONS, not empirically estimated",
+  "scope": "each of the 12 US BTS carrier forecast cohorts separately; not Cathay actual business",
+  "forecast": "frozen forecast for August2026 based on data through July2026",
+  "prices_and_benefits": "user-provided reference candidates in USD, not approved prices",
+  "base_assumptions": {
+    "currency": "USD",
+    "covered_bags": 1,
+    "covered_segments": 1,
+    "eligible_opportunity_fraction": 0.2,
+    "conditional_delay_share": 0.5,
+    "conditional_loss_share": 0.05,
+    "tier_hazard_multipliers": {
+      "Basic": 1.0,
+      "Standard": 1.0,
+      "Premium": 1.0
+    },
+    "risk_states": [
+      {
+        "name": "normal",
+        "probability": 0.98,
+        "hazard_multiplier": 1.0
+      },
+      {
+        "name": "common_disruption",
+        "probability": 0.02,
+        "hazard_multiplier": 6.0
+      }
+    ],
+    "demand": {
+      "reference_purchase_probabilities": {
+        "Basic": 0.05,
+        "Standard": 0.03,
+        "Premium": 0.02
+      },
+      "log_price_sensitivity": 1.0,
+      "log_delay_benefit_sensitivity": 0.1,
+      "log_loss_benefit_sensitivity": 0.1
+    },
+    "variable_cost_per_policy": {
+      "Basic": 0.5,
+      "Standard": 0.5,
+      "Premium": 0.5
+    },
+    "external_expense_rates": {
+      "Basic": 0.25,
+      "Standard": 0.25,
+      "Premium": 0.25
+    },
+    "period_system_cost": 50000.0,
+    "target_period_profit": 0.0
+  },
+  "why_eligibility_fraction": ".2 is illustrative eligible direct single-bag opportunity fraction; not obtained from passenger-segment data",
+  "cost_interpretation": "USD50000 per operator per monthly cohort for system development allocation+operations. Not supplier quote. External expenses25% exclude internal transfers in chosen product scope; per-policy0.5 is handling cost; no further tax/capital cost unless embedded explicitly.",
+  "sensitivity_grid": {
+    "purchase_total": [
+      0.02,
+      0.05,
+      0.1
+    ],
+    "tier_hazard_multiplier": [
+      1,
+      2,
+      4
+    ],
+    "system_cost": [
+      10000,
+      50000,
+      200000
+    ]
+  },
+  "claim_condition_stress_grid": {
+    "conditional_delay_share": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "conditional_loss_share": [
+      0.02,
+      0.05,
+      0.15
+    ]
+  },
+  "common_shock_assumption": "2% cohort-wide state, sixfold hazard; means and simulation both include it. Not measured event frequency.",
+  "pareto_search": "exploratory price factors[1,1.25,1.5,2] and benefit factors[1,1.25,1.5], common scaling across tiers; minimum benefits at reference levels",
+  "profit_margin_definition": "expected profit / expected premium revenue",
+  "system_cost_coverage_definition": "contribution before system cost / system cost; NOT investment ROI",
+  "not_annual_or_guaranteed": true
+}

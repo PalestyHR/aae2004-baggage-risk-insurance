@@ -1,0 +1,1 @@
+Adopted M0775 menu; 72 single-operator single-cohort scenarios, 30000 draws each. Same uncalibrated risk/demand/cost assumptions as optimization. All means reconcile within six Monte Carlo standard errors. This is not annual empirical profitability or a certification of 95% profit probability. No parameter/forecast uncertainty has been calibrated.

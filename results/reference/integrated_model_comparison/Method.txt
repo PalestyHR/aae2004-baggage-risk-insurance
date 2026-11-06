@@ -1,0 +1,36 @@
+Integrated-data model comparison, 2026-11-06
+
+Input: integrated_dataset/dataset/lag1/all_real.csv and feature_spec.json.
+30 core features only. No synthetic rows, no optional incomplete NOAA weather.
+Target: monthly mishandled bags per 1000 enplaned bags, not claims or loss rate.
+Features use observations through preceding month; assumes timely internal data.
+All models retrained each month on all strictly earlier target-month rows.
+2020-2024 initial training; rolling validation 2025 (168 cases); rolling
+exploratory test Jan-Aug 2026 (101 cases). 2026 was already inspected previously.
+Historical revisions/publication dates are not reconstructed.
+
+Same common preprocessing for learned models: carrier one-hot, remaining numeric
+features standardized using current training fit only. Predictions clipped at zero.
+All fitting rows equally weighted EXCEPT Poisson GLM: weights are historical
+enplaned bags normalized by their training mean, matching a frequency/exposure
+approach. Target-month actual exposures are NEVER inputs. Test exposures weight
+the evaluation only. No tuning on 2026 and no broad hyperparameter search.
+
+Predeclared settings:
+ElasticNet alpha=.01, l1_ratio=.5, max_iter=20000.
+PoissonRegressor alpha=.1, max_iter=2000, log link (sklearn default).
+RandomForest and ExtraTrees: 300 trees, min_samples_leaf=8, seed42.
+HistGBR: 200 iterations, learning_rate .03, 7 leaves, min_samples_leaf20,
+L2=1, early_stopping=False, seed42.
+LightGBM: 200 trees, learning_rate .03, max_depth3, 7 leaves,
+min_child_samples20, L2=1, seed42.
+XGBoost: 200 trees, learning_rate .03, max_depth3, min_child_weight20,
+L2=1, squared-error loss, histogram trees, seed42.
+Baselines: same month last year; 50/50 blend of preceding month and last year.
+
+Model family is selected by 2025 volume-weighted MAE before scoring 2026.
+All test results are retained; the test winner must not replace the validation
+choice without acknowledging post-test selection. No statistical significance
+or universal superiority claim. ARIMA/SARIMAX, Prophet and neural networks were
+not trained in this comparison. Results do not establish Cathay transfer or
+insurance pricing validity. Synthetic augmentation effects are not tested here.

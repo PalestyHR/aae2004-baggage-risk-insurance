@@ -1,0 +1,39 @@
+﻿column,definition,unit,source,timing,optional
+airline_id,BTS DOT carrier identifier; categorical,identifier,BTS baggage/calendar,calendar known in advance,False
+month_sin,sin(2*pi*target month/12),dimensionless,BTS baggage/calendar,calendar known in advance,False
+month_cos,cos(2*pi*target month/12),dimensionless,BTS baggage/calendar,calendar known in advance,False
+month_trend,Calendar month index relative to January 2019,months,BTS baggage/calendar,calendar known in advance,False
+recent_rate,Most recent available observed baggage mishandling rate,bags per 1000,BTS baggage/calendar,lagged; see latest_feature_month,False
+rate_mean3,Mean of latest three calendar-month rates,bags per 1000,BTS baggage/calendar,lagged; see latest_feature_month,False
+rate_std3,Population standard deviation of latest three calendar-month rates,bags per 1000,BTS baggage/calendar,lagged; see latest_feature_month,False
+rate_change,Latest rate minus mean of three preceding rates,bags per 1000,BTS baggage/calendar,lagged; see latest_feature_month,False
+rate_year_ago,Same carrier target-month-minus-12 rate,bags per 1000,BTS baggage/calendar,lagged; see latest_feature_month,False
+recent_bag_volume,Latest available enplaned baggage count,bags,BTS baggage/calendar,lagged; see latest_feature_month,False
+bag_volume_growth,Latest bag volume divided by preceding month minus one,fraction,BTS baggage/calendar,lagged; see latest_feature_month,False
+lag_passenger_segments,T100 CLASS F domestic passenger-segment sum,passenger-segments,T100,lagged; see latest_feature_month,False
+lag_seats,T100 CLASS F domestic seat sum,seat-segments,T100,lagged; see latest_feature_month,False
+lag_departures,T100 CLASS F performed departures,departures,T100,lagged; see latest_feature_month,False
+lag_scheduled_departures,T100 CLASS F scheduled departures,departures,T100,lagged; see latest_feature_month,False
+lag_seat_occupancy,"Passenger-segments divided by seat-segments, not distance weighted",fraction,T100,lagged; see latest_feature_month,False
+lag_arrival_flights,Flights in matched delay reporting dataset,flights,BTS delay,lagged; see latest_feature_month,False
+lag_arrival_delay_rate,15+ minute delayed arrivals / arrival flights,fraction,BTS delay,lagged; see latest_feature_month,False
+lag_cancel_rate,Cancelled arrivals / arrival flights,fraction,BTS delay,lagged; see latest_feature_month,False
+lag_diversion_rate,Diverted arrivals / arrival flights,fraction,BTS delay,lagged; see latest_feature_month,False
+lag_weather_delay_fraction,Fractional weather-attributed delay count / arrivals; not all weather effects,fraction,BTS delay,lagged; see latest_feature_month,False
+lag_nas_delay_fraction,Fractional NAS-attributed delay count / arrivals,fraction,BTS delay,lagged; see latest_feature_month,False
+lag_late_aircraft_delay_fraction,Fractional late-aircraft delay count / arrivals,fraction,BTS delay,lagged; see latest_feature_month,False
+lag_delay_minutes_per_arrival,Reported arrival-delay minutes / all arrival flights,minutes per flight,BTS delay,lagged; see latest_feature_month,False
+lag_weather_delay_minutes_per_arrival,Weather-attributed delay minutes / all arrival flights,minutes per flight,BTS delay,lagged; see latest_feature_month,False
+lag_network_airport_passenger_movements,Arrival-flight-weighted mean of destination airports domestic CLASS F arrivals+departures passenger counts,passenger movements,T100,lagged; see latest_feature_month,False
+lag_coverage_airport_passenger_movements,Share of carrier arrival flights with available destination-airport airport_passenger_movements,fraction,T100,lagged; see latest_feature_month,False
+lag_network_airport_aircraft_movements,Arrival-flight-weighted mean of destination airports domestic CLASS F aircraft arrivals+departures,aircraft movements,T100,lagged; see latest_feature_month,False
+lag_coverage_airport_aircraft_movements,Share of carrier arrival flights with available destination-airport airport_aircraft_movements,fraction,T100,lagged; see latest_feature_month,False
+lag_passenger_growth,Latest passenger segments / preceding month minus one,fraction,T100,lagged; see latest_feature_month,False
+lag_network_temp_c,Arrival-flight-weighted mean GSOD airport daily mean temperature,C,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_coverage_temp_c,Share of carrier arrival flights with available destination-airport temp_c,fraction,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_network_wind_knots,Arrival-flight-weighted mean GSOD airport daily mean wind,knots,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_coverage_wind_knots,Share of carrier arrival flights with available destination-airport wind_knots,fraction,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_network_low_visibility_day,Arrival-flight-weighted airport fraction of valid days with mean visibility under 3 miles,fraction,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_coverage_low_visibility_day,Share of carrier arrival flights with available destination-airport low_visibility_day,fraction,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_network_rain_day,Arrival-flight-weighted airport fraction of valid days with precipitation >0,fraction,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True
+lag_coverage_rain_day,Share of carrier arrival flights with available destination-airport rain_day,fraction,NOAA GSOD + BTS delay arrival weights,lagged; see latest_feature_month,True

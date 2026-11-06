@@ -1,0 +1,10 @@
+Simple baseline comparison, 2026-11-06
+Same source and target as periodic_learning. FORM-1, 2019 onward.
+Assume all preceding-month outcomes available; refresh forecasts monthly.
+Per-carrier forecasts. Historical pooled rate = sum(count)/sum(exposure)*1000.
+Moving means and historical same-calendar-month mean average monthly rates equally.
+EWMA alpha=0.3, adjust=False, fixed in advance; equal blend weights 0.5 each.
+No 2026 tuning. 2025 selects best simple method: equal_blend_last_month_last_year
+2026: identical 101 records, Jan-Aug. 2026 has already been inspected in previous experiments; exploratory comparison, not untouched final test.
+No intervals or significance claims. US domestic baggage mishandling is not Cathay loss/claim frequency.
+Metrics in bags per 1000; test exposures weight evaluation only. Original CSV unchanged.

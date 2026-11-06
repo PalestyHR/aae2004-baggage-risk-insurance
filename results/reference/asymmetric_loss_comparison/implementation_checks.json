@@ -1,0 +1,206 @@
+{
+  "gradient_hessian_finite_difference": "passed",
+  "builtin_symmetry_checks": [
+    {
+      "month": "2025-01-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 5.683702397618617e-10
+    },
+    {
+      "month": "2025-01-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 3.648359836461168e-09
+    },
+    {
+      "month": "2025-02-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 1.1432765845142967e-09
+    },
+    {
+      "month": "2025-02-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 3.246922730681945e-09
+    },
+    {
+      "month": "2025-03-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 1.4356564825845908e-09
+    },
+    {
+      "month": "2025-03-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 4.654580498808514e-09
+    },
+    {
+      "month": "2025-04-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 5.372893241428756e-10
+    },
+    {
+      "month": "2025-04-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 4.441789158704523e-09
+    },
+    {
+      "month": "2025-05-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 1.1467551352950522e-09
+    },
+    {
+      "month": "2025-05-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 4.778295092933149e-09
+    },
+    {
+      "month": "2025-06-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 1.0091927293842673e-09
+    },
+    {
+      "month": "2025-06-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 9.481064822125518e-09
+    },
+    {
+      "month": "2025-07-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 6.358096271696922e-10
+    },
+    {
+      "month": "2025-07-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 8.479051238907687e-09
+    },
+    {
+      "month": "2025-08-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 7.090346088034494e-10
+    },
+    {
+      "month": "2025-08-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 4.4757015871255135e-09
+    },
+    {
+      "month": "2025-09-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 4.859304070237158e-10
+    },
+    {
+      "month": "2025-09-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 2.3122384007479013e-09
+    },
+    {
+      "month": "2025-10-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 1.7217711700823202e-09
+    },
+    {
+      "month": "2025-10-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 2.434856316568812e-09
+    },
+    {
+      "month": "2025-11-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 6.080012049380912e-10
+    },
+    {
+      "month": "2025-11-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 2.036895985213505e-09
+    },
+    {
+      "month": "2025-12-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 5.212950071609157e-10
+    },
+    {
+      "month": "2025-12-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 5.371322053804306e-09
+    },
+    {
+      "month": "2026-01-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 5.559481763839358e-10
+    },
+    {
+      "month": "2026-01-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 3.5409453147394743e-09
+    },
+    {
+      "month": "2026-02-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 3.8902925325601245e-10
+    },
+    {
+      "month": "2026-02-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 3.495514988571813e-09
+    },
+    {
+      "month": "2026-03-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 4.807869657952324e-10
+    },
+    {
+      "month": "2026-03-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 2.9920634858626727e-09
+    },
+    {
+      "month": "2026-04-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 1.4649674806577195e-09
+    },
+    {
+      "month": "2026-04-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 1.8142851665459148e-09
+    },
+    {
+      "month": "2026-05-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 5.595142127390318e-10
+    },
+    {
+      "month": "2026-05-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 7.429846959894348e-09
+    },
+    {
+      "month": "2026-06-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 8.879617041657184e-10
+    },
+    {
+      "month": "2026-06-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 5.322660534545776e-09
+    },
+    {
+      "month": "2026-07-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 3.4438585316820536e-10
+    },
+    {
+      "month": "2026-07-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 4.512029860848088e-09
+    },
+    {
+      "month": "2026-08-01 00:00:00",
+      "weighting": "uniform",
+      "symmetric_builtin_max_diff": 5.487779120016967e-10
+    },
+    {
+      "month": "2026-08-01 00:00:00",
+      "weighting": "volume",
+      "symmetric_builtin_max_diff": 3.503878964750129e-09
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,70 @@
+Monthly updating experiment, 2026-11-06
+
+Scope: US domestic operating carrier (FORM-1) monthly records from 2019 onward.
+Original source is unchanged. Target = mishandled bags / enplaned bags * 1000.
+This is NOT permanent-loss probability, passenger claim frequency or Cathay risk.
+2019 initializes history; supervised examples begin in 2020.
+
+Features: carrier ID, calendar month sine/cosine, month trend, latest available
+rate, latest three-month mean and population standard deviation, latest rate
+minus preceding three-month mean, previous-year same-month rate, latest bag
+volume, latest month-on-month volume change. Lags are calendar joins, not row
+shifts; absent history is excluded, never replaced with zero.
+
+RF: 300 trees, min_samples_leaf=8, random_state=42, direct rate regression.
+No log-target transformation in this experiment. Equal training-row weights.
+Carrier one-hot encoding; test unknown carrier categories ignored by encoder.
+No hyperparameter search or changes based on 2026 results.
+
+Two data-availability scenarios:
+d=1: target t may use data through t-1, an ideal prompt-availability scenario.
+d=3: target t may use data through t-3, an assumed publication-delay sensitivity.
+Neither reconstructs actual BTS publication dates or historical data revisions.
+
+Training-window selection uses rolling predictions in 2025, comparing an
+expanding window with the most recent 36 target months. Select by baggage-volume
+weighted absolute rate error. d=1 uses Jan-Dec 2025 validation (168 rows).
+d=3 uses Jan-Oct 2025 validation (140 rows), excluding outcomes that would not
+yet be available at the first 2026 forecast origin. Both select expanding.
+
+Test: Jan-Aug 2026, identical 101 carrier-month rows in each comparison.
+No 2026 records excluded for missing features. Carrier coverage varies:
+Spirit has five months; the other twelve carriers have eight months each.
+Fixed RF: fit once at the first 2026 origin; never refit during testing.
+Updating RF: refit each target month on labels available through t-d.
+BOTH receive refreshed, identical predictors for each forecast month. This
+isolates the effect of retraining. Fixed RF is NOT an all-information-frozen
+year-ahead forecast; its later inputs may include already observed 2026 data.
+Updating RF likewise uses earlier 2026 outcomes only after the assumed delay.
+The previous experiment had different predictors and a log-transformed target;
+do not attribute differences from that experiment solely to one new feature.
+
+Main metric: volume-weighted MAE, in mishandled bags per 1000 enplaned bags.
+Test volumes are used only for evaluation weights, never as predictor inputs.
+                     d=1          d=3
+Last-year same month 0.860345     0.860345
+Recent 3-month mean  0.940228     1.190569
+Fixed RF            0.646944     0.723527
+Monthly refit RF    0.654087     0.765321
+
+Monthly refitting beats the fixed RF in only one of the seven months after
+January in each availability scenario. January is tied (same training data).
+Updating RF is about 24.0% better than seasonal naive under d=1, but about
+1.1% worse than fixed RF. Under d=3 it is about 5.8% worse than fixed RF.
+These are observed point estimates, not statistically significant claims.
+Both unweighted MAE and RMSE also favor fixed RF over monthly refitting here.
+
+Conclusions: periodic learning has been implemented and evaluated. This test
+does not show a benefit from automatic monthly replacement of fitted parameters.
+It supports evaluating new candidates before replacing a deployed model, but
+that gated replacement strategy has NOT itself been tested here.
+Eight months, correlated carrier-months, pandemic history, changing carrier
+coverage and a single RF seed limit inference. No confidence intervals given.
+2026 results have now been inspected, so further tuning on them would make this
+an exploratory evaluation, not an untouched final test.
+No claim severity, insurance price, Cathay transfer or operational reduction
+in mishandling has been validated by this experiment.
+
+Files: summary.csv (test metrics), validation.csv (window selection),
+monthly.csv, carrier.csv, predictions.csv and audit.json.
+Code: ../periodic_learning.py.

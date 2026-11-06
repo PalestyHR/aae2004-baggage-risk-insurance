@@ -1,0 +1,14 @@
+{
+  "period": "2026-01 through 2026-07",
+  "passenger_segments": 459831072,
+  "mishandled_bags": 1273961,
+  "enplaned_bags": 253870262,
+  "permanently_lost_bags": null,
+  "cathay_passengers_carried_july2026": 2714415,
+  "cathay_passengers_carried_jan_july2026": 18720063,
+  "cathay_mishandled_bags": null,
+  "cathay_permanently_lost_bags": null,
+  "cathay_source": "https://news.cathaypacific.com/the-cathay-group-releases-traffic-figures-for-july-2026",
+  "cathay_source_publication_date": "2026-08-19",
+  "caveat": "Do not multiply US bag-rate by Cathay passenger count. Bag exposure and portfolio calibration are missing."
+}

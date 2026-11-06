@@ -1,0 +1,287 @@
+[
+  {
+    "path": "results/reference/asymmetric_loss_comparison/metrics.csv",
+    "sha256": "830ad29e50a11f67f3f1cfa539642f647bbffa7a8fa5a5ba616b81c7d0438bdf",
+    "bytes": 5180
+  },
+  {
+    "path": "results/reference/asymmetric_loss_comparison/monthly.csv",
+    "sha256": "0201f9999c7b0652315d696945390becc26cdf15f9c9ae941e40855274a1fc76",
+    "bytes": 51072
+  },
+  {
+    "path": "results/reference/asymmetric_loss_comparison/predictions.csv",
+    "sha256": "85b14ccea4b2c88f70606b721b9efe514df72f99c9eb329d05a3e7e21b0b1809",
+    "bytes": 399371
+  },
+  {
+    "path": "results/reference/early_experiments/boosting_comparison/alpha_validation_2024.csv",
+    "sha256": "f46f5618f2f0a118d86bb8a093239b898d7dfc944ae278922406767752e9ca62",
+    "bytes": 572
+  },
+  {
+    "path": "results/reference/early_experiments/boosting_comparison/monthly_2026.csv",
+    "sha256": "a545eb9b7ab44044b5ec832cf04172ed8e8cd57fe28d693733ebcdca3dc5198f",
+    "bytes": 16508
+  },
+  {
+    "path": "results/reference/early_experiments/boosting_comparison/predictions_2026.csv",
+    "sha256": "16324ef05aa6788da257986aaa8e5ab1f637c198653de4723a44b33d135b24e5",
+    "bytes": 201789
+  },
+  {
+    "path": "results/reference/early_experiments/boosting_comparison/summary_2026.csv",
+    "sha256": "58207ce758534bb99a066c888e9248e5e6521218644dfc702fd2557b8d79020a",
+    "bytes": 2180
+  },
+  {
+    "path": "results/reference/early_experiments/boosting_comparison/validation_2025.csv",
+    "sha256": "8320e5b5c6a1fc6adf568b3723e6647830ffbe8b7fa43e1841a0fa2b8d57c8b0",
+    "bytes": 2193
+  },
+  {
+    "path": "results/reference/early_experiments/excluded_rows.csv",
+    "sha256": "5c251772e6b3cf041fd05a315c752331b410c2e428573c9a16c3e5106856376a",
+    "bytes": 25287
+  },
+  {
+    "path": "results/reference/early_experiments/metrics.csv",
+    "sha256": "ce7d7d4eb59d4e63f0c3e2bbd8da3a969168fd685889f1f2b0706c2596f08f55",
+    "bytes": 1498
+  },
+  {
+    "path": "results/reference/early_experiments/periodic_learning/carrier.csv",
+    "sha256": "70b02ef4ab7133922474efa896636615c5bb95a27a331abecdefe2efd46d6df8",
+    "bytes": 10163
+  },
+  {
+    "path": "results/reference/early_experiments/periodic_learning/monthly.csv",
+    "sha256": "08ee72123d0c1653c518b3302820d75434db19cace7b10d4d4496406b58b21b7",
+    "bytes": 6234
+  },
+  {
+    "path": "results/reference/early_experiments/periodic_learning/predictions.csv",
+    "sha256": "c38ff40671ee33a87ae7304ed3fb6288e9f0f7c331c2196b4e55441eda2107a8",
+    "bytes": 80261
+  },
+  {
+    "path": "results/reference/early_experiments/periodic_learning/summary.csv",
+    "sha256": "faceff8e948589ab2ec3e20c970dffa39ff7c856dad9fd1852d4d72bbd50d76e",
+    "bytes": 910
+  },
+  {
+    "path": "results/reference/early_experiments/periodic_learning/validation.csv",
+    "sha256": "ba4cd1c13f09dc0c19577f71b1bf4662b80477a6caa0494f48a00b19f90b4e23",
+    "bytes": 412
+  },
+  {
+    "path": "results/reference/early_experiments/predictions.csv",
+    "sha256": "d9ec5011a68255614756b4367717245658240963284564f3b39774bf56eea698",
+    "bytes": 145844
+  },
+  {
+    "path": "results/reference/early_experiments/simple_baselines/metrics.csv",
+    "sha256": "f89ab8cf7733ee97b214476afc6970ac6ed3609b1ea6a04e56237e044db63f55",
+    "bytes": 1951
+  },
+  {
+    "path": "results/reference/early_experiments/simple_baselines/monthly.csv",
+    "sha256": "4d2093c09e8da10b16a77d217d61c605bd4a464deb9d93d2dbdb534d25e33c8c",
+    "bytes": 7315
+  },
+  {
+    "path": "results/reference/early_experiments/simple_baselines/predictions.csv",
+    "sha256": "cb7e82c2bd916f22979db8a482d1adb8d7ea6550aa927d84cbe16d6c94d2290b",
+    "bytes": 213108
+  },
+  {
+    "path": "results/reference/insurance_design_history/candidate_tiers_reference_only.csv",
+    "sha256": "20da201cdc7797ad38bc27d0c6951b4cc2602c60fdc5ab34f40d0f9614285fae",
+    "bytes": 257
+  },
+  {
+    "path": "results/reference/insurance_design_history/forecast_interface_2026_08.csv",
+    "sha256": "50e29cca2bf3f4794e147393997243aaa50ccf2c51bdf07a4fcf350f182094f6",
+    "bytes": 2304
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/all_designs.csv",
+    "sha256": "84fd728c8dd8092e1774517989bdcd58cac5a6604c327a2a17412c8286cecf86",
+    "bytes": 220893
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/pareto_frontier.csv",
+    "sha256": "5cc5240eb592ebcdbe413ede3b1dc90df9356f2630f78f64458f11a2e7b0e968",
+    "bytes": 1359
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/scenario_results.csv",
+    "sha256": "4b403a03a143b437e6f7cfd9f7f1de41caef08549941d925d97192f592c955d8",
+    "bytes": 1761612
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/selected_extra_sensitivity.csv",
+    "sha256": "651efecccdb7dca17bcb315ae3c0581a72ffe2d3144ddf38e43ac6ef0836af3d",
+    "bytes": 6044
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/selected_menu.csv",
+    "sha256": "99dd781018bc8db6f557d7e74e5704427dcf500d43e60df1368aea45d5e9ea6c",
+    "bytes": 134
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/selected_operator_results.csv",
+    "sha256": "886d92b5fa5614d3ca800f97f3e2cd380005f8c36615bbec0e8ba1d101ff8a57",
+    "bytes": 8037
+  },
+  {
+    "path": "results/reference/insurance_design_history/optimized_menu_v2/selected_scenarios.csv",
+    "sha256": "2a6ba2a51ee653cd0dd2d204dbc03d4695d509f6674be496dc905c5fa58332b9",
+    "bytes": 1130
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/base_case.csv",
+    "sha256": "75061412d00cfd1965cf0990b93c2400c63ced3b56dd774e6de67f6aa17747bd",
+    "bytes": 3280
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/break_even_purchase_rate.csv",
+    "sha256": "9d52d9ae0ae9c01bbe32c7ef33b32a23a40a9fad045c596e5ef72e5a9688c032",
+    "bytes": 1309
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/claim_share_sensitivity.csv",
+    "sha256": "ec8877b4cebb27ce3fe3284ec7f3d00ad7a5a0678221e8b49ddc3d42ae1c7580",
+    "bytes": 28165
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/conditional_pareto_frontier.csv",
+    "sha256": "b8851db17591f6082111dd1ec09c0bd4ab9fbc53fda0fea627e05913fe8faed1",
+    "bytes": 23152
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/monte_carlo.csv",
+    "sha256": "0e6f87302133519dbd55bf92551aa5b5a0c9ed1178f24e66d6261f2238c9d6b3",
+    "bytes": 2505
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/pareto_candidate_menus.csv",
+    "sha256": "c21aeb622cb18fc515ebba4f5775d0ca9d82b2f0c30b2362d5f3753dbd725b34",
+    "bytes": 1096
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/pooled_conditional_frontiers.csv",
+    "sha256": "e55e49bf97ee91e0602bcdd4ace97b545ce244e7dcfa92dd49c44eb9a71df88f",
+    "bytes": 2606
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/price_benefit_candidates.csv",
+    "sha256": "a349450eafa143e674635f4be956663bdee04789205a6ae6e0eeb73137d85b0a",
+    "bytes": 83795
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/sensitivity.csv",
+    "sha256": "203ea50a902bc4696cdb07fbb16e4272050f4dbc516560b46131ff20b566ae5c",
+    "bytes": 87440
+  },
+  {
+    "path": "results/reference/insurance_design_history/profit_tests/tier_details_before_shared_system_cost.csv",
+    "sha256": "431a14ec290a5045442064aba5241fba65d440ee8ab2b96e3d47c666aacb458b",
+    "bytes": 7196
+  },
+  {
+    "path": "results/reference/integrated_model_comparison/metrics.csv",
+    "sha256": "0c64eba3e858a8dd617d26478de2ba51361e80ebd6dead81802172a09cc873aa",
+    "bytes": 1798
+  },
+  {
+    "path": "results/reference/integrated_model_comparison/monthly.csv",
+    "sha256": "131a55486e49d4a74778752d9a2e8f1d11c50d01a1f12f8cf65f86c5074e00ae",
+    "bytes": 19391
+  },
+  {
+    "path": "results/reference/integrated_model_comparison/predictions.csv",
+    "sha256": "3f1cf0689896becfbfc15420f8518a287aae258f9419ce5b1af006c86d24490c",
+    "bytes": 226489
+  },
+  {
+    "path": "results/reference/model1/forecast_interface_2026_08.csv",
+    "sha256": "50e29cca2bf3f4794e147393997243aaa50ccf2c51bdf07a4fcf350f182094f6",
+    "bytes": 2304
+  },
+  {
+    "path": "results/reference/model1/latest_month_2026_08/carrier_predictions_and_trends.csv",
+    "sha256": "a34f2023fcc6cc0190c6bb5285e36e80aa77bc549b7d6b525b3cfd550b58718b",
+    "bytes": 5518
+  },
+  {
+    "path": "results/reference/model1/metrics.csv",
+    "sha256": "40929f035b2b13fd17db6d85b2950e66e0fce6a6f9c80cec838b982afd149725",
+    "bytes": 3488
+  },
+  {
+    "path": "results/reference/model1/monthly_totals_2026.csv",
+    "sha256": "bc9d562aec1264edb4b2b04fd32b50a0765d44ed538c4f4a3692985f335d6138",
+    "bytes": 866
+  },
+  {
+    "path": "results/reference/model1/predictions.csv",
+    "sha256": "4796b1337a1655ed3906aaa6570b6daff6e1ae565bfc0cdf34e41a1353db6d1b",
+    "bytes": 86684
+  },
+  {
+    "path": "results/reference/model1/profitability_inputs_no_payout_assumption.csv",
+    "sha256": "6a599d3cc9a7600b32154b55fc29831b96e3544818f03a25c3df0045ccaaaada",
+    "bytes": 30553
+  },
+  {
+    "path": "results/reference/profitability_frontier/carrier_scope_comparison.csv",
+    "sha256": "bd286032a98daf7126f85761003eae663874a6596b1b9f1106ac926d500f403b",
+    "bytes": 1790
+  },
+  {
+    "path": "results/reference/profitability_frontier/monthly_observed_volumes.csv",
+    "sha256": "baf1915f556855d4faa4a9992cb63811c4cff1641a6d971dfc1f9d87ba29eff1",
+    "bytes": 15011
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/base_case.csv",
+    "sha256": "cb3dbd745a5890ec66772c69b3f510a24756578bf062ca4fb9dd28370e5659c7",
+    "bytes": 789
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/base_case_monthly.csv",
+    "sha256": "da0a61dca9a4a7848f0e6e6e8a50aa115f434326e840fb967a3efd9f5d65a2e9",
+    "bytes": 4047
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/case_details.csv",
+    "sha256": "a999cb4272743c3a5a948ac8c56bba08de14bc8a3185edbae33b74b33fdea4f0",
+    "bytes": 2078564
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/incremental_contribution.csv",
+    "sha256": "771e58cc498af80b5a4c3614f0ce05da089e508b02f8d4ad895d229ef181db47",
+    "bytes": 3442
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/profit_search_case_details.csv",
+    "sha256": "fdc0bc704d2c0f7bb5a5f5f63029ea5481f10e0c8dbe6815511148364ada4fc0",
+    "bytes": 1595765
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/profit_search_incremental_contribution.csv",
+    "sha256": "b7d38674180e70d467ea597e14a826a2115e30523c6e758d6756ed4fc48db430",
+    "bytes": 2465
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/profit_search_scenario_summary.csv",
+    "sha256": "efab410727baa154afc349e788eb3e2bdf5d675eff5deae155a610098ccb951e",
+    "bytes": 12931
+  },
+  {
+    "path": "results/reference/superseded_pricing_comparison/scenario_summary.csv",
+    "sha256": "d8c6bce227418367c65232a9f6ad5cc418e8b282c1626272908f0786c9b82ff9",
+    "bytes": 14400
+  }
+]

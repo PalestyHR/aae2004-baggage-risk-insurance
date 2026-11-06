@@ -1,0 +1,11 @@
+{
+  "three_strategies_same_cases": true,
+  "fixed_price_constant_within_carrier": true,
+  "nonnegative_finite_sales": true,
+  "accounting_reconciles": true,
+  "price_independent_of_realized_target": "verified formula uses risk_estimate only; fixed pool excludes 2026",
+  "test_predictions_source_sha256": "85b14ccea4b2c88f70606b721b9efe514df72f99c9eb329d05a3e7e21b0b1809",
+  "ml_beats_fixed_scenarios": 0,
+  "ml_beats_simple_scenarios": 4,
+  "total_scenarios": 27
+}

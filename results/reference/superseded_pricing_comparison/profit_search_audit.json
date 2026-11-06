@@ -1,0 +1,9 @@
+{
+  "price_grid": "HKD3 to12 step0.1, illustrative not fitted",
+  "ml_beats_fixed": 9,
+  "ml_ties_fixed": 18,
+  "ml_loses_fixed": 0,
+  "ml_beats_simple": 3,
+  "ml_ties_simple": 18,
+  "ml_loses_simple": 6
+}

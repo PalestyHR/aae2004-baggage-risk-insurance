@@ -1,0 +1,39 @@
+{
+  "status": "empirical_context_only_demand_not_identified",
+  "market": "US travel protection, not Cathay baggage-only",
+  "as_of": "2026-11-06",
+  "empirical_context_vector": {
+    "year": 2024,
+    "currency": "USD",
+    "consumer_spend": 5560000000,
+    "plans": 54870000,
+    "insured_persons": 86970000,
+    "derived_spend_per_plan": 101.33041735010023,
+    "derived_people_per_plan": 1.5850191361399673
+  },
+  "estimated_demand_parameters": {
+    "price_sensitivity": null,
+    "reference_purchase_probability": null,
+    "reason": "Only two aggregate market observations, one rounded lower-bound plan count; no quote exposures/nonbuyers or matched product panel."
+  },
+  "use_in_model": "Separate pricing/uptake scenario module; do not append to BTS risk features or infer Hong Kong purchase probability.",
+  "required_future_data": [
+    "quote date",
+    "offered price",
+    "coverage and limits",
+    "eligible offers including nonbuyers",
+    "purchase indicator",
+    "trip/customer covariates",
+    "channel"
+  ],
+  "local_sources": [
+    {
+      "file": "ustia_2022.pdf",
+      "sha256": "99c101a28124485cec06cd0a2ae398cf79e138905b93b2f768824bbc826eaba5"
+    },
+    {
+      "file": "ustia_2024.pdf",
+      "sha256": "e1706fba635bf8f84df67322b3def20824bf03b9b84da65425bde3c8feddb18f"
+    }
+  ]
+}

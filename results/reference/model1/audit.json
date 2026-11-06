@@ -1,0 +1,11 @@
+{
+  "selected_volume_methods": {
+    "bags": "blend",
+    "passengers": "blend"
+  },
+  "warnings": [],
+  "data_sha256": "d6f65b251e9d0393aabf248f1dc5cedde9c064b35020c1707625388669a79471",
+  "risk_retrained": true,
+  "no_synthetic_rows": true,
+  "no_business_parameters_filled": true
+}

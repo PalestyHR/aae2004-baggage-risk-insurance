@@ -1,0 +1,1 @@
+PASS: 269 unique validation/test records; chronological training; risk model reproduces prior selected predictions; anomaly counts use forecast exposure; independently reconciled WAPE. Passenger metrics exclude August with unavailable labels.

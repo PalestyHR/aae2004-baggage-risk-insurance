@@ -1,0 +1,13 @@
+carrier,expected_profit_analytic,simulated_mean_profit,mean_standard_error,probability_profit_positive,probability_target_met,profit_quantile_05,profit_quantile_50,profit_quantile_95,draws,seed,scope
+WN,943020.5894364067,942883.4719,299.7484623798352,1.0,1.0,939719.3375,950332.875,959231.8375,30000,42,single cohort under explicit assumptions; not calibrated annual profitability
+DL,794563.202181398,794306.37685,311.72523968959837,1.0,1.0,791150.6875,802045.0,811217.7125,30000,43,single cohort under explicit assumptions; not calibrated annual profitability
+AA,662495.5546389823,663574.524875,538.9223795458759,0.9851666666666666,0.9851666666666666,662143.225,676293.375,688362.65,30000,44,single cohort under explicit assumptions; not calibrated annual profitability
+AS,197739.64559209725,197667.85490833333,116.29652775487048,1.0,1.0,193795.1,200600.375,205880.8125,30000,45,single cohort under explicit assumptions; not calibrated annual profitability
+UA,572703.9695765383,572542.2315666666,436.2018696586152,1.0,1.0,570748.5875,583300.0,593764.35,30000,46,single cohort under explicit assumptions; not calibrated annual profitability
+OO,209497.2849807695,209771.216775,117.1069289182515,1.0,1.0,205771.175,212486.5,218046.825,30000,47,single cohort under explicit assumptions; not calibrated annual profitability
+G4,76710.57077216338,76703.193825,16.527478480409734,1.0,1.0,74274.475,77110.25,79144.2625,30000,48,single cohort under explicit assumptions; not calibrated annual profitability
+OH,25989.814115659683,25998.061483333335,32.62645285706745,0.9797666666666667,0.9797666666666667,23192.65,26850.25,29475.0,30000,49,single cohort under explicit assumptions; not calibrated annual profitability
+MQ,50609.825008737665,50654.510225,73.31830066458829,0.9805666666666667,0.9805666666666667,47149.125,52459.25,56538.025,30000,50,single cohort under explicit assumptions; not calibrated annual profitability
+B6,128761.24580092938,128659.61176666667,64.07560077774077,1.0,1.0,125185.2375,130274.25,134150.25,30000,51,single cohort under explicit assumptions; not calibrated annual profitability
+F9,146899.73505917174,146827.420425,90.2702094818843,1.0,1.0,143148.175,149073.625,153785.025,30000,52,single cohort under explicit assumptions; not calibrated annual profitability
+YX,63569.45748353943,63620.80016666667,57.06298203586897,0.9846666666666667,0.9846666666666667,60250.45,64996.0,68680.5625,30000,53,single cohort under explicit assumptions; not calibrated annual profitability

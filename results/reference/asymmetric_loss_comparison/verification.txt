@@ -1,0 +1,1 @@
+PASS: 28 metrics independently reconciled; same rows within each year; unique keys; chronological training cutoffs. Analytic gradients/Hessians checked by finite differences. 40 symmetric-vs-built-in comparisons passed.

@@ -1,0 +1,84 @@
+{
+  "t100_scheduled_segment_rows": 2318093,
+  "t100_latest_month": "2026-07",
+  "delay_airport_carrier_month_rows": 176212,
+  "weather_daily_rows": 48593,
+  "weather_date_min": "2019-01-01",
+  "weather_date_max": "2025-08-27",
+  "observed_baggage_rows": 1442,
+  "missing_t100_rows": [
+    {
+      "date": "2026-08-01",
+      "carrier": "WN"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "DL"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "AA"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "AS"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "UA"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "OO"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "G4"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "OH"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "MQ"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "B6"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "F9"
+    },
+    {
+      "date": "2026-08-01",
+      "carrier": "YX"
+    }
+  ],
+  "missing_delay_rows": [],
+  "lag1_split_counts": {
+    "test": 101,
+    "train": 957,
+    "validation": 168
+  },
+  "lag1_missing_by_feature": {
+    "lag_network_temp_c": 143,
+    "lag_network_wind_knots": 143,
+    "lag_network_low_visibility_day": 143,
+    "lag_network_rain_day": 143
+  },
+  "lag1_synthetic_copies": 191,
+  "lag3_split_counts": {
+    "test": 101,
+    "train": 957,
+    "validation": 168
+  },
+  "lag3_missing_by_feature": {
+    "lag_network_temp_c": 115,
+    "lag_network_wind_knots": 115,
+    "lag_network_low_visibility_day": 115,
+    "lag_network_rain_day": 115
+  },
+  "lag3_synthetic_copies": 191
+}

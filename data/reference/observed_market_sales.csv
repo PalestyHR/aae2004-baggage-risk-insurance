@@ -1,0 +1,3 @@
+﻿year,market,product,currency,consumer_spend,spend_qualifier,plans,plans_qualifier,insured_persons,persons_qualifier,spend_per_plan_reference,reference_qualifier,source_url
+2022,US,all travel protection; mixed coverage,USD,4270000000,nearly,49300000,more_than,77000000,around,86.61257606490872,approx_upper_reference_not_exact_price,https://ustia.org/wp-content/uploads/2024/09/UStiA-2020-22-Market-Survey-Release.pdf
+2024,US,all travel protection; mixed coverage,USD,5560000000,rounded_reported,54870000,rounded_reported,86970000,rounded_reported,101.33041735010023,derived_aggregate_unit_spend_not_quote,https://ustia.org/wp-content/uploads/2025/06/Final2024USTIAStudyPressRelease.pdf
