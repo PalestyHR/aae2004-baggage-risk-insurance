@@ -1,12 +1,21 @@
 # AAE2004 Baggage Risk and Protection Models
 
-**Start with [HANDOFF.md](HANDOFF.md)** — the concise Chinese handoff containing the two models, equations, adopted menu and key tests. No long PDF/Word report is required.
+## Quick navigation
+
+- **Report and translation:** [reports/README.md](reports/README.md) — Sections 1–5 translated; Section 6 pending.
+- **Models, equations and results:** [HANDOFF.md](HANDOFF.md)
+- **January–August 2026 model comparison:** [docs/Model1_Baseline_Comparison_2026_Jan_Aug.md](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
+- **Figures:** [visualizations/](visualizations/) and [report figure pairs](reports/figures/)
+- **Datasets and provenance:** [data/processed/](data/processed/) and [DATA_SOURCES.md](DATA_SOURCES.md)
+
+The report workspace includes the current English draft, Chinese manuscript and formatted PDF preview.
 
 This project uses public U.S. BTS records to evaluate monthly baggage-mishandling forecasts. Cathay Pacific is the proposed application context, not the tested population. Financial outputs are scenario estimates, not observed sales or underwriting results.
 
 ## Adopted design
 
 - Forecast pipeline: 30 features; monthly expanding LightGBM; asymmetric under/over loss **1:2**; validated blend forecasts for traffic and baggage exposure.
+- Full January–August 2026 test: rate WMAE **0.637574**, WRMSE **0.886649**; count WAPE **15.835726%**.
 - August 2026 case: rate WMAE **0.347635 bags per 1,000**; count WAPE **8.935854%**. Earlier rolling tests remain in the evidence files.
 - Product: optional fixed extra support payments, not reimbursement of declared baggage value.
 - Menu **M0775**, all amounts USD: prices **3.75 / 6 / 11**, delay benefits **50 / 100 / 200**, final-loss cumulative benefits **300 / 600 / 1,200**.
@@ -37,6 +46,9 @@ Reproduced outputs go under `results/reproduced_*` (ignored by Git), preserving 
 
 | Path | Contents |
 |---|---|
+| `reports/` | Report drafts, translation progress, PDF preview and horizontal figure pairs |
+| `visualizations/` | Plot exports and numerical source records |
+| `writing_materials/` | Case-study and writing materials |
 | `data/processed/` | Real train/validation/test sets, optional synthetic training copies, dictionary and source manifests |
 | `data/raw/` | Original user-supplied BTS baggage CSV |
 | `data/reference/` | Small factual market-reference tables; no fitted price elasticity |
