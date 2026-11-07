@@ -14,3 +14,9 @@ reports/qa/
 data/downloads/
 .DS_Store
 Thumbs.db
+
+# Local manuscript and collaboration workspace
+reports/
+writing_materials/
+HANDOFF.md
+scripts/prepare_writing_materials.py

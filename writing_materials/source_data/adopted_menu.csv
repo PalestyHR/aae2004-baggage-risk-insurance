@@ -1,4 +1,0 @@
-name,numeric_tier,price,delay_benefit,loss_benefit
-Basic,A,3.75,50.0,300.0
-Standard,B,6.0,100.0,600.0
-Premium,C,11.0,200.0,1200.0

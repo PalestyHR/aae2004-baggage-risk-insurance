@@ -1,14 +1,11 @@
 # AAE2004 Baggage Risk and Protection Models
 
-## Quick navigation
+## Project resources
 
-- **Report and translation:** [reports/README.md](reports/README.md) — Sections 1–5 translated; Section 6 pending.
-- **Models, equations and results:** [HANDOFF.md](HANDOFF.md)
-- **January–August 2026 model comparison:** [docs/Model1_Baseline_Comparison_2026_Jan_Aug.md](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
-- **Figures:** [visualizations/](visualizations/) and [report figure pairs](reports/figures/)
-- **Datasets and provenance:** [data/processed/](data/processed/) and [DATA_SOURCES.md](DATA_SOURCES.md)
-
-The report workspace includes the current English draft, Chinese manuscript and formatted PDF preview.
+- [Model definitions and experimental results](MODEL_SUMMARY.md)
+- [January–August 2026 baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
+- [Processed datasets](data/processed/) and [data sources](DATA_SOURCES.md)
+- [Figures and plot source data](visualizations/)
 
 This project uses public U.S. BTS records to evaluate monthly baggage-mishandling forecasts. Cathay Pacific is the proposed application context, not the tested population. Financial outputs are scenario estimates, not observed sales or underwriting results.
 
@@ -46,9 +43,7 @@ Reproduced outputs go under `results/reproduced_*` (ignored by Git), preserving 
 
 | Path | Contents |
 |---|---|
-| `reports/` | Report drafts, translation progress, PDF preview and horizontal figure pairs |
 | `visualizations/` | Plot exports and numerical source records |
-| `writing_materials/` | Case-study and writing materials |
 | `data/processed/` | Real train/validation/test sets, optional synthetic training copies, dictionary and source manifests |
 | `data/raw/` | Original user-supplied BTS baggage CSV |
 | `data/reference/` | Small factual market-reference tables; no fitted price elasticity |
