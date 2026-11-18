@@ -57,12 +57,14 @@ def main():
         ("bags_year_ago", "enplaned_bags"),
         ("passengers_year_ago", "passenger_segments"),
     ]:
-        data[c] = [
-            observed_index.loc[
-                (r.airline_id, 12 * r.date.year + r.date.month - 1 - 12), source
-            ]
-            for _, r in data.iterrows()
-        ]
+        historical_volumes = []
+        for _, r in data.iterrows():
+            historical_volumes.append(
+                observed_index.loc[
+                    (r.airline_id, 12 * r.date.year + r.date.month - 1 - 12), source
+                ]
+            )
+        data[c] = historical_volumes
     assert not data.is_synthetic.any() and data[feature_columns].notna().all().all()
     model_parameters = FORECAST_PARAMETERS.copy()
     protocol = {
@@ -148,9 +150,10 @@ def main():
                     fold_predictions[name + "_lgb"] = np.maximum(
                         0, model.predict(test_features)
                     )
-                training_warnings.extend(
-                    str(weights.message) for weights in captured_warnings
-                )
+                warning_records = []
+                for weights in captured_warnings:
+                    warning_records.append(str(weights.message))
+                training_warnings.extend(warning_records)
             fold_predictions["rate_simple"] = 0.5 * (
                 test.recent_rate.to_numpy() + test.rate_year_ago.to_numpy()
             )
@@ -185,10 +188,13 @@ def main():
                 )
         if year == 2025:
             for name in ["bags", "passengers"]:
-                choices[name] = min(
-                    [x for x in metrics if x["target"] == name and x["year"] == 2025],
-                    key=lambda x: x["WAPE_percent"],
-                )["method"]
+                selected_metrics = []
+                for x in metrics:
+                    if x["target"] == name and x["year"] == 2025:
+                        selected_metrics.append(x)
+                choices[name] = min(selected_metrics, key=lambda x: x["WAPE_percent"])[
+                    "method"
+                ]
             (OUT / "volume_selection_before_2026.json").write_text(
                 json.dumps(choices, indent=2), encoding="utf-8"
             )
@@ -302,9 +308,11 @@ def main():
         ),
         encoding="utf-8",
     )
-    print(
-        pd.DataFrame([x for x in metrics if x["year"] == 2026]).to_string(index=False)
-    )
+    selected_metrics = []
+    for x in metrics:
+        if x["year"] == 2026:
+            selected_metrics.append(x)
+    print(pd.DataFrame(selected_metrics).to_string(index=False))
     interface = predictions[predictions.year == 2026].copy()
     interface = interface[interface.target_month == "2026-08-01"]
     interface = interface.rename(

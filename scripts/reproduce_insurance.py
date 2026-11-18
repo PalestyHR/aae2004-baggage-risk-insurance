@@ -24,12 +24,15 @@ def main():
     if not FORECAST.exists():
         FORECAST = ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
     forecasts = pd.read_csv(FORECAST)
-    base_assumptions = json.loads(
-        (ROOT / "configs/insurance_assumptions.json").read_text()
-    )["base_assumptions"]
-    reference_plans = json.loads(
-        (ROOT / "configs/insurance_design_template.json").read_text()
-    )["plans"]
+    assumptions_file = ROOT / "configs/insurance_assumptions.json"
+    assumptions_text = assumptions_file.read_text()
+    assumptions_config = json.loads(assumptions_text)
+    base_assumptions = assumptions_config["base_assumptions"]
+
+    plans_file = ROOT / "configs/insurance_design_template.json"
+    plans_text = plans_file.read_text()
+    plans_config = json.loads(plans_text)
+    reference_plans = plans_config["plans"]
     reference_prices = np.array([3.0, 6.0, 11.0])
     reference_delay_benefits = np.array([50.0, 100.0, 200.0])
     reference_loss_benefits = np.array([300.0, 600.0, 1200.0])
@@ -48,11 +51,19 @@ def main():
     )
     mishandling_rates = forecasts.risk_rate_per_1000.to_numpy() / 1000
     assert (eligible_counts <= forecasts.bag_loads).all()
-    scenarios = [
-        {"name": f"beta{beta}_{risk}", "beta": beta, "rho": rho, "sd": 0.5, "sl": sl}
-        for beta in [1.0, 2.0, 3.0]
-        for risk, rho, sl in [("base", 1.0, 0.05), ("higher", 2.0, 0.10)]
-    ]
+    scenario_settings = []
+    for beta in [1.0, 2.0, 3.0]:
+        for risk, rho, sl in [("base", 1.0, 0.05), ("higher", 2.0, 0.1)]:
+            scenario_settings.append(
+                {
+                    "name": f"beta{beta}_{risk}",
+                    "beta": beta,
+                    "rho": rho,
+                    "sd": 0.5,
+                    "sl": sl,
+                }
+            )
+    scenarios = scenario_settings
     protocol = {
         "decision_variables": "three independent price multipliers; common delay multiplier; common loss multiplier",
         "currency": "USD",
@@ -96,22 +107,31 @@ def main():
             values = []
             minimum_operator_profit = float("inf")
             for scenario in scenarios:
-                utilities = (
-                    np.log(np.array([0.05, 0.03, 0.02]) / 0.9)
-                    - scenario["beta"] * np.log(price / reference_prices)
-                    + 0.1 * np.log(delay_benefits / reference_delay_benefits)
-                    + 0.1 * np.log(loss_benefits / reference_loss_benefits)
-                )
+                price_sensitivity = scenario["beta"]
+                risk_multiplier = scenario["rho"]
+                delay_share = scenario["sd"]
+                loss_share = scenario["sl"]
+                reference_shares = np.array([0.05, 0.03, 0.02])
+                reference_odds = reference_shares / 0.9
+                price_ratio = price / reference_prices
+                delay_ratio = delay_benefits / reference_delay_benefits
+                loss_ratio = loss_benefits / reference_loss_benefits
+
+                utilities = np.log(reference_odds)
+                utilities = utilities - price_sensitivity * np.log(price_ratio)
+                utilities = utilities + 0.1 * np.log(delay_ratio)
+                utilities = utilities + 0.1 * np.log(loss_ratio)
                 exp_utilities = np.exp(utilities)
                 purchase_probabilities = exp_utilities / (1 + exp_utilities.sum())
                 # Same common-state mixture as the financial module, now repeated per scenario.
-                policy_risk = 0.98 * (
-                    -np.expm1(scenario["rho"] * np.log1p(-mishandling_rates))
-                ) + 0.02 * (
-                    -np.expm1(6 * scenario["rho"] * np.log1p(-mishandling_rates))
-                )
-                delay_probabilities = policy_risk * scenario["sd"]
-                loss_probabilities = policy_risk * scenario["sl"]
+                log_survival = np.log1p(-mishandling_rates)
+                normal_log_survival = risk_multiplier * log_survival
+                shock_log_survival = 6 * risk_multiplier * log_survival
+                normal_risk = -np.expm1(normal_log_survival)
+                shock_risk = -np.expm1(shock_log_survival)
+                policy_risk = 0.98 * normal_risk + 0.02 * shock_risk
+                delay_probabilities = policy_risk * delay_share
+                loss_probabilities = policy_risk * loss_share
                 sales = eligible_counts[:, None] * purchase_probabilities[None, :]
                 revenue = (sales * price).sum(axis=1)
                 claim = (
@@ -140,6 +160,11 @@ def main():
                         "expected_policies": float(sales.sum()),
                     }
                 )
+            scenario_profits = []
+            scenario_margins = []
+            for scenario_profit, scenario_margin in values:
+                scenario_profits.append(scenario_profit)
+                scenario_margins.append(scenario_margin)
             designs.append(
                 {
                     "design_id": design_id,
@@ -152,8 +177,8 @@ def main():
                     "loss_A": loss_benefits[0],
                     "loss_B": loss_benefits[1],
                     "loss_C": loss_benefits[2],
-                    "robust_expected_profit": min(v[0] for v in values),
-                    "robust_margin": min(v[1] for v in values),
+                    "robust_expected_profit": min(scenario_profits),
+                    "robust_margin": min(scenario_margins),
                     "minimum_operator_profit_all_scenarios": minimum_operator_profit,
                     "feasible": minimum_operator_profit >= 0,
                 }
@@ -165,9 +190,10 @@ def main():
     objective = feasible[["robust_expected_profit", "robust_margin"]].to_numpy()
     keep = []
     for x in objective:
-        dominated = np.any(
-            np.all(objective >= x, axis=1) & np.any(objective > x, axis=1)
-        )
+        no_worse = np.all(objective >= x, axis=1)
+        strictly_better = np.any(objective > x, axis=1)
+        dominates = no_worse & strictly_better
+        dominated = np.any(dominates)
         keep.append(not dominated)
     frontier = feasible.loc[keep].copy()
     for col in ["robust_expected_profit", "robust_margin"]:
@@ -192,15 +218,18 @@ def main():
     selected_out = scenario_results[scenario_results.design_id == design_id]
     selected_out.to_csv(OUT / "selected_scenarios.csv", index=False)
     chosen = []
+    plan_names = ["Basic", "Standard", "Premium"]
     for i, label in enumerate(["A", "B", "C"]):
+        reference_plan = reference_plans[i]
+        plan_reference = reference_plan["reference"]
         chosen.append(
             {
-                "name": ["Basic", "Standard", "Premium"][i],
+                "name": plan_names[i],
                 "numeric_tier": label,
                 "price": float(selected["price_" + label]),
                 "delay_benefit": float(selected["delay_" + label]),
                 "loss_benefit": float(selected["loss_" + label]),
-                "reference": reference_plans[i]["reference"],
+                "reference": plan_reference,
             }
         )
     (OUT / "selected_menu.json").write_text(
@@ -215,18 +244,28 @@ def main():
         ),
         encoding="utf-8",
     )
-    pd.DataFrame(
-        [{k: v for k, v in x.items() if k != "reference"} for x in chosen]
-    ).to_csv(OUT / "selected_menu.csv", index=False)
+    plan_rows = []
+    for plan in chosen:
+        plan_fields = {}
+        for field, value in plan.items():
+            if field != "reference":
+                plan_fields[field] = value
+        plan_rows.append(plan_fields)
+    plan_table = pd.DataFrame(plan_rows)
+    plan_table.to_csv(OUT / "selected_menu.csv", index=False)
     individual = []
     for scenario in scenarios:
         assumptions = copy.deepcopy(base_assumptions)
-        assumptions["demand"]["log_price_sensitivity"] = scenario["beta"]
+        demand = assumptions["demand"]
+        demand["log_price_sensitivity"] = scenario["beta"]
         assumptions["conditional_delay_share"] = scenario["sd"]
         assumptions["conditional_loss_share"] = scenario["sl"]
-        assumptions["tier_hazard_multipliers"] = {
-            x["name"]: scenario["rho"] for x in chosen
-        }
+        plan_values = {}
+        risk_multiplier = scenario["rho"]
+        for plan in chosen:
+            plan_name = plan["name"]
+            plan_values[plan_name] = risk_multiplier
+        assumptions["tier_hazard_multipliers"] = plan_values
         for row in forecasts.to_dict("records"):
             portfolio = expected_portfolio(row, chosen, assumptions)
             individual.append(
@@ -254,7 +293,8 @@ def main():
         [0.02, 0.05, 0.1], [10000.0, 50000.0, 200000.0]
     ):
         assumptions = copy.deepcopy(base_assumptions)
-        assumptions["demand"]["reference_purchase_probabilities"] = {
+        demand = assumptions["demand"]
+        demand["reference_purchase_probabilities"] = {
             "Basic": purchase_probability * 0.5,
             "Standard": purchase_probability * 0.3,
             "Premium": purchase_probability * 0.2,
@@ -279,15 +319,16 @@ def main():
         - scenario_results.total_variable_cost
         - scenario_results.total_system_cost,
     )
+    loss_flags = []
+    for x in extra:
+        loss_flags.append(x["expected_profit"] < 0)
     summary = {
         "candidate_count": len(design_results),
         "feasible_count": len(feasible),
         "pareto_count": len(frontier),
         "selected_id": design_id,
         "checks": "all scenario accounting identities; selected independently reconciled via insurance_model; nondominance checked against all feasible points",
-        "extra_sensitivity_negative_cases": int(
-            sum(x["expected_profit"] < 0 for x in extra)
-        ),
+        "extra_sensitivity_negative_cases": int(sum(loss_flags)),
         "extra_sensitivity_count": len(extra),
         "source_forecast_sha256": hashlib.sha256(FORECAST.read_bytes()).hexdigest(),
     }

@@ -116,6 +116,10 @@ def main():
                 elif name == "seasonal_naive":
                     pred = test.rate_year_ago
                 else:
+                    numeric_columns = []
+                    for c in feature_columns:
+                        if c != "airline_id":
+                            numeric_columns.append(c)
                     preprocessor = ColumnTransformer(
                         [
                             (
@@ -125,11 +129,7 @@ def main():
                                 ),
                                 ["airline_id"],
                             ),
-                            (
-                                "num",
-                                StandardScaler(),
-                                [c for c in feature_columns if c != "airline_id"],
-                            ),
+                            ("num", StandardScaler(), numeric_columns),
                         ]
                     )
                     train_features = preprocessor.fit_transform(train[feature_columns])
@@ -149,17 +149,17 @@ def main():
                             train_features, train.target_rate_per_1000, **fit_options
                         )
                         pred = np.maximum(0, model.predict(test_features))
-                        training_warnings.extend(
-                            [
+                        warning_records = []
+                        for weights in captured_warnings:
+                            warning_records.append(
                                 {
                                     "year": year,
                                     "model": name,
                                     "date": str(date),
                                     "warning": str(weights.message),
                                 }
-                                for weights in captured_warnings
-                            ]
-                        )
+                            )
+                        training_warnings.extend(warning_records)
                 fold_predictions = test[
                     [
                         "row_id",

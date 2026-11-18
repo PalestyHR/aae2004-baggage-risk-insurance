@@ -149,6 +149,10 @@ def main():
             train = data[data.date < date]
             test = data[data.date == date]
             assert train.date.max() < test.date.min()
+            numeric_columns = []
+            for c in feature_columns:
+                if c != "airline_id":
+                    numeric_columns.append(c)
             preprocessor = ColumnTransformer(
                 [
                     (
@@ -156,11 +160,7 @@ def main():
                         OneHotEncoder(handle_unknown="ignore", sparse_output=False),
                         ["airline_id"],
                     ),
-                    (
-                        "num",
-                        StandardScaler(),
-                        [c for c in feature_columns if c != "airline_id"],
-                    ),
+                    ("num", StandardScaler(), numeric_columns),
                 ]
             )
             train_features = preprocessor.fit_transform(train[feature_columns])
@@ -221,7 +221,10 @@ def main():
                         )
                         assert np.isfinite(pred).all()
                         year_predictions.append(fold_predictions)
-                    training_warnings.extend(str(x.message) for x in captured_warnings)
+                    warning_records = []
+                    for x in captured_warnings:
+                        warning_records.append(str(x.message))
+                    training_warnings.extend(warning_records)
         predictions_frame = pd.concat(year_predictions, ignore_index=True)
         predictions.append(predictions_frame)
         for (weighting, ratio), records in predictions_frame.groupby(
@@ -236,26 +239,35 @@ def main():
                 }
             )
         if year == 2025:
-            candidates = [x for x in summary if x["year"] == 2025]
+            year_results = []
+            for x in summary:
+                if x["year"] == 2025:
+                    year_results.append(x)
+            candidates = year_results
             for weighting in ["uniform", "volume"]:
+                weighted_candidates = []
+                for x in candidates:
+                    if x["weighting"] == weighting:
+                        weighted_candidates.append(x)
                 selected[weighting] = min(
-                    [x for x in candidates if x["weighting"] == weighting],
-                    key=lambda x: x["weighted_MAE"],
+                    weighted_candidates, key=lambda x: x["weighted_MAE"]
                 )
             selected["overall"] = min(candidates, key=lambda x: x["weighted_MAE"])
             (OUT / "selection_before_2026.json").write_text(
                 json.dumps(selected, indent=2), encoding="utf-8"
             )
-            print(
-                "2025 selection",
-                [
+            selection_rows = []
+            for k, v in selected.items():
+                selection_rows.append(
                     (k, v["weighting"], v["under_over_ratio"], v["weighted_MAE"])
-                    for k, v in selected.items()
-                ],
-                flush=True,
-            )
+                )
+            print("2025 selection", selection_rows, flush=True)
+        year_results = []
+        for x in summary:
+            if x["year"] == year:
+                year_results.append(x)
         print(
-            pd.DataFrame([x for x in summary if x["year"] == year])[
+            pd.DataFrame(year_results)[
                 [
                     "year",
                     "weighting",

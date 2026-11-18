@@ -14,40 +14,60 @@ from models.insurance import simulate_cohort
 def main():
     OUT = ROOT / "results/selected_menu_monte_carlo"
     OUT.mkdir(exist_ok=True)
-    f = pd.read_csv(ROOT / "results/reference/model1/forecast_interface_2026_08.csv")
-    plans = json.loads((ROOT / "configs/selected_menu_v2.json").read_text())["plans"]
-    base = json.loads((ROOT / "configs/insurance_assumptions.json").read_text())[
-        "base_assumptions"
-    ]
+    forecasts = pd.read_csv(
+        ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
+    )
+    plans_file = ROOT / "configs/selected_menu_v2.json"
+    plans_text = plans_file.read_text()
+    plans_config = json.loads(plans_text)
+    plans = plans_config["plans"]
+    assumptions_file = ROOT / "configs/insurance_assumptions.json"
+    assumptions_text = assumptions_file.read_text()
+    assumptions_config = json.loads(assumptions_text)
+    base_assumptions = assumptions_config["base_assumptions"]
+    forecast_records = forecasts.to_dict("records")
     rows = []
-    for b in [1.0, 2.0, 3.0]:
-        for risk, rho, sl in [("base", 1.0, 0.05), ("higher", 2.0, 0.1)]:
-            a = copy.deepcopy(base)
-            a["demand"]["log_price_sensitivity"] = b
-            a["conditional_loss_share"] = sl
-            a["tier_hazard_multipliers"] = {p["name"]: rho for p in plans}
-            for i, row in enumerate(f.to_dict("records")):
-                out = simulate_cohort(
-                    row,
-                    plans,
-                    a,
-                    draws=30000,
-                    seed=20261106
-                    + int(b) * 100
-                    + i
-                    + (1000 if risk == "higher" else 0),
+    for price_sensitivity in [1.0, 2.0, 3.0]:
+        for risk, risk_multiplier, loss_share in [
+            ("base", 1.0, 0.05),
+            ("higher", 2.0, 0.1),
+        ]:
+            assumptions = copy.deepcopy(base_assumptions)
+            demand = assumptions["demand"]
+            demand["log_price_sensitivity"] = price_sensitivity
+            assumptions["conditional_loss_share"] = loss_share
+            plan_values = {}
+            for plan in plans:
+                name = plan["name"]
+                plan_values[name] = risk_multiplier
+            assumptions["tier_hazard_multipliers"] = plan_values
+            for case_index, row in enumerate(forecast_records):
+                risk_seed_offset = 1000 if risk == "higher" else 0
+                sensitivity_seed_offset = int(price_sensitivity) * 100
+                seed = (
+                    20261106 + sensitivity_seed_offset + case_index + risk_seed_offset
+                )
+                simulation = simulate_cohort(
+                    row, plans, assumptions, draws=30000, seed=seed
                 )
                 assert (
-                    abs(out["simulated_mean_profit"] - out["expected_profit_analytic"])
-                    <= 6 * out["mean_standard_error"]
+                    abs(
+                        simulation["simulated_mean_profit"]
+                        - simulation["expected_profit_analytic"]
+                    )
+                    <= 6 * simulation["mean_standard_error"]
                 )
                 rows.append(
-                    {"scenario": f"beta{b}_{risk}", "carrier": row["carrier"], **out}
+                    {
+                        "scenario": f"beta{price_sensitivity}_{risk}",
+                        "carrier": row["carrier"],
+                        **simulation,
+                    }
                 )
-    r = pd.DataFrame(rows)
-    r.to_csv(OUT / "results.csv", index=False)
+    results = pd.DataFrame(rows)
+    results.to_csv(OUT / "results.csv", index=False)
     summary = (
-        r.groupby("scenario")
+        results.groupby("scenario")
         .agg(
             cases=("carrier", "size"),
             minimum_profit_probability=("probability_profit_positive", "min"),

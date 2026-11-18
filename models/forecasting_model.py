@@ -37,19 +37,18 @@ class ForecastingModel:
 
     def __init__(self, feature_columns):
         self.feature_columns = list(feature_columns)
-        self.numeric_columns = [
-            name for name in self.feature_columns if name != "airline_id"
+        self.numeric_columns = []
+        for name in self.feature_columns:
+            if name != "airline_id":
+                self.numeric_columns.append(name)
+
+        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
+        scaler = StandardScaler()
+        transformers = [
+            ("id", encoder, ["airline_id"]),
+            ("num", scaler, self.numeric_columns),
         ]
-        self.preprocessor = ColumnTransformer(
-            [
-                (
-                    "id",
-                    OneHotEncoder(handle_unknown="ignore", sparse_output=False),
-                    ["airline_id"],
-                ),
-                ("num", StandardScaler(), self.numeric_columns),
-            ]
-        )
+        self.preprocessor = ColumnTransformer(transformers)
         self.regressor = lgb.LGBMRegressor(
             **FORECAST_PARAMETERS,
             objective=asymmetric_squared_loss,
@@ -61,11 +60,8 @@ class ForecastingModel:
         targets = frame["target_rate_per_1000"].to_numpy()
         self.base_score = float(targets.mean())
         self.training_last_month = frame["target_month"].max()
-        self.regressor.fit(
-            features,
-            targets,
-            init_score=np.full(len(targets), self.base_score),
-        )
+        initial_scores = np.full(len(targets), self.base_score)
+        self.regressor.fit(features, targets, init_score=initial_scores)
         return self
 
     def predict(self, frame):
@@ -78,13 +74,19 @@ class ForecastingModel:
         """Export native LightGBM weights and the fitted preprocessing values."""
         path = Path(model_directory)
         path.mkdir(parents=True, exist_ok=True)
-        self.regressor.booster_.save_model(str(path / "risk_2026_08_lightgbm.txt"))
+        model_file = str(path / "risk_2026_08_lightgbm.txt")
+        self.regressor.booster_.save_model(model_file)
         scaler = self.preprocessor.named_transformers_["num"]
         encoder = self.preprocessor.named_transformers_["id"]
+        categories = []
+        for value in encoder.categories_[0]:
+            category = int(value)
+            categories.append(category)
+
         schema = {
             "base_score": self.base_score,
             "categorical_column": "airline_id",
-            "categories": [int(value) for value in encoder.categories_[0]],
+            "categories": categories,
             "numeric_columns": self.numeric_columns,
             "mean": scaler.mean_.tolist(),
             "scale": scaler.scale_.tolist(),
@@ -94,16 +96,19 @@ class ForecastingModel:
             "feature_columns": self.feature_columns,
             "loss_under_over": [1, 2],
         }
-        (path / "risk_preprocessing.json").write_text(
-            json.dumps(schema, indent=2), encoding="utf-8"
-        )
+        preprocessing_file = path / "risk_preprocessing.json"
+        preprocessing_text = json.dumps(schema, indent=2)
+        preprocessing_file.write_text(preprocessing_text, encoding="utf-8")
 
 
 class FrozenRiskPredictor:
     def __init__(self, model_directory):
         path = Path(model_directory)
-        self.schema = json.loads((path / "risk_preprocessing.json").read_text())
-        self.booster = lgb.Booster(model_file=str(path / "risk_2026_08_lightgbm.txt"))
+        preprocessing_file = path / "risk_preprocessing.json"
+        preprocessing_text = preprocessing_file.read_text()
+        model_file = str(path / "risk_2026_08_lightgbm.txt")
+        self.schema = json.loads(preprocessing_text)
+        self.booster = lgb.Booster(model_file=model_file)
 
     def predict(self, frame):
         """Predict mishandled bags per 1,000 for each carrier-month row."""
@@ -114,15 +119,16 @@ class FrozenRiskPredictor:
         # Same order as ColumnTransformer: categorical one-hot then standardized
         # numeric fields. Unknown categories receive all-zero one-hot encoding.
         carrier_ids = frame[schema["categorical_column"]].to_numpy()
-        categorical = (
-            carrier_ids[:, None] == np.asarray(schema["categories"])[None, :]
-        ).astype(float)
+        categories = np.asarray(schema["categories"])
+        category_matches = carrier_ids[:, None] == categories[None, :]
+        categorical = category_matches.astype(float)
         numeric = frame[schema["numeric_columns"]].to_numpy(dtype=float)
-        numeric = (numeric - np.asarray(schema["mean"])) / np.asarray(schema["scale"])
+        mean = np.asarray(schema["mean"])
+        scale = np.asarray(schema["scale"])
+        numeric = (numeric - mean) / scale
         if not np.isfinite(numeric).all():
             raise ValueError("Core inputs must be finite")
         matrix = np.concatenate([categorical, numeric], axis=1)
-        return np.maximum(
-            schema["prediction_clip_min"],
-            self.booster.predict(matrix) + schema["base_score"],
-        )
+        predictions = self.booster.predict(matrix) + schema["base_score"]
+        minimum = schema["prediction_clip_min"]
+        return np.maximum(minimum, predictions)
