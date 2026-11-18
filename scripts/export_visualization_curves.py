@@ -40,6 +40,7 @@ frozen = FrozenRiskPredictor(ROOT / "checkpoints")
 s = frozen.schema
 d = pd.read_csv(ROOT / "data/processed/lag1/all_real.csv")
 train = d[d.target_month < "2026-08-01"].copy()
+
 test = d[d.target_month == "2026-08-01"].copy()
 
 
@@ -49,6 +50,7 @@ def matrix(frame):
     x = (frame[s["numeric_columns"]].to_numpy() - np.asarray(s["mean"])) / np.asarray(
         s["scale"]
     )
+
     return np.concatenate([cat, x], axis=1)
 
 
@@ -56,6 +58,7 @@ sets = {"train": train, "test_august": test}
 Xs = {name: matrix(frame) for name, frame in sets.items()}
 assert frozen.booster.num_trees() == 200 and len(test) == 12
 rows = []
+
 for iteration in range(201):
     for name, frame in sets.items():
         raw = (
@@ -69,6 +72,7 @@ for iteration in range(201):
         y = frame.target_rate_per_1000.to_numpy()
         err = raw - y
         deployed = np.maximum(raw, 0)
+
         e = deployed - y
         w = frame.target_enplaned_bags.to_numpy()
         c = np.where(err < 0, 2 / 3, 4 / 3)
@@ -86,6 +90,7 @@ for iteration in range(201):
                 "weighted_bias_deployed": float(np.average(e, weights=w)),
             }
         )
+
 curves = pd.DataFrame(rows)
 curves.to_csv(SOURCE / "model1_tree_prefix_metrics.csv", index=False)
 last = curves[(curves.iteration == 200) & (curves["set"] == "test_august")].iloc[0]
@@ -122,6 +127,7 @@ def export(fig, name):
 
 
 fig, ax = plt.subplots(figsize=(7, 4.2), layout="constrained")
+
 for name, label in [("train", "Training"), ("test_august", "August test (diagnostic)")]:
     g = curves[curves["set"] == name]
     ax.plot(
@@ -131,6 +137,7 @@ for name, label in [("train", "Training"), ("test_august", "August test (diagnos
         color=colors[name],
         lw=1.8,
     )
+
 ax.set(
     xlabel="Boosting iterations (tree prefix)",
     ylabel="Mean asymmetric squared loss",
@@ -140,6 +147,7 @@ ax.legend()
 ax.grid(alpha=0.16)
 export(fig, "01_model1_loss")
 fig, axes = plt.subplots(1, 2, figsize=(10, 4), layout="constrained")
+
 for ax, key, title in zip(
     axes,
     ["weighted_MAE_deployed", "weighted_RMSE_deployed"],
@@ -148,16 +156,19 @@ for ax, key, title in zip(
     for name, label in [("train", "Training"), ("test_august", "August test")]:
         g = curves[curves["set"] == name]
         ax.plot(g.iteration, g[key], color=colors[name], label=label, lw=1.7)
+
     ax.set(
         xlabel="Boosting iterations", ylabel="Bags per 1,000 enplaned bags", title=title
     )
     ax.grid(alpha=0.16)
+
 axes[0].legend()
 export(fig, "02_model1_metrics")
 
 pred = pd.read_csv(ROOT / "results/reference/model1/predictions.csv")
 pred = pred[pred.year == 2026]
 monthly = []
+
 for month, g in pred.groupby("target_month"):
     for method in ["ml", "symmetric", "simple"]:
         e = g["rate_" + method] - g.target_rate_per_1000
@@ -169,9 +180,11 @@ for month, g in pred.groupby("target_month"):
                 "weighted_MAE": np.average(abs(e), weights=g.target_enplaned_bags),
             }
         )
+
 m = pd.DataFrame(monthly)
 m.to_csv(SOURCE / "model1_rolling_monthly_metrics.csv", index=False)
 fig, ax = plt.subplots(figsize=(7, 4.2), layout="constrained")
+
 for name, label, color in [
     ("ml", "Asymmetric risk model", "#537A99"),
     ("symmetric", "Symmetric loss", "#769F75"),
@@ -187,6 +200,7 @@ for name, label, color in [
         lw=1.5,
         color=color,
     )
+
 import matplotlib.dates as mdates
 
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
@@ -248,6 +262,7 @@ export(fig, "04_model2_pareto")
 sc["beta"] = sc.scenario.str.extract(r"beta([\d.]+)").astype(float)
 sc["risk"] = np.where(sc.scenario.str.endswith("_higher"), "higher", "base")
 fig, axes = plt.subplots(1, 2, figsize=(10, 4), layout="constrained")
+
 for risk, label, color in [
     ("base", "Baseline risk", "#537A99"),
     ("higher", "Higher risk", "#C67443"),
@@ -255,10 +270,12 @@ for risk, label, color in [
     g = sc[sc.risk == risk].sort_values("beta")
     axes[0].plot(g.beta, g.total_expected_profit / 1e6, "o-", color=color, label=label)
     axes[1].plot(g.beta, g.pooled_margin * 100, "o-", color=color, label=label)
+
 for ax in axes:
     ax.set_xlabel("Assumed price sensitivity (beta)")
     ax.set_xticks([1, 2, 3])
     ax.grid(alpha=0.16)
+
 axes[0].set(ylabel="Expected profit (million USD)", title="M0775 scenario profit")
 axes[1].set(ylabel="Expected margin (%)", title="M0775 scenario margin")
 axes[0].legend()

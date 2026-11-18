@@ -51,6 +51,7 @@ class AsymmetricSquaredLoss:
         errors = predictions - targets
         penalties = np.where(errors < 0, self.under, self.over)
         weights = np.ones_like(errors) if weight is None else weight
+
         return weights * penalties * errors, weights * penalties
 
 
@@ -59,6 +60,7 @@ def objective_checks():
     predictions_frame = np.array([0.2, 4.0, 3.5, 3.0])
     weights = np.array([0.2, 0.5, 1.0, 2.0])
     eps = 1e-5
+
     for under, over in RATIOS:
         a, b = coeffs(under, over)
         fn = AsymmetricSquaredLoss(under, over)
@@ -95,12 +97,14 @@ def metrics(predictions_frame, threshold):
         "weighted_overgap": float(np.average(np.maximum(errors, 0), weights=weights)),
     }
     high = predictions_frame.target_rate_per_1000 >= threshold
+
     out["high_risk_n"] = int(high.sum())
     out["high_risk_weighted_MAE"] = (
         float(np.average(abs(errors[high]), weights=weights[high]))
         if high.any()
         else None
     )
+
     return out
 
 
@@ -142,17 +146,22 @@ def main():
     summary = []
     checks = []
     training_warnings = []
+
     selected = {}
+
     for year in [2025, 2026]:
         year_predictions = []
+
         for date in sorted(data.loc[data.date.dt.year == year, "date"].unique()):
             train = data[data.date < date]
             test = data[data.date == date]
             assert train.date.max() < test.date.min()
             numeric_columns = []
+
             for c in feature_columns:
                 if c != "airline_id":
                     numeric_columns.append(c)
+
             preprocessor = ColumnTransformer(
                 [
                     (
@@ -166,6 +175,7 @@ def main():
             train_features = preprocessor.fit_transform(train[feature_columns])
             test_features = preprocessor.transform(test[feature_columns])
             y = train.target_rate_per_1000.to_numpy()
+
             for weighting in ["uniform", "volume"]:
                 weights = (
                     np.ones(len(train))
@@ -175,12 +185,14 @@ def main():
                     ).to_numpy()
                 )
                 base_score = float(np.average(y, weights=weights))
+
                 with warnings.catch_warnings(record=True) as captured_warnings:
                     warnings.simplefilter("always")
                     builtin = LGBMRegressor(**PARAMS, objective="regression").fit(
                         train_features, y, sample_weight=weights
                     )
                     builtin_predictions = np.maximum(0, builtin.predict(test_features))
+
                     for under, over in RATIOS:
                         name = f"{under:g}:{over:g}"
                         model = LGBMRegressor(
@@ -193,6 +205,7 @@ def main():
                             init_score=np.full(len(train), base_score),
                         )
                         pred = np.maximum(0, model.predict(test_features) + base_score)
+
                         if under == over:
                             diff = float(np.max(abs(pred - builtin_predictions)))
                             checks.append(
@@ -203,6 +216,7 @@ def main():
                                 }
                             )
                             assert diff < 1e-5, (date, weighting, diff)
+
                         fold_predictions = test[
                             [
                                 "row_id",
@@ -215,18 +229,24 @@ def main():
                         fold_predictions["prediction"] = pred
                         fold_predictions["year"] = year
                         fold_predictions["weighting"] = weighting
+
                         fold_predictions["under_over_ratio"] = name
                         fold_predictions["training_max_month"] = (
                             train.target_month.max()
                         )
                         assert np.isfinite(pred).all()
                         year_predictions.append(fold_predictions)
+
                     warning_records = []
+
                     for x in captured_warnings:
                         warning_records.append(str(x.message))
+
                     training_warnings.extend(warning_records)
+
         predictions_frame = pd.concat(year_predictions, ignore_index=True)
         predictions.append(predictions_frame)
+
         for (weighting, ratio), records in predictions_frame.groupby(
             ["weighting", "under_over_ratio"]
         ):
@@ -238,34 +258,46 @@ def main():
                     **metrics(records, threshold),
                 }
             )
+
         if year == 2025:
             year_results = []
+
             for x in summary:
                 if x["year"] == 2025:
                     year_results.append(x)
+
             candidates = year_results
+
             for weighting in ["uniform", "volume"]:
                 weighted_candidates = []
+
                 for x in candidates:
                     if x["weighting"] == weighting:
                         weighted_candidates.append(x)
+
                 selected[weighting] = min(
                     weighted_candidates, key=lambda x: x["weighted_MAE"]
                 )
+
             selected["overall"] = min(candidates, key=lambda x: x["weighted_MAE"])
             (OUT / "selection_before_2026.json").write_text(
                 json.dumps(selected, indent=2), encoding="utf-8"
             )
             selection_rows = []
+
             for k, v in selected.items():
                 selection_rows.append(
                     (k, v["weighting"], v["under_over_ratio"], v["weighted_MAE"])
                 )
+
             print("2025 selection", selection_rows, flush=True)
+
         year_results = []
+
         for x in summary:
             if x["year"] == year:
                 year_results.append(x)
+
         print(
             pd.DataFrame(year_results)[
                 [
@@ -279,10 +311,12 @@ def main():
             ].to_string(index=False),
             flush=True,
         )
+
     all_predictions = pd.concat(predictions, ignore_index=True)
     all_predictions.to_csv(OUT / "predictions.csv", index=False)
     pd.DataFrame(summary).to_csv(OUT / "metrics.csv", index=False)
     monthly = []
+
     for keys, records in all_predictions.groupby(
         ["year", "weighting", "under_over_ratio", "target_month"]
     ):
@@ -292,6 +326,7 @@ def main():
                 **metrics(records, threshold),
             )
         )
+
     pd.DataFrame(monthly).to_csv(OUT / "monthly.csv", index=False)
     (OUT / "implementation_checks.json").write_text(
         json.dumps(

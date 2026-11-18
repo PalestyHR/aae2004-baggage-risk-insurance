@@ -38,11 +38,14 @@ class InsuranceTests(unittest.TestCase):
     def test_reference_purchase_probabilities(self):
         for plan in self.plans:
             plan.update(plan["reference"])
+
         choices = tier_probabilities(self.plans, self.assumptions["demand"])
+
         for name, value in self.assumptions["demand"][
             "reference_purchase_probabilities"
         ].items():
             self.assertAlmostEqual(choices[name], value)
+
         self.assertAlmostEqual(sum(choices.values()), 1)
 
     def test_expected_profit(self):

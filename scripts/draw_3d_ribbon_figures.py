@@ -13,8 +13,10 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "visualizations/ribbons_3d"
+
 for f in ["figures", "source_data"]:
     (OUT / f).mkdir(parents=True, exist_ok=True)
+
 plt.rcParams.update(
     {
         "font.family": "sans-serif",
@@ -43,27 +45,34 @@ def ribbon(name, title, x, series, xlabels, xlabel, zlabel, shortlabels=None, az
     ax = fig.add_axes([0.02, 0.03, 0.83, 0.86], projection="3d")
     labels = list(series)
     ys = np.arange(len(labels))
+
     verts = []
+
     for label in labels:
         vals = np.asarray(series[label], dtype=float)
         assert len(vals) == len(x) and np.isfinite(vals).all() and (vals >= 0).all()
         verts.append([(x[0], 0), *zip(x, vals), (x[-1], 0)])
+
     fills = PolyCollection(
         verts, facecolors=PALETTE[: len(labels)], edgecolors="none", alpha=0.25
     )
     ax.add_collection3d(fills, zs=ys, zdir="y")
+
     for j, label in enumerate(labels):
         vals = np.asarray(series[label])
         col = PALETTE[j]
         ax.plot(x, np.full(len(x), j), vals, color=col, lw=1.45, zorder=10 - j)
         ax.plot([x[0], x[0]], [j, j], [0, vals[0]], color=col, lw=0.7, alpha=0.8)
         ax.plot([x[-1], x[-1]], [j, j], [0, vals[-1]], color=col, lw=0.7, alpha=0.8)
+
     ax.set_xlim(float(x[0]), float(x[-1]))
     ax.set_ylim(-0.25, len(labels) - 0.75)
     ax.set_zlim(0, max(float(np.max(v)) for v in series.values()) * 1.12)
     ax.set_xticks(x if len(x) <= 12 else np.linspace(x[0], x[-1], 5))
+
     if xlabels is not None:
         ax.set_xticklabels(xlabels, rotation=25, ha="right", fontsize=8)
+
     ax.set_yticks(ys)
     ax.set_yticklabels(shortlabels or labels, fontsize=8)
     ax.set_xlabel(xlabel, labelpad=16)
@@ -72,10 +81,12 @@ def ribbon(name, title, x, series, xlabels, xlabel, zlabel, shortlabels=None, az
     ax.tick_params(axis="z", labelsize=8)
     ax.view_init(elev=25, azim=azim)
     ax.set_box_aspect((1.8, 1.2, 1.05))
+
     for axis in [ax.xaxis, ax.yaxis, ax.zaxis]:
         axis.pane.set_facecolor((0.96, 0.965, 0.975, 1))
         axis.pane.set_edgecolor("#E2E5EB")
         axis._axinfo["grid"]["color"] = (0.80, 0.82, 0.86, 0.62)
+
     fig.suptitle(
         title,
         x=0.46,
@@ -150,9 +161,11 @@ order = (
     aug[aug.model_id == "adopted"].sort_values("target_rate_per_1000").carrier.tolist()
 )
 series = {}
+
 for code, label in methods.items():
     g = aug[aug.model_id == code].set_index("carrier").loc[order]
     series[label] = abs(g.predicted_rate - g.target_rate_per_1000).to_numpy()
+
 ribbon(
     "02_august_carrier_errors",
     "August error across operating carriers",

@@ -20,6 +20,7 @@ baseline_directory = (
     else REF / "integrated_model_comparison"
 )
 pipe = pd.read_csv(risk_directory / "predictions.csv")
+
 pipe = pipe[pipe.year == 2026].copy()
 families = pd.read_csv(baseline_directory / "predictions.csv")
 families = families[families.year == 2026]
@@ -39,6 +40,7 @@ labels = {
 }
 rows = []
 records = []
+
 for name in labels:
     if name == "adopted":
         pred = actual.rate_ml.to_numpy()
@@ -49,10 +51,12 @@ for name in labels:
         assert np.allclose(b.target_rate_per_1000, actual.target_rate_per_1000)
         assert np.allclose(b.target_enplaned_bags, actual.target_enplaned_bags)
         pred = b.prediction.to_numpy()
+
     y = actual.target_rate_per_1000.to_numpy()
     w = actual.target_enplaned_bags.to_numpy()
     e = pred - y
     count = pred * actual.forecast_baggage_volume.to_numpy() / 1000
+
     cy = actual.target_mishandled_bags.to_numpy()
     row = {
         "model_id": name,
@@ -82,17 +86,21 @@ for name in labels:
     out["predicted_rate"] = pred
     out["predicted_count_same_exposure"] = count
     records.append(out.reset_index())
+
 r = pd.DataFrame(rows)
 r.to_csv(ROOT / "results/baseline_comparison_2026_01_08.csv", index=False)
 pd.concat(records, ignore_index=True).to_csv(
     ROOT / "results/baseline_comparison_case_predictions.csv", index=False
 )
 known = pd.read_csv(baseline_directory / "metrics.csv")
+
 for row in rows:
     if row["model_id"] == "adopted":
         continue
+
     ref = known[(known.year == 2026) & (known.model == row["model_id"])].iloc[0]
     assert abs(row["rate_weighted_MAE"] - ref.weighted_MAE) < 1e-10
+
 assert np.isclose(rows[-1]["rate_weighted_MAE"], 0.6375740849258186, atol=1e-10)
 lines = [
     "# Model 1 Baseline Comparison Table",
@@ -104,10 +112,12 @@ lines = [
     "| Method | n | Rate weighted MAE ↓ | Rate weighted RMSE ↓ | Count WAPE (%) ↓ |",
     "|---|---:|---:|---:|---:|",
 ]
+
 for x in rows:
     lines.append(
         f"| {x['method']} | {x['n']} | {x['rate_weighted_MAE']:.6f} | {x['rate_weighted_RMSE']:.6f} | {x['count_WAPE_percent_same_forecast_exposure']:.3f} |"
     )
+
 lines += [
     "",
     "Rate metrics are in **mishandled bags per 1,000 enplaned bags**. Count WAPE uses the **same forecast baggage exposure for every method**, namely the 50/50 latest-month and same-month-last-year blend selected on 2025 validation. No actual target-month exposure is used to produce count predictions. Actual exposure weights rate evaluation only.",
@@ -117,10 +127,12 @@ lines += [
     "| Method | Unweighted MAE ↓ | Unweighted RMSE ↓ | Weighted bias |",
     "|---|---:|---:|---:|",
 ]
+
 for x in rows:
     lines.append(
         f"| {x['method']} | {x['rate_MAE']:.6f} | {x['rate_RMSE']:.6f} | {x['rate_weighted_bias']:+.6f} |"
     )
+
 lines += [
     "",
     "Weighted bias = weighted mean(predicted − observed): positive is overprediction. Simple methods use their named historical rates; learned methods use the same 30 core features and training-only preprocessing. Poisson uses training exposure weights; other fits use equal row weights. The adopted loss ratio was chosen on 2025 validation.",

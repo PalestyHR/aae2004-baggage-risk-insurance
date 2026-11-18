@@ -18,8 +18,10 @@ def claims_from_forecast(
     loss_share,
 ):
     """Convert a baggage forecast into delay and final-loss probabilities."""
+
     bag_probability = rate_per_1000 / 1000
     exposures = bag_count * segment_count
+
     if portfolio_hazard_multiplier == 0 or bag_probability == 0:
         mishandling_probability = 0.0
     elif bag_probability == 1:
@@ -28,8 +30,10 @@ def claims_from_forecast(
         log_survival = math.log1p(-bag_probability)
         scaled_log_survival = exposures * portfolio_hazard_multiplier * log_survival
         mishandling_probability = -math.expm1(scaled_log_survival)
+
     delay_probability = mishandling_probability * delay_share
     loss_probability = mishandling_probability * loss_share
+
     return {
         "policy_mishandling_probability": mishandling_probability,
         "delay_claim_probability": delay_probability,
@@ -41,6 +45,7 @@ def claims_from_forecast(
 
 def tier_probabilities(plans, demand):
     """Compute multinomial-logit probabilities, including no purchase."""
+
     shares = demand["reference_purchase_probabilities"]
     names = []
     total = 0.0
@@ -55,6 +60,7 @@ def tier_probabilities(plans, demand):
     price_sensitivity = demand["log_price_sensitivity"]
     delay_sensitivity = demand["log_delay_benefit_sensitivity"]
     loss_sensitivity = demand["log_loss_benefit_sensitivity"]
+
     logits = [0.0]
 
     for plan in plans:
@@ -62,6 +68,7 @@ def tier_probabilities(plans, demand):
         purchase_probability = shares[name]
         reference = plan["reference"]
         price_ratio = plan["price"] / reference["price"]
+
         delay_ratio = plan["delay_benefit"] / reference["delay_benefit"]
         loss_ratio = plan["loss_benefit"] / reference["loss_benefit"]
 
@@ -77,6 +84,7 @@ def tier_probabilities(plans, demand):
 
     max_logit = max(logits)
     exp_utilities = []
+
     for utility in logits:
         exp_utility = math.exp(utility - max_logit)
         exp_utilities.append(exp_utility)
@@ -85,6 +93,7 @@ def tier_probabilities(plans, demand):
     choice_names = ["no_purchase"]
     choice_names.extend(names)
     probabilities = {}
+
     for index, name in enumerate(choice_names):
         probabilities[name] = exp_utilities[index] / normalizer
 
@@ -93,29 +102,38 @@ def tier_probabilities(plans, demand):
 
 def expected_portfolio(forecast, plans, assumptions):
     """Calculate expected sales, payouts, expenses and profit for one cohort."""
+
     passenger_volume = forecast["passenger_segments"]
     eligible_fraction = assumptions["eligible_opportunity_fraction"]
     eligible_count = math.floor(passenger_volume * eligible_fraction)
+
     covered_bags = assumptions["covered_bags"]
     covered_segments = assumptions["covered_segments"]
+
     demand = assumptions["demand"]
     tier_hazards = assumptions["tier_hazard_multipliers"]
     processing_costs = assumptions["variable_cost_per_policy"]
     expense_rates = assumptions["external_expense_rates"]
+
     forecast_rate = forecast["risk_rate_per_1000"]
     choice_probabilities = tier_probabilities(plans, demand)
+
     states = assumptions["risk_states"]
     delay_share = assumptions["conditional_delay_share"]
     loss_share = assumptions["conditional_loss_share"]
+
     system_cost = assumptions["period_system_cost"]
     target_profit = assumptions["target_period_profit"]
+
     tier_rows = []
     state_claim_probabilities = {}
+
     for plan in plans:
         name = plan["name"]
         delay_probability = loss_probability = 0
         plan_risks = {}
         tier_hazard = tier_hazards[name]
+
         delay_benefit = plan["delay_benefit"]
         loss_benefit = plan["loss_benefit"]
         price = plan["price"]
@@ -126,6 +144,7 @@ def expected_portfolio(forecast, plans, assumptions):
             state_probability = state["probability"]
             state_hazard = state["hazard_multiplier"]
             hazard_multiplier = tier_hazard * state_hazard
+
             risk = claims_from_forecast(
                 forecast_rate,
                 covered_bags,
@@ -137,6 +156,7 @@ def expected_portfolio(forecast, plans, assumptions):
             state_delay_probability = risk["delay_claim_probability"]
             state_loss_probability = risk["loss_claim_probability"]
             plan_risks[state_name] = risk
+
             delay_probability += state_probability * state_delay_probability
             loss_probability += state_probability * state_loss_probability
 
@@ -146,10 +166,12 @@ def expected_portfolio(forecast, plans, assumptions):
             delay_probability * delay_benefit + loss_probability * loss_benefit
         )
         variable_cost = processing_costs[name]
+
         expense_rate = expense_rates[name]
         revenue = policy_count * price
         claims = policy_count * claim_per_policy
         expense = policy_count * variable_cost + expense_rate * revenue
+
         paid_probability = delay_probability + loss_probability
         paid_policies = policy_count * paid_probability
         contribution = revenue - claims - expense
@@ -168,26 +190,33 @@ def expected_portfolio(forecast, plans, assumptions):
                 "contribution_before_shared_system_cost": contribution,
             }
         )
+
     revenue = 0
     claims = 0
     expense = 0
     sales = 0
+
     paid_policies = 0
+
     for tier in tier_rows:
         revenue += tier["revenue"]
         claims += tier["claims"]
         expense += tier["nonclaim_variable_expense"]
         sales += tier["expected_policies"]
+
         paid_policies += tier["expected_paid_policies"]
 
     profit = revenue - claims - expense - system_cost
     budget = revenue - expense - system_cost - target_profit
     profit_margin = None
     loss_ratio = None
+
     paid_policy_fraction = None
+
     if revenue:
         profit_margin = profit / revenue
         loss_ratio = claims / revenue
+
     if sales:
         paid_policy_fraction = paid_policies / sales
 
@@ -221,6 +250,7 @@ def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
     expected = expected_portfolio(forecast, plans, assumptions)
     rng = np.random.default_rng(seed)
     names = ["no_purchase"]
+
     for plan in plans:
         name = plan["name"]
         names.append(name)
@@ -229,16 +259,19 @@ def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
     eligible_count = expected["eligible_opportunities"]
     claim_probabilities = expected["state_claim_probabilities"]
     processing_costs = assumptions["variable_cost_per_policy"]
+
     expense_rates = assumptions["external_expense_rates"]
     system_cost = float(assumptions["period_system_cost"])
     states = assumptions["risk_states"]
 
     purchase_probabilities = []
+
     for name in names:
         probability = choice[name]
         purchase_probabilities.append(probability)
 
     state_probabilities = []
+
     for state in states:
         probability = state["probability"]
         state_probabilities.append(probability)
@@ -247,6 +280,7 @@ def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
     counts = rng.multinomial(eligible_count, purchase_probabilities, size=draws)
     sampled_states = rng.choice(state_count, size=draws, p=state_probabilities)
     profits = np.full(draws, -system_cost)
+
     for plan_index, plan in enumerate(plans, start=1):
         policy_counts = counts[:, plan_index]
         name = plan["name"]
@@ -254,12 +288,15 @@ def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
         profits += policy_counts * (
             price * (1 - expense_rates[name]) - processing_costs[name]
         )
+
         plan_risks = claim_probabilities[name]
+
         for state_index, state in enumerate(states):
             state_name = state["name"]
             state_mask = sampled_states == state_index
             state_indices = np.where(state_mask)[0]
             risk = plan_risks[state_name]
+
             delay_probability = risk["delay_claim_probability"]
             loss_probability = risk["loss_claim_probability"]
             lost = rng.binomial(policy_counts[state_indices], loss_probability)
@@ -271,13 +308,16 @@ def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
                     else 0
                 ),
             )
+
             profits[state_indices] -= (
                 lost * plan["loss_benefit"] + delayed * plan["delay_benefit"]
             )
+
     mean_profit = float(profits.mean())
     standard_deviation = profits.std(ddof=1)
     standard_error = float(standard_deviation / math.sqrt(draws))
     profitable_trials = profits > 0
+
     target_profit = assumptions["target_period_profit"]
     target_met_trials = profits >= target_profit
     profit_probability = float(profitable_trials.mean())

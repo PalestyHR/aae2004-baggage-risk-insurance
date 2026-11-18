@@ -23,16 +23,20 @@ ROOT = Path(__file__).resolve().parents[1]
 def estimator(name):
     if name == "ElasticNet":
         return ElasticNet(alpha=0.01, l1_ratio=0.5, max_iter=20000)
+
     if name == "Poisson_GLM":
         return PoissonRegressor(alpha=0.1, max_iter=2000)
+
     if name == "RandomForest":
         return RandomForestRegressor(
             n_estimators=300, min_samples_leaf=8, n_jobs=2, random_state=42
         )
+
     if name == "ExtraTrees":
         return ExtraTreesRegressor(
             n_estimators=300, min_samples_leaf=8, n_jobs=2, random_state=42
         )
+
     if name == "HistGBR":
         return HistGradientBoostingRegressor(
             max_iter=200,
@@ -43,6 +47,7 @@ def estimator(name):
             early_stopping=False,
             random_state=42,
         )
+
     if name == "LightGBM":
         return LGBMRegressor(
             n_estimators=200,
@@ -55,6 +60,7 @@ def estimator(name):
             n_jobs=2,
             random_state=42,
         )
+
     if name == "XGBoost":
         return XGBRegressor(
             n_estimators=200,
@@ -72,6 +78,7 @@ def estimator(name):
 def evaluate(records):
     errors = records.prediction - records.target_rate_per_1000
     weights = records.target_enplaned_bags
+
     return {
         "n": len(records),
         "weighted_MAE": float(np.average(abs(errors), weights=weights)),
@@ -104,22 +111,27 @@ def main():
     rows = []
     scores = []
     training_warnings = []
+
     for year in [2025, 2026]:
         for name in names:
             parts = []
+
             for date in sorted(data.loc[data.date.dt.year == year, "date"].unique()):
                 train = data[data.date < date]
                 test = data[data.date == date]
                 assert train.date.max() < test.date.min()
+
                 if name == "blend50":
                     pred = 0.5 * (test.recent_rate + test.rate_year_ago)
                 elif name == "seasonal_naive":
                     pred = test.rate_year_ago
                 else:
                     numeric_columns = []
+
                     for c in feature_columns:
                         if c != "airline_id":
                             numeric_columns.append(c)
+
                     preprocessor = ColumnTransformer(
                         [
                             (
@@ -135,6 +147,7 @@ def main():
                     train_features = preprocessor.fit_transform(train[feature_columns])
                     test_features = preprocessor.transform(test[feature_columns])
                     model = estimator(name)
+
                     fit_options = (
                         {
                             "sample_weight": train.target_enplaned_bags
@@ -143,6 +156,7 @@ def main():
                         if name == "Poisson_GLM"
                         else {}
                     )
+
                     with warnings.catch_warnings(record=True) as captured_warnings:
                         warnings.simplefilter("always")
                         model.fit(
@@ -150,6 +164,7 @@ def main():
                         )
                         pred = np.maximum(0, model.predict(test_features))
                         warning_records = []
+
                         for weights in captured_warnings:
                             warning_records.append(
                                 {
@@ -159,7 +174,9 @@ def main():
                                     "warning": str(weights.message),
                                 }
                             )
+
                         training_warnings.extend(warning_records)
+
                 fold_predictions = test[
                     [
                         "row_id",
@@ -174,24 +191,29 @@ def main():
                 fold_predictions["year"] = year
                 assert np.isfinite(fold_predictions.prediction).all()
                 parts.append(fold_predictions)
+
             predictions_frame = pd.concat(parts)
             rows.append(predictions_frame)
             s = {"year": year, "model": name, **evaluate(predictions_frame)}
             scores.append(s)
             print(s, flush=True)
+
         if year == 2025:
             choice = min(scores, key=lambda x: x["weighted_MAE"])["model"]
             print("PRE-TEST CHOICE", choice, flush=True)
+
     predictions_frame = pd.concat(rows, ignore_index=True)
     predictions_frame.to_csv(OUT / "predictions.csv", index=False)
     pd.DataFrame(scores).to_csv(OUT / "metrics.csv", index=False)
     monthly = []
+
     for (year, model, month), records in predictions_frame.groupby(
         ["year", "model", "target_month"]
     ):
         monthly.append(
             {"year": int(year), "model": model, "month": month, **evaluate(records)}
         )
+
     pd.DataFrame(monthly).to_csv(OUT / "monthly.csv", index=False)
     (OUT / "audit.json").write_text(
         json.dumps(

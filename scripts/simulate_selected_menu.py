@@ -20,13 +20,16 @@ def main():
     plans_file = ROOT / "configs/selected_menu_v2.json"
     plans_text = plans_file.read_text()
     plans_config = json.loads(plans_text)
+
     plans = plans_config["plans"]
     assumptions_file = ROOT / "configs/insurance_assumptions.json"
     assumptions_text = assumptions_file.read_text()
     assumptions_config = json.loads(assumptions_text)
+
     base_assumptions = assumptions_config["base_assumptions"]
     forecast_records = forecasts.to_dict("records")
     rows = []
+
     for price_sensitivity in [1.0, 2.0, 3.0]:
         for risk, risk_multiplier, loss_share in [
             ("base", 1.0, 0.05),
@@ -36,11 +39,15 @@ def main():
             demand = assumptions["demand"]
             demand["log_price_sensitivity"] = price_sensitivity
             assumptions["conditional_loss_share"] = loss_share
+
             plan_values = {}
+
             for plan in plans:
                 name = plan["name"]
                 plan_values[name] = risk_multiplier
+
             assumptions["tier_hazard_multipliers"] = plan_values
+
             for case_index, row in enumerate(forecast_records):
                 risk_seed_offset = 1000 if risk == "higher" else 0
                 sensitivity_seed_offset = int(price_sensitivity) * 100
@@ -64,6 +71,7 @@ def main():
                         **simulation,
                     }
                 )
+
     results = pd.DataFrame(rows)
     results.to_csv(OUT / "results.csv", index=False)
     summary = (

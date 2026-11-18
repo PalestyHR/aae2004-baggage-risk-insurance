@@ -15,6 +15,7 @@ def compare(left, right, keys, values, tolerance=1e-6):
     b = pd.read_csv(right)
     merged = a.merge(b, on=keys, suffixes=("_new", "_ref"), validate="one_to_one")
     assert len(merged) == len(a) == len(b)
+
     for c in values:
         assert np.allclose(
             merged[c + "_new"],
@@ -23,6 +24,7 @@ def compare(left, right, keys, values, tolerance=1e-6):
             atol=tolerance,
             equal_nan=True,
         ), c
+
     return len(merged)
 
 
@@ -47,6 +49,7 @@ def main():
     )
     df = pd.read_csv(ROOT / "data/processed/lag1/test_real.csv")
     df = df[df.target_month == "2026-08-01"]
+
     loaded = FrozenRiskPredictor(ROOT / "checkpoints").predict(df)
     saved = (
         pd.read_csv(ROOT / "results/reproduced_risk/predictions.csv")
@@ -60,10 +63,12 @@ def main():
     )
     ref = json.loads((ROOT / "configs/selected_menu_v2.json").read_text())
     assert new["selection"]["design_id"] == ref["selection"]["design_id"] == "M0775"
+
     for key in ["robust_expected_profit", "robust_margin"]:
         assert np.isclose(
             new["selection"][key], ref["selection"][key], rtol=1e-8, atol=1e-6
         )
+
     assert new["plans"] == ref["plans"]
     compare(
         ROOT / "results/reproduced_insurance/selected_scenarios.csv",
@@ -78,6 +83,7 @@ def main():
         "status": "PASS",
         "note": "Numerical reproduction verifies implementation, not empirical demand/claim assumptions.",
     }
+
     if args.full:
         result["baseline_records_reproduced"] = compare(
             ROOT / "results/reproduced_baselines/predictions.csv",
@@ -111,6 +117,7 @@ def main():
         ).all()
         result["monte_carlo_cases"] = len(simulations)
         result["draws_per_case"] = 30000
+
     (ROOT / "results/reproduction_check.json").write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))
 

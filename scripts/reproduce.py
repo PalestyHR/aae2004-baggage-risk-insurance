@@ -22,11 +22,14 @@ def main():
         ("Numerical verification", ["scripts/check_reproduction.py", "--full"]),
     ]
     started = time.perf_counter()
+
     for index, (title, arguments) in enumerate(steps, start=1):
         print(f"\n[{index}/{len(steps)}] {title}", flush=True)
         completed = subprocess.run([sys.executable, *arguments], cwd=ROOT)
+
         if completed.returncode:
             raise SystemExit(completed.returncode)
+
     elapsed = time.perf_counter() - started
     print(f"\nReproduction complete: PASS ({elapsed:.1f} seconds)")
     print(f"Verification report: {ROOT / 'results/reproduction_check.json'}")

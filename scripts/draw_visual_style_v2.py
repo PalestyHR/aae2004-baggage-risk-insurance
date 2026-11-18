@@ -13,8 +13,10 @@ from matplotlib.colors import LinearSegmentedColormap
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "visualizations/style_v2"
+
 for x in ["figures", "source_data"]:
     (OUT / x).mkdir(parents=True, exist_ok=True)
+
 metrics = pd.read_csv(ROOT / "results/baseline_comparison_2026_01_08.csv").set_index(
     "model_id"
 )
@@ -32,6 +34,7 @@ names = {
     "XGBoost": "XGBoost",
     "adopted": "Our Model",
 }
+
 colors = {
     "adopted": "#DD2DAA",
     "HistGBR": "#0453A0",
@@ -135,6 +138,7 @@ groups = [
         "adopted",
     ],
 ]
+
 for i, (ax, group, title) in enumerate(
     zip(axs, groups, ["Statistical and linear baselines", "Tree-based alternatives"])
 ):
@@ -167,6 +171,7 @@ for i, (ax, group, title) in enumerate(
     ax.spines["polar"].set_visible(False)
     ax.grid(color="#DFE3E8", lw=0.65)
     ax.plot(np.linspace(0, 2 * np.pi, 361), np.full(361, 100), color="#555E6A", lw=0.9)
+
     for name in group:
         y = score.loc[name].to_numpy()
         y = np.r_[y, y[0]]
@@ -180,8 +185,10 @@ for i, (ax, group, title) in enumerate(
             label=names[name],
             zorder=5 if name == "adopted" else 2,
         )
+
         if name == "adopted":
             ax.fill(closed, y, color=colors[name], alpha=0.07)
+
     fig.text(
         0.265 if i == 0 else 0.735,
         0.86,
@@ -194,6 +201,7 @@ for i, (ax, group, title) in enumerate(
     ax.text(
         -0.15, 1.12, chr(97 + i), transform=ax.transAxes, fontweight="bold", fontsize=14
     )
+
 fig.subplots_adjust(left=0.07, right=0.93, top=0.75, bottom=0.23, wspace=0.37)
 fig.suptitle("Model performance profiles", y=0.99, fontsize=16, fontweight="bold")
 fig.text(
@@ -213,6 +221,7 @@ carriers = (
 )
 ac = np.linspace(0, 2 * np.pi, len(carriers), endpoint=False)
 aclose = np.r_[ac, ac[0]]
+
 agreement = []
 fig = plt.figure(figsize=(8, 7))
 ax = fig.add_subplot(111, projection="polar")
@@ -232,6 +241,7 @@ ax.plot(
     lw=1.1,
     label="Observed reference (100)",
 )
+
 for name in ["blend50", "HistGBR", "XGBoost", "adopted"]:
     g = aug[aug.model_id == name].set_index("carrier").loc[carriers]
     y = (
@@ -240,10 +250,12 @@ for name in ["blend50", "HistGBR", "XGBoost", "adopted"]:
             0, 1 - abs(g.predicted_rate / g.target_rate_per_1000 - 1)
         ).to_numpy()
     )
+
     for carrier, v in zip(carriers, y):
         agreement.append(
             {"model_id": name, "carrier": carrier, "relative_agreement_score": v}
         )
+
     ax.plot(
         aclose,
         np.r_[y, y[0]],
@@ -253,8 +265,10 @@ for name in ["blend50", "HistGBR", "XGBoost", "adopted"]:
         ms=5,
         label=names[name],
     )
+
     if name == "adopted":
         ax.fill(aclose, np.r_[y, y[0]], alpha=0.06, color=colors[name])
+
 ax.tick_params(axis="x", pad=8)
 ax.set_title("August forecast agreement by carrier", pad=30, fontsize=14)
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.10), ncol=2, fontsize=9)
@@ -265,6 +279,7 @@ pd.DataFrame(agreement).to_csv(
 )
 
 monthly = []
+
 for (month, name), g in pred.groupby(["target_month", "model_id"]):
     e = g.predicted_rate - g.target_rate_per_1000
     monthly.append(
@@ -277,6 +292,7 @@ for (month, name), g in pred.groupby(["target_month", "model_id"]):
             "weighted_MAE": np.average(abs(e), weights=g.target_enplaned_bags),
         }
     )
+
 monthly = pd.DataFrame(monthly)
 monthly.to_csv(OUT / "source_data/monthly_all_models.csv", index=False)
 chosen = [
@@ -299,8 +315,10 @@ axs[0].plot(
     ms=5,
     label="Observed",
 )
+
 for name in chosen:
     g = monthly[monthly.model_id == name].sort_values("month")
+
     for ax, key, scale in [
         (axs[0], "forecast_count", 1000),
         (axs[1], "weighted_MAE", 1),
@@ -315,9 +333,11 @@ for name in chosen:
             label=names[name],
             alpha=1 if name == "adopted" else 0.83,
         )
+
 for ax in axs:
     ax.grid(alpha=0.15)
     ax.set_axisbelow(True)
+
 axs[0].set(
     ylabel="Abnormal bags (thousands)", title="Observed and forecast monthly totals"
 )
@@ -379,6 +399,7 @@ ax.set_xticks(
 )
 ax.set_yticks(np.arange(10), [names[n] for n in order])
 ax.tick_params(length=0, pad=9)
+
 for i in range(10):
     for j in range(8):
         v = heat.iloc[i, j]
@@ -391,6 +412,7 @@ for i in range(10):
             fontsize=9,
             color="white" if v > 1 else "#27313A",
         )
+
 from matplotlib.patches import Rectangle
 
 i = order.index("adopted")
@@ -406,18 +428,22 @@ fig.subplots_adjust(left=0.20, right=0.94, bottom=0.10, top=0.87)
 save(fig, "04_monthly_error_heatmap")
 
 error = []
+
 for name, g in pred.groupby("model_id"):
     for v in abs(g.predicted_rate - g.target_rate_per_1000):
         error.append({"model_id": name, "absolute_rate_error": v})
+
 error = pd.DataFrame(error)
 error.to_csv(OUT / "source_data/case_absolute_errors.csv", index=False)
 fig, ax = plt.subplots(figsize=(12, 5))
 datasets = [error[error.model_id == n].absolute_rate_error.to_numpy() for n in order]
 vi = ax.violinplot(datasets, positions=np.arange(10), widths=0.78, showextrema=False)
+
 for body, name in zip(vi["bodies"], order):
     body.set_facecolor(colors[name])
     body.set_edgecolor(colors[name])
     body.set_alpha(0.24)
+
 ax.boxplot(
     datasets,
     positions=np.arange(10),
@@ -430,6 +456,7 @@ ax.boxplot(
     capprops={"color": "#59616B", "linewidth": 0.8},
 )
 rng = np.random.default_rng(42)
+
 for i, (name, values) in enumerate(zip(order, datasets)):
     ax.scatter(
         i + rng.uniform(-0.18, 0.18, len(values)),
@@ -439,6 +466,7 @@ for i, (name, values) in enumerate(zip(order, datasets)):
         alpha=0.35,
         zorder=3,
     )
+
 ax.set_xticks(np.arange(10), [names[n] for n in order], rotation=28, ha="right")
 ax.set(
     ylabel="Absolute rate error (bags per 1,000)",
@@ -449,6 +477,7 @@ fig.subplots_adjust(left=0.08, right=0.98, top=0.88, bottom=0.26)
 save(fig, "05_error_violin_boxplot")
 
 fig, ax = plt.subplots(figsize=(11, 5))
+
 for name in ids:
     ax.plot(
         np.arange(5),
@@ -460,6 +489,7 @@ for name in ids:
         label=names[name],
         alpha=1 if name == "adopted" else 0.80,
     )
+
 ax.axhline(100, color="#555E6A", lw=0.8, ls="--")
 ax.set_xticks(
     np.arange(5),
@@ -485,6 +515,7 @@ source = ROOT / "results/reference/insurance"
 des = pd.read_csv(source / "all_designs.csv")
 front = pd.read_csv(source / "pareto_frontier.csv")
 sc = pd.read_csv(source / "selected_scenarios.csv")
+
 fig, axs = plt.subplots(1, 2, figsize=(12, 4.8))
 g = des[des.feasible]
 axs[0].scatter(
@@ -529,6 +560,7 @@ axs[0].set(
     ylabel="Worst-scenario margin (%)",
     title="Profit-margin trade-off",
 )
+
 for higher, label, color in [
     (False, "Baseline risk", colors["HistGBR"]),
     (True, "Higher risk", colors["adopted"]),
@@ -544,6 +576,7 @@ for higher, label, color in [
         lw=2,
         label=label,
     )
+
     for x, y in zip(g.beta, g.pooled_margin * 100):
         axs[1].annotate(
             f"{y:.2f}%",
@@ -554,6 +587,7 @@ for higher, label, color in [
             fontsize=8.5,
             color=color,
         )
+
 axs[1].set(
     xlabel="Price sensitivity (beta)",
     ylabel="Expected margin (%)",
@@ -562,9 +596,11 @@ axs[1].set(
     ylim=(36, 55),
 )
 axs[1].legend(loc="center right", fontsize=9)
+
 for ax in axs:
     ax.grid(alpha=0.13)
     ax.set_axisbelow(True)
+
 panel(axs[0], "a")
 panel(axs[1], "b")
 fig.subplots_adjust(left=0.07, right=0.98, bottom=0.16, top=0.84, wspace=0.30)

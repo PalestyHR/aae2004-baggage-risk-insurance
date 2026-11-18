@@ -23,6 +23,7 @@ def count_metrics(targets, predictions):
     targets = np.asarray(targets)[mask]
     predictions = np.asarray(predictions)[mask]
     errors = predictions - targets
+
     return {
         "n": len(targets),
         "MAE": float(abs(errors).mean()),
@@ -45,6 +46,7 @@ def main():
     data = pd.read_csv(DATA / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
     observations = pd.read_csv(DATA / "carrier_month_observed_NOT_model_input.csv")
+
     observations["target_month"] = observations.date
     data = data.merge(
         observations[["airline_id", "target_month", "passenger_segments"]],
@@ -53,18 +55,22 @@ def main():
         how="left",
     )
     observed_index = observations.set_index(["airline_id", "t"])
+
     for c, source in [
         ("bags_year_ago", "enplaned_bags"),
         ("passengers_year_ago", "passenger_segments"),
     ]:
         historical_volumes = []
+
         for _, r in data.iterrows():
             historical_volumes.append(
                 observed_index.loc[
                     (r.airline_id, 12 * r.date.year + r.date.month - 1 - 12), source
                 ]
             )
+
         data[c] = historical_volumes
+
     assert not data.is_synthetic.any() and data[feature_columns].notna().all().all()
     model_parameters = FORECAST_PARAMETERS.copy()
     protocol = {
@@ -102,8 +108,10 @@ def main():
     choices = {}
     training_warnings = []
     # Select exposure forecasts on 2025, then evaluate rolling 2026 predictions.
+
     for year in [2025, 2026]:
         monthly_predictions = []
+
         for date in sorted(data.loc[data.date.dt.year == year, "date"].unique()):
             train = data[data.date < date]
             test = data[data.date == date]
@@ -122,14 +130,17 @@ def main():
             ].copy()
             fold_predictions["training_last_month"] = train.target_month.max()
             fold_predictions["year"] = year
+
             with warnings.catch_warnings(record=True) as captured_warnings:
                 warnings.simplefilter("always")
                 targets = train.target_rate_per_1000.to_numpy()
                 risk_model = ForecastingModel(feature_columns).fit(train)
                 fold_predictions["rate_ml"] = risk_model.predict(test)
                 preprocessor = risk_model.preprocessor
+
                 train_features = preprocessor.transform(train[feature_columns])
                 test_features = preprocessor.transform(test[feature_columns])
+
                 if pd.Timestamp(date) == pd.Timestamp("2026-08-01"):
                     risk_model.save(ROOT / "checkpoints")
 
@@ -139,6 +150,7 @@ def main():
                 fold_predictions["rate_symmetric"] = np.maximum(
                     0, symmetric_model.predict(test_features)
                 )
+
                 for name, col in [
                     ("bags", "target_enplaned_bags"),
                     ("passengers", "passenger_segments"),
@@ -150,10 +162,14 @@ def main():
                     fold_predictions[name + "_lgb"] = np.maximum(
                         0, model.predict(test_features)
                     )
+
                 warning_records = []
+
                 for weights in captured_warnings:
                     warning_records.append(str(weights.message))
+
                 training_warnings.extend(warning_records)
+
             fold_predictions["rate_simple"] = 0.5 * (
                 test.recent_rate.to_numpy() + test.rate_year_ago.to_numpy()
             )
@@ -164,12 +180,15 @@ def main():
             fold_predictions["passengers_seasonal"] = (
                 test.passengers_year_ago.to_numpy()
             )
+
             fold_predictions["passengers_blend"] = 0.5 * (
                 test.passengers_year_ago.to_numpy()
                 + test.lag_passenger_segments.to_numpy()
             )
             monthly_predictions.append(fold_predictions)
+
         predictions = pd.concat(monthly_predictions, ignore_index=True)
+
         for name, target in [
             ("bags", "target_enplaned_bags"),
             ("passengers", "passenger_segments"),
@@ -186,23 +205,29 @@ def main():
                         ),
                     }
                 )
+
         if year == 2025:
             for name in ["bags", "passengers"]:
                 selected_metrics = []
+
                 for x in metrics:
                     if x["target"] == name and x["year"] == 2025:
                         selected_metrics.append(x)
+
                 choices[name] = min(selected_metrics, key=lambda x: x["WAPE_percent"])[
                     "method"
                 ]
+
             (OUT / "volume_selection_before_2026.json").write_text(
                 json.dumps(choices, indent=2), encoding="utf-8"
             )
             print("2025 volume selection", choices, flush=True)
+
         predictions["forecast_baggage_volume"] = predictions["bags_" + choices["bags"]]
         predictions["forecast_passenger_segments"] = predictions[
             "passengers_" + choices["passengers"]
         ]
+
         for rate in ["ml", "symmetric", "simple"]:
             predictions["anomaly_count_" + rate] = (
                 predictions["rate_" + rate] * predictions.forecast_baggage_volume / 1000
@@ -218,6 +243,7 @@ def main():
                     ),
                 }
             )
+
         predictions["anomaly_count_simple_full"] = (
             predictions.rate_simple * predictions.bags_blend / 1000
         )
@@ -232,6 +258,7 @@ def main():
                 ),
             }
         )
+
         for rate in ["ml", "symmetric", "simple"]:
             errors = predictions["rate_" + rate] - predictions.target_rate_per_1000
             weights = predictions.target_enplaned_bags
@@ -248,11 +275,14 @@ def main():
                     "weighted_bias": float(np.average(errors, weights=weights)),
                 }
             )
+
         records.append(predictions)
+
     predictions = pd.concat(records, ignore_index=True)
     predictions.to_csv(OUT / "predictions.csv", index=False)
     pd.DataFrame(metrics).to_csv(OUT / "metrics.csv", index=False)
     monthly = []
+
     for month, month_predictions in predictions[predictions.year == 2026].groupby(
         "target_month"
     ):
@@ -271,6 +301,7 @@ def main():
                 "passenger_label_coverage": month_predictions.passenger_segments.notna().mean(),
             }
         )
+
     pd.DataFrame(monthly).to_csv(OUT / "monthly_totals_2026.csv", index=False)
     frontier = predictions[predictions.year == 2026][
         [
@@ -288,6 +319,7 @@ def main():
     frontier["payout_budget_formula"] = (
         "forecast_passenger_segments * eligible_itinerary_factor * purchase_rate * premium - nonclaim_costs - target_profit"
     )
+
     frontier["average_benefit_ceiling_formula"] = (
         "payout_budget / expected_covered_claims; only when budget>=0 and claims>0"
     )
@@ -309,9 +341,11 @@ def main():
         encoding="utf-8",
     )
     selected_metrics = []
+
     for x in metrics:
         if x["year"] == 2026:
             selected_metrics.append(x)
+
     print(pd.DataFrame(selected_metrics).to_string(index=False))
     interface = predictions[predictions.year == 2026].copy()
     interface = interface[interface.target_month == "2026-08-01"]
@@ -340,6 +374,7 @@ def main():
             "training_last_month": "training_cutoff",
         }
     )
+
     interface["population"] = "BTS US domestic, not Cathay"
     interface.to_csv(OUT / "forecast_interface_2026_08.csv", index=False)
 
