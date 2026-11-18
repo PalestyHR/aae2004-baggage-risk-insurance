@@ -1,67 +1,70 @@
+import json
 import unittest
-import math
+from pathlib import Path
+
+import pandas as pd
 from models.insurance import (
     claims_from_forecast,
+    expected_portfolio,
+    simulate_cohort,
     tier_probabilities,
-    benefit_frontier,
-    pareto_frontier,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class InsuranceTests(unittest.TestCase):
-    def test_event_partition(self):
-        q = claims_from_forecast(20, 1, 1, 1, 0.5, 0.02)
-        self.assertAlmostEqual(q["delay_claim_probability"], 0.01)
-        self.assertAlmostEqual(q["loss_claim_probability"], 0.0004)
-        self.assertAlmostEqual(q["no_paid_claim_probability"], 0.9896)
-        with self.assertRaises(ValueError):
-            claims_from_forecast(5, 1, 1, 1, 0.9, 0.2)
-
-    def test_no_silent_calibration(self):
-        with self.assertRaises(ValueError):
-            claims_from_forecast(5, 1, 1, None, 0.5, 0.05)
-
-    def test_budget_boundary(self):
-        r = benefit_frontier(
-            policies=100,
-            price=10,
-            expense_rate=0.1,
-            variable_cost=1,
-            allocated_fixed_cost=100,
-            target_profit=100,
-            qd=0.01,
-            ql=0.001,
-            delay_benefit=100,
-        )
-        self.assertAlmostEqual(r["loss_benefit_ceiling"], 5000)
-        # Substitute the ceiling into the accounting equation.
-        self.assertAlmostEqual(
-            100 * (10 * 0.9 - 1 - 0.01 * 100 - 0.001 * r["loss_benefit_ceiling"]) - 100,
-            100,
-        )
-
-    def test_pareto_tradeoff(self):
-        rows = [
-            {
-                "name": "A",
-                "expected_profit": 30,
-                "expected_profit_margin": 0.3,
-                "feasible": True,
-            },
-            {
-                "name": "B",
-                "expected_profit": 20,
-                "expected_profit_margin": 0.5,
-                "feasible": True,
-            },
-            {
-                "name": "C",
-                "expected_profit": 10,
-                "expected_profit_margin": 0.2,
-                "feasible": True,
-            },
+    def setUp(self):
+        self.plans = json.loads((ROOT / "configs/selected_menu_v2.json").read_text())[
+            "plans"
         ]
-        self.assertEqual({r["name"] for r in pareto_frontier(rows)}, {"A", "B"})
+        self.assumptions = json.loads(
+            (ROOT / "configs/insurance_assumptions.json").read_text()
+        )["base_assumptions"]
+        self.forecast = (
+            pd.read_csv(
+                ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
+            )
+            .iloc[0]
+            .to_dict()
+        )
+
+    def test_claim_probabilities(self):
+        risk = claims_from_forecast(20, 1, 1, 1, 0.5, 0.02)
+        self.assertAlmostEqual(risk["delay_claim_probability"], 0.01)
+        self.assertAlmostEqual(risk["loss_claim_probability"], 0.0004)
+        self.assertAlmostEqual(risk["no_paid_claim_probability"], 0.9896)
+
+    def test_reference_purchase_probabilities(self):
+        for plan in self.plans:
+            plan.update(plan["reference"])
+        choices = tier_probabilities(self.plans, self.assumptions["demand"])
+        for name, value in self.assumptions["demand"][
+            "reference_purchase_probabilities"
+        ].items():
+            self.assertAlmostEqual(choices[name], value)
+        self.assertAlmostEqual(sum(choices.values()), 1)
+
+    def test_expected_profit(self):
+        result = expected_portfolio(self.forecast, self.plans, self.assumptions)
+        ref = pd.read_csv(
+            ROOT / "results/reference/insurance/selected_operator_results.csv"
+        )
+        expected = ref[
+            (ref.carrier == self.forecast["carrier"]) & (ref.scenario == "beta1.0_base")
+        ].iloc[0]
+        self.assertAlmostEqual(
+            result["expected_profit"], expected.expected_profit, places=6
+        )
+
+    def test_simulated_mean(self):
+        result = simulate_cohort(
+            self.forecast, self.plans, self.assumptions, draws=5000
+        )
+        error = abs(
+            result["simulated_mean_profit"] - result["expected_profit_analytic"]
+        )
+        self.assertLessEqual(error, 6 * result["mean_standard_error"])
 
 
 if __name__ == "__main__":

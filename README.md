@@ -49,9 +49,11 @@ predicted_rates = model.predict(test)
 
 ## Quick start
 
-Use **Python 3.12** and run commands from the repository root.
+Use **Python 3.12**. The processed datasets are included, and the experiments run on CPU.
 
 ```bash
+git clone https://github.com/PalestyHR/aae2004-baggage-risk-insurance.git
+cd aae2004-baggage-risk-insurance
 python -m venv .venv
 ```
 
@@ -61,12 +63,21 @@ Activate with `.venv\Scripts\Activate.ps1` on PowerShell or `source .venv/bin/ac
 python -m pip install -r requirements.txt
 python -m pip install --no-deps -e .
 
-python scripts/reproduce_risk.py
-python scripts/reproduce_insurance.py
-python scripts/check_reproduction.py
+python scripts/reproduce.py
 ```
 
-The workflow trains the monthly risk model, optimises the protection menu and checks the outputs against the reference results. Generated results are saved in `results/reproduced_risk/` and `results/reproduced_insurance/`.
+The command trains the forecasting model and nine baselines, repeats seven loss ratios under both weighting schemes, optimises the protection menu, runs 72 Monte Carlo cases, and rebuilds the comparison table from the new predictions. It checks the results against the included references and stops if a step fails.
+
+A successful run ends with **`Reproduction complete: PASS`**. The verification summary is saved in `results/reproduction_check.json`. Expected selections are **1:2** for the under/over loss ratio and **M0775** for the protection menu.
+
+| Result | Location |
+|---|---|
+| Forecast predictions and metrics | `results/reproduced_risk/` |
+| Baseline predictions and metrics | `results/reproduced_baselines/` |
+| Loss-ratio selection and comparison | `results/reproduced_loss_ratios/` |
+| Menu, six scenarios and sensitivity cases | `results/reproduced_insurance/` |
+| Monte Carlo results | `results/selected_menu_monte_carlo/` |
+| Full baseline comparison | `results/baseline_comparison_2026_01_08.csv` |
 
 <details>
 <summary>Additional experiments</summary>

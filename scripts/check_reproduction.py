@@ -1,4 +1,5 @@
 from pathlib import Path
+import argparse
 import sys
 import json
 
@@ -26,6 +27,13 @@ def compare(left, right, keys, values, tolerance=1e-6):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Verify reproduced numerical outputs.")
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Also verify baselines, loss ratios and simulations.",
+    )
+    args = parser.parse_args()
     count = compare(
         ROOT / "results/reproduced_risk/predictions.csv",
         ROOT / "results/reference/model1/predictions.csv",
@@ -70,6 +78,39 @@ def main():
         "status": "PASS",
         "note": "Numerical reproduction verifies implementation, not empirical demand/claim assumptions.",
     }
+    if args.full:
+        result["baseline_records_reproduced"] = compare(
+            ROOT / "results/reproduced_baselines/predictions.csv",
+            ROOT / "results/reference/integrated_model_comparison/predictions.csv",
+            ["row_id", "year", "model"],
+            ["prediction"],
+        )
+        result["loss_ratio_records_reproduced"] = compare(
+            ROOT / "results/reproduced_loss_ratios/predictions.csv",
+            ROOT / "results/reference/asymmetric_loss_comparison/predictions.csv",
+            ["row_id", "year", "weighting", "under_over_ratio"],
+            ["prediction"],
+        )
+        selection = json.loads(
+            (
+                ROOT / "results/reproduced_loss_ratios/selection_before_2026.json"
+            ).read_text()
+        )
+        assert selection["overall"]["under_over_ratio"] == "1:2"
+        result["selected_loss_ratio"] = "1:2"
+        simulations = pd.read_csv(
+            ROOT / "results/selected_menu_monte_carlo/results.csv"
+        )
+        assert len(simulations) == 72
+        assert (simulations.draws == 30000).all()
+        assert (
+            abs(
+                simulations.simulated_mean_profit - simulations.expected_profit_analytic
+            )
+            <= 6 * simulations.mean_standard_error
+        ).all()
+        result["monte_carlo_cases"] = len(simulations)
+        result["draws_per_case"] = 30000
     (ROOT / "results/reproduction_check.json").write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))
 

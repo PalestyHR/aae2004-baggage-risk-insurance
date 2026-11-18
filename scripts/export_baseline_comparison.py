@@ -1,15 +1,27 @@
 """Recompute matched Jan-Aug2026 baseline metrics from saved predictions."""
 
 from pathlib import Path
+import argparse
 import json
 import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 REF = ROOT / "results/reference"
-pipe = pd.read_csv(REF / "model1/predictions.csv")
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--reproduced", action="store_true", help="Use freshly trained predictions."
+)
+args = parser.parse_args()
+risk_directory = ROOT / "results/reproduced_risk" if args.reproduced else REF / "model1"
+baseline_directory = (
+    ROOT / "results/reproduced_baselines"
+    if args.reproduced
+    else REF / "integrated_model_comparison"
+)
+pipe = pd.read_csv(risk_directory / "predictions.csv")
 pipe = pipe[pipe.year == 2026].copy()
-families = pd.read_csv(REF / "integrated_model_comparison/predictions.csv")
+families = pd.read_csv(baseline_directory / "predictions.csv")
 families = families[families.year == 2026]
 assert len(pipe) == 101 and pipe.row_id.nunique() == 101
 actual = pipe.set_index("row_id")
@@ -75,7 +87,7 @@ r.to_csv(ROOT / "results/baseline_comparison_2026_01_08.csv", index=False)
 pd.concat(records, ignore_index=True).to_csv(
     ROOT / "results/baseline_comparison_case_predictions.csv", index=False
 )
-known = pd.read_csv(REF / "integrated_model_comparison/metrics.csv")
+known = pd.read_csv(baseline_directory / "metrics.csv")
 for row in rows:
     if row["model_id"] == "adopted":
         continue
@@ -85,7 +97,7 @@ assert np.isclose(rows[-1]["rate_weighted_MAE"], 0.6375740849258186, atol=1e-10)
 lines = [
     "# Model 1 Baseline Comparison Table",
     "",
-    "Test period: January–August 2026. **101 matched carrier-month cases**. Monthly expanding-window refits use only earlier target months, assuming previous-month data are available. All metrics below are recomputed from saved predictions; no retraining or model selection was performed.",
+    "Test period: January–August 2026. **101 matched carrier-month cases**. Monthly expanding-window refits use only earlier target months, assuming previous-month data are available. All metrics below are recomputed from aligned carrier-month predictions.",
     "",
     "## Main comparison",
     "",
@@ -117,7 +129,9 @@ lines += [
     "",
     "The 2026 period has already been inspected in earlier exploration; this is not an untouched final holdout. Traffic-volume evaluation ends in July because August passenger labels are unavailable; traffic is not pooled into the rate/count table.",
     "",
-    "Sources: `results/reference/integrated_model_comparison/predictions.csv` and `results/reference/model1/predictions.csv`. Full-precision values and 1,010 aligned case predictions are exported under `results/baseline_comparison*`.",
+    f"Sources: `{baseline_directory.relative_to(ROOT)}/predictions.csv` and "
+    f"`{risk_directory.relative_to(ROOT)}/predictions.csv`. "
+    "Full-precision values and 1,010 aligned case predictions are exported under `results/baseline_comparison*`.",
 ]
 (ROOT / "docs").mkdir(exist_ok=True)
 (ROOT / "docs/Model1_Baseline_Comparison_2026_Jan_Aug.md").write_text(

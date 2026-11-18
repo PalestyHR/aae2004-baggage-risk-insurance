@@ -1,25 +1,15 @@
-"""Compatibility imports for the original package path."""
+"""Original import path for the four insurance calculations."""
 
 from models.insurance import (
-    benefit_frontier,
-    bounded,
     claims_from_forecast,
-    expected_portfolio,
-    nonnegative,
-    pareto_frontier,
-    positive,
-    simulate_cohort,
     tier_probabilities,
+    expected_portfolio,
+    simulate_cohort,
 )
 
 __all__ = [
-    "benefit_frontier",
-    "bounded",
     "claims_from_forecast",
-    "expected_portfolio",
-    "nonnegative",
-    "pareto_frontier",
-    "positive",
-    "simulate_cohort",
     "tier_probabilities",
+    "expected_portfolio",
+    "simulate_cohort",
 ]
