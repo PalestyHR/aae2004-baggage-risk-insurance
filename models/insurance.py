@@ -1,30 +1,12 @@
-"""Insurance design layer on the frozen BTS forecasting pipeline.
+"""Baggage protection pricing and profitability for one sales cohort.
 
-All monetary values use one declared currency. No probabilities, customer
-preferences or system costs are silently calibrated from BTS mishandling data.
-The portfolio unit here is one sales cohort, e.g. one month's departures.
+The calculation follows claim risk, passenger choice, portfolio economics
+and random claims. All monetary inputs use the configured currency.
 """
 
 import math
 
-
-def bounded(x, name, lo=0.0, hi=1.0):
-    if x is None or not math.isfinite(float(x)) or not lo <= x <= hi:
-        raise ValueError(f"{name} must be supplied in [{lo}, {hi}]")
-    return float(x)
-
-
-def nonnegative(x, name):
-    if x is None or not math.isfinite(float(x)) or x < 0:
-        raise ValueError(f"{name} must be supplied and nonnegative")
-    return float(x)
-
-
-def positive(x, name):
-    x = nonnegative(x, name)
-    if x == 0:
-        raise ValueError(f"{name} must be positive")
-    return x
+# Claim probabilities
 
 
 def claims_from_forecast(
@@ -74,6 +56,9 @@ def claims_from_forecast(
         "no_paid_claim_probability": max(0.0, 1 - delay_probability - loss_probability),
         "status": "scenario_conversion_not_calibrated",
     }
+
+
+# Purchase probabilities
 
 
 def tier_probabilities(plans, demand):
@@ -128,6 +113,9 @@ def tier_probabilities(plans, demand):
     exp_utilities = [math.exp(x - max_logit) for x in logits]
     normalizer = sum(exp_utilities)
     return dict(zip(["no_purchase"] + names, [x / normalizer for x in exp_utilities]))
+
+
+# Expected revenue, claims and profit
 
 
 def expected_portfolio(forecast, plans, assumptions):
@@ -259,48 +247,7 @@ def expected_portfolio(forecast, plans, assumptions):
     }
 
 
-def benefit_frontier(
-    *,
-    policies,
-    price,
-    expense_rate,
-    variable_cost,
-    allocated_fixed_cost,
-    target_profit,
-    qd,
-    ql,
-    delay_benefit,
-):
-    """Conditional loss-benefit ceiling. If price/benefit changes uptake, rerun demand.
-    Returns no automatic infinite benefit when loss probability is zero.
-    """
-    policy_count = positive(policies, "policies")
-    premium = positive(price, "price")
-    proportional_expense = bounded(expense_rate, "expense rate", 0, 0.999999999)
-    processing_cost = nonnegative(variable_cost, "variable cost")
-    fixed_cost = nonnegative(allocated_fixed_cost, "fixed cost")
-    profit_target = nonnegative(target_profit, "target profit")
-    qd = bounded(qd, "qd")
-    ql = bounded(ql, "ql")
-    delay_amount = nonnegative(delay_benefit, "delay benefit")
-    if qd + ql > 1:
-        raise ValueError("Invalid mutually exclusive probabilities")
-    allowance = (
-        premium * (1 - proportional_expense)
-        - processing_cost
-        - (fixed_cost + profit_target) / policy_count
-    )
-    residual = allowance - qd * delay_amount
-    return {
-        "payout_allowance_per_policy": allowance,
-        "remaining_after_delay": residual,
-        "loss_benefit_ceiling": residual / ql if ql > 0 and residual >= 0 else None,
-        "status": (
-            "conditional_ceiling"
-            if ql > 0 and residual >= 0
-            else "infeasible_or_unidentified"
-        ),
-    }
+# Monte Carlo simulation
 
 
 def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
@@ -370,6 +317,53 @@ def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
     }
 
 
+# Benefit limits and Pareto selection
+
+
+def benefit_frontier(
+    *,
+    policies,
+    price,
+    expense_rate,
+    variable_cost,
+    allocated_fixed_cost,
+    target_profit,
+    qd,
+    ql,
+    delay_benefit,
+):
+    """Conditional loss-benefit ceiling. If price/benefit changes uptake, rerun demand.
+    Returns no automatic infinite benefit when loss probability is zero.
+    """
+    policy_count = positive(policies, "policies")
+    premium = positive(price, "price")
+    proportional_expense = bounded(expense_rate, "expense rate", 0, 0.999999999)
+    processing_cost = nonnegative(variable_cost, "variable cost")
+    fixed_cost = nonnegative(allocated_fixed_cost, "fixed cost")
+    profit_target = nonnegative(target_profit, "target profit")
+    qd = bounded(qd, "qd")
+    ql = bounded(ql, "ql")
+    delay_amount = nonnegative(delay_benefit, "delay benefit")
+    if qd + ql > 1:
+        raise ValueError("Invalid mutually exclusive probabilities")
+    allowance = (
+        premium * (1 - proportional_expense)
+        - processing_cost
+        - (fixed_cost + profit_target) / policy_count
+    )
+    residual = allowance - qd * delay_amount
+    return {
+        "payout_allowance_per_policy": allowance,
+        "remaining_after_delay": residual,
+        "loss_benefit_ceiling": residual / ql if ql > 0 and residual >= 0 else None,
+        "status": (
+            "conditional_ceiling"
+            if ql > 0 and residual >= 0
+            else "infeasible_or_unidentified"
+        ),
+    }
+
+
 def pareto_frontier(candidates):
     """Maximize expected profit and margin, among externally constrained designs.
     Customer coverage/demand/risk requirements must be checked before passing in.
@@ -398,3 +392,25 @@ def pareto_frontier(candidates):
         if not dominated:
             result.append(candidate)
     return result
+
+
+# Input checks
+
+
+def bounded(x, name, lo=0.0, hi=1.0):
+    if x is None or not math.isfinite(float(x)) or not lo <= x <= hi:
+        raise ValueError(f"{name} must be supplied in [{lo}, {hi}]")
+    return float(x)
+
+
+def nonnegative(x, name):
+    if x is None or not math.isfinite(float(x)) or x < 0:
+        raise ValueError(f"{name} must be supplied and nonnegative")
+    return float(x)
+
+
+def positive(x, name):
+    x = nonnegative(x, name)
+    if x == 0:
+        raise ValueError(f"{name} must be positive")
+    return x

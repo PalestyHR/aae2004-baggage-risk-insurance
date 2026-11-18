@@ -2,20 +2,85 @@
 
 <p align="center">
   <a href="#overview">Overview</a> ·
+  <a href="#models">Models</a> ·
+  <a href="#quick-start">Quick Start</a> ·
   <a href="#main-results">Results</a> ·
-  <a href="#installation">Installation</a> ·
-  <a href="#reproduction">Reproduction</a> ·
-  <a href="DATA_SOURCES.md">Data</a> ·
-  <a href="models/">Models</a>
+  <a href="#data">Data</a>
 </p>
-
-Monthly baggage-risk forecasting and scenario-based pricing of optional baggage protection. The experiments use U.S. Bureau of Transportation Statistics (BTS) carrier-month data, with Cathay Pacific as the proposed application context.
 
 ## Overview
 
-The framework combines monthly LightGBM risk forecasts, baggage and passenger-volume forecasts, scenario claim probabilities, and three-tier menu optimisation. The two model implementations are [`models/forecasting_model.py`](models/forecasting_model.py) and [`models/insurance.py`](models/insurance.py).
+This project combines monthly baggage-risk forecasting with the pricing of an optional baggage protection product. Experiments use U.S. BTS carrier-month data, with Cathay Pacific as the proposed application context.
 
-[Model equations and data construction](MODEL_SUMMARY.md) · [Data sources](DATA_SOURCES.md) · [Full baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
+Historical operations → Risk and volume forecasts → Claim probabilities → Menu optimisation → Profitability simulation
+
+[Method and equations](MODEL_SUMMARY.md) · [Data sources](DATA_SOURCES.md) · [Full baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
+
+## Models
+
+| Component | Implementation | Experiment |
+|---|---|---|
+| **Forecasting Model** | [forecasting_model.py](models/forecasting_model.py) | [reproduce_risk.py](scripts/reproduce_risk.py) |
+| **Insurance Model** | [insurance.py](models/insurance.py) | [reproduce_insurance.py](scripts/reproduce_insurance.py) |
+
+The forecasting model contains the LightGBM parameters, asymmetric loss, preprocessing, fitting and prediction. The insurance model contains claim conversion, purchasing probabilities, expected profit and Monte Carlo simulation. Saved weights and preprocessing values are in [`checkpoints/`](checkpoints/).
+
+<details>
+<summary>Use the forecasting model in Python</summary>
+
+```python
+import json
+from pathlib import Path
+
+import pandas as pd
+from models.forecasting_model import ForecastingModel
+
+features = json.loads(Path("configs/feature_spec.json").read_text())["core_features"]
+data = pd.read_csv("data/processed/lag1/all_real.csv")
+train = data[data.target_month < "2026-08-01"]
+test = data[data.target_month == "2026-08-01"]
+
+model = ForecastingModel(features)
+model.fit(train)
+predicted_rates = model.predict(test)
+```
+
+</details>
+
+## Quick start
+
+Use **Python 3.12** and run commands from the repository root.
+
+```bash
+python -m venv .venv
+```
+
+Activate with `.venv\Scripts\Activate.ps1` on PowerShell or `source .venv/bin/activate` on Linux/macOS.
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip install --no-deps -e .
+
+python scripts/reproduce_risk.py
+python scripts/reproduce_insurance.py
+python scripts/check_reproduction.py
+```
+
+The workflow trains the monthly risk model, optimises the protection menu and checks the outputs against the reference results. Generated results are saved in `results/reproduced_risk/` and `results/reproduced_insurance/`.
+
+<details>
+<summary>Additional experiments</summary>
+
+| Experiment | Command | Output |
+|---|---|---|
+| Baseline training | `python scripts/train_baselines.py` | `results/reproduced_baselines/` |
+| Loss-ratio comparison | `python scripts/compare_loss_ratios.py` | `results/reproduced_loss_ratios/` |
+| Monte Carlo simulation | `python scripts/simulate_selected_menu.py` | `results/selected_menu_monte_carlo/` |
+| Existing tests | `python -m unittest discover -s tests -v` | Terminal results |
+
+Monte Carlo uses 30,000 draws for each of six scenarios and 12 airline cases. Baseline training and loss-ratio experiments use the recorded chronological folds and configurations.
+
+</details>
 
 ## Main results
 
@@ -46,82 +111,6 @@ The August 2026 forecast supplies the insurance experiment with 12 airline-scale
 
 The search evaluates **1,836 menus**, retains **98 feasible menus**, and finds **7 Pareto-optimal menus**. Across six scenarios, the selected menu's combined monthly expected profit ranges from **USD 2.74 million to USD 4.02 million**. Scenario assumptions and full outputs are in [configs](configs/) and [insurance results](results/reference/insurance/).
 
-## Forecasting model
-
-[`ForecastingModel`](models/forecasting_model.py) contains the LightGBM settings, asymmetric squared-loss objective, one-hot encoding, standardisation, training, prediction and checkpoint export. The monthly expanding-window experiment is implemented in [`scripts/reproduce_risk.py`](scripts/reproduce_risk.py).
-
-```python
-import json
-from pathlib import Path
-
-import pandas as pd
-from models.forecasting_model import ForecastingModel
-
-features = json.loads(Path("configs/feature_spec.json").read_text())["core_features"]
-data = pd.read_csv("data/processed/lag1/all_real.csv")
-train = data[data.target_month < "2026-08-01"]
-test = data[data.target_month == "2026-08-01"]
-
-model = ForecastingModel(features)
-model.fit(train)
-predicted_rates = model.predict(test)
-```
-
-The LightGBM library supplies the tree learner. Saved weights and preprocessing parameters are provided in [`checkpoints/`](checkpoints/).
-
-## Installation
-
-Use Python 3.12.
-
-```bash
-python -m venv .venv
-```
-
-Activate the environment with `.venv\Scripts\Activate.ps1` on PowerShell or `source .venv/bin/activate` on Linux/macOS, then install dependencies.
-
-```bash
-python -m pip install -r requirements.txt
-python -m pip install --no-deps -e .
-```
-
-## Reproduction
-
-Run these commands from the repository root, in order.
-
-```bash
-python scripts/reproduce_risk.py
-python scripts/reproduce_insurance.py
-python scripts/check_reproduction.py
-```
-
-The first command refits the forecast model with an expanding monthly window. The second runs menu optimisation and the additional demand/cost scenarios. The last compares the regenerated predictions, selected menu and financial outputs with the included reference results.
-
-| Command | Output |
-|---|---|
-| `reproduce_risk.py` | `results/reproduced_risk/` and the saved predictor in `checkpoints/` |
-| `reproduce_insurance.py` | `results/reproduced_insurance/` |
-| `check_reproduction.py` | `results/reproduction_check.json` |
-| `simulate_selected_menu.py` | `results/selected_menu_monte_carlo/` |
-| `export_baseline_comparison.py` | `results/baseline_comparison*.csv` |
-
-Run the selected-menu Monte Carlo experiment and existing tests with:
-
-```bash
-python scripts/simulate_selected_menu.py
-python -m unittest discover -s tests -v
-```
-
-Monte Carlo uses 30,000 draws for each of six scenarios and 12 airline cases. The baseline export recomputes metrics from the saved model predictions.
-
-To retrain all baseline methods or repeat the seven penalty-ratio comparisons:
-
-```bash
-python scripts/train_baselines.py
-python scripts/compare_loss_ratios.py
-```
-
-These commands write to `results/reproduced_baselines/` and `results/reproduced_loss_ratios/`. Each uses the same chronological folds and configurations as its reference experiment.
-
 ## Data
 
 The supervised dataset has **1,226 real carrier-month records** and **30 core features**.
@@ -136,34 +125,34 @@ The supervised dataset has **1,226 real carrier-month records** and **30 core fe
 
 Detailed source tables, transformations and column definitions are linked from [DATA_SOURCES.md](DATA_SOURCES.md). Demand, claim conversion and cost inputs are specified scenario parameters in `configs/`.
 
-<details>
-<summary><strong>Repository structure and figure generation</strong></summary>
-
-## Code and results
+## Repository structure
 
 ```text
-configs/              Feature definitions, assumptions and selected menu
-models/               Risk predictor and insurance model implementations (.py)
-src/baggage_project/  Compatibility imports for the original package path
-scripts/              Training, optimisation, simulation and plotting entry points
-tests/                Existing insurance calculation tests
-data/                 Processed datasets, baggage source CSV and source records
-checkpoints/          Saved LightGBM weights (.txt) and preprocessing (.json)
-results/reference/    Forecasts, baseline experiments and selected-menu results
-visualizations/       Figures and numerical plotting data
-docs/                 Full model comparison
-archive/scripts/      Original data collection and preparation records
+models/          Forecasting and insurance implementations
+scripts/         Training, evaluation and simulation entry points
+configs/         Features, financial assumptions and selected menu
+checkpoints/     LightGBM weights and fitted preprocessing values
+data/            Datasets and source records
+results/         Reference results and reproduced outputs
+visualizations/  Figures and numerical plotting data
+tests/           Calculation tests
 ```
 
-For figure regeneration, install `requirements-viz.txt`, then run:
+Detailed comparisons are in `docs/`. Original data preparation records are retained in `archive/scripts/`. The original `baggage_project` import paths are supported through `src/baggage_project/`.
+
+<details>
+<summary>Regenerate figures</summary>
 
 ```bash
+python -m pip install -r requirements-viz.txt
 python scripts/export_baseline_comparison.py
 python scripts/export_visualization_curves.py
 python scripts/draw_visual_style_v2.py
 python scripts/draw_3d_ribbon_figures.py
 ```
 
-Iteration curves are reconstructed from the saved model's tree prefixes. The 2026 experiments form an exploratory rolling evaluation. Financial simulations describe the operating conditions specified in the configuration files.
+Iteration curves are reconstructed from saved model tree prefixes. Baseline tables are recomputed from saved predictions.
 
 </details>
+
+The 2026 results form an exploratory rolling evaluation. Financial simulations use the demand, claim and cost assumptions specified in `configs/`.
