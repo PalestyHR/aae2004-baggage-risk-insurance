@@ -15,29 +15,23 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class InsuranceTests(unittest.TestCase):
     def setUp(self):
-        self.plans = json.loads((ROOT / "configs/selected_menu_v2.json").read_text())[
-            "plans"
-        ]
-        self.assumptions = json.loads(
-            (ROOT / "configs/insurance_assumptions.json").read_text()
-        )["base_assumptions"]
-        self.forecast = (
-            pd.read_csv(
-                ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
-            )
-            .iloc[0]
-            .to_dict()
-        )
+        plans_file = ROOT / "configs/selected_menu_v2.json"
+        plans_text = plans_file.read_text()
+        plans_config = json.loads(plans_text)
+        self.plans = plans_config["plans"]
+
+        assumptions_file = ROOT / "configs/insurance_assumptions.json"
+        assumptions_text = assumptions_file.read_text()
+        assumptions_config = json.loads(assumptions_text)
+        self.assumptions = assumptions_config["base_assumptions"]
+
+        forecast_file = ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
+        forecasts = pd.read_csv(forecast_file)
+        first_forecast = forecasts.iloc[0]
+        self.forecast = first_forecast.to_dict()
 
     def test_claim_probabilities(self):
-        risk = claims_from_forecast(
-            20,
-            1,
-            1,
-            1,
-            0.5,
-            0.02,
-        )
+        risk = claims_from_forecast(20, 1, 1, 1, 0.5, 0.02)
         self.assertAlmostEqual(risk["delay_claim_probability"], 0.01)
         self.assertAlmostEqual(risk["loss_claim_probability"], 0.0004)
         self.assertAlmostEqual(risk["no_paid_claim_probability"], 0.9896)
@@ -48,9 +42,10 @@ class InsuranceTests(unittest.TestCase):
 
         choices = tier_probabilities(self.plans, self.assumptions["demand"])
 
-        for name, value in self.assumptions["demand"][
-            "reference_purchase_probabilities"
-        ].items():
+        demand = self.assumptions["demand"]
+        reference_probabilities = demand["reference_purchase_probabilities"]
+
+        for name, value in reference_probabilities.items():
             self.assertAlmostEqual(choices[name], value)
 
         self.assertAlmostEqual(sum(choices.values()), 1)

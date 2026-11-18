@@ -14,7 +14,7 @@ This project combines monthly baggage-risk forecasting with the pricing of an op
 
 Historical operations → Risk and volume forecasts → Claim probabilities → Menu optimisation → Profitability simulation
 
-[Method and equations](MODEL_SUMMARY.md) · [Data sources](DATA_SOURCES.md) · [Full baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
+[Data sources](DATA_SOURCES.md) · [Full baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
 
 ## Models
 
@@ -35,7 +35,10 @@ from pathlib import Path
 import pandas as pd
 from models.forecasting_model import ForecastingModel
 
-features = json.loads(Path("configs/feature_spec.json").read_text())["core_features"]
+feature_file = Path("configs/feature_spec.json")
+feature_text = feature_file.read_text()
+feature_spec = json.loads(feature_text)
+features = feature_spec["core_features"]
 data = pd.read_csv("data/processed/lag1/all_real.csv")
 train = data[data.target_month < "2026-08-01"]
 test = data[data.target_month == "2026-08-01"]
@@ -132,7 +135,7 @@ The supervised dataset has **1,226 real carrier-month records** and **30 core fe
 | Validation | 2025 | 168 |
 | Rolling test | January–August 2026 | 101 |
 
-2019 observations initialise historical features. Monthly refits use earlier target months. Feature preprocessing is fitted on each training window. Synthetic feature-masking copies are stored separately and are excluded from the adopted model. Passenger-volume labels are available through July 2026.
+2019 observations initialise historical features. Monthly refits use earlier target months. Feature preprocessing is fitted on each training window. Passenger-volume labels are available through July 2026.
 
 Detailed source tables, transformations and column definitions are linked from [DATA_SOURCES.md](DATA_SOURCES.md). Demand, claim conversion and cost inputs are specified scenario parameters in `configs/`.
 
@@ -145,25 +148,9 @@ configs/         Features, financial assumptions and selected menu
 checkpoints/     LightGBM weights and fitted preprocessing values
 data/            Datasets and source records
 results/         Reference results and reproduced outputs
-visualizations/  Figures and numerical plotting data
 tests/           Calculation tests
 ```
 
-Detailed comparisons are in `docs/`. Original data preparation records are retained in `archive/scripts/`. The original `baggage_project` import paths are supported through `src/baggage_project/`.
-
-<details>
-<summary>Regenerate figures</summary>
-
-```bash
-python -m pip install -r requirements-viz.txt
-python scripts/export_baseline_comparison.py
-python scripts/export_visualization_curves.py
-python scripts/draw_visual_style_v2.py
-python scripts/draw_3d_ribbon_figures.py
-```
-
-Iteration curves are reconstructed from saved model tree prefixes. Baseline tables are recomputed from saved predictions.
-
-</details>
+Detailed comparisons are in `docs/`. The original `baggage_project` import paths are supported through `src/baggage_project/`.
 
 The 2026 results form an exploratory rolling evaluation. Financial simulations use the demand, claim and cost assumptions specified in `configs/`.

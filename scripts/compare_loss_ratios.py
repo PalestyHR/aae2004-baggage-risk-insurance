@@ -112,7 +112,7 @@ def main():
     DATA = ROOT / "data/processed"
     OUT = ROOT / "results/reproduced_loss_ratios"
     OUT.mkdir(exist_ok=True)
-    feature_columns_file = DATA / "feature_spec.json"
+    feature_columns_file = ROOT / "configs/feature_spec.json"
     feature_columns_text = feature_columns_file.read_text()
     feature_columns_config = json.loads(feature_columns_text)
     feature_columns = feature_columns_config["core_features"]

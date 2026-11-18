@@ -101,7 +101,7 @@ def main():
     DATA = ROOT / "data/processed"
     OUT = ROOT / "results/reproduced_baselines"
     OUT.mkdir(exist_ok=True)
-    spec_file = DATA / "feature_spec.json"
+    spec_file = ROOT / "configs/feature_spec.json"
     spec_text = spec_file.read_text()
     spec = json.loads(spec_text)
     feature_columns = spec["core_features"]
