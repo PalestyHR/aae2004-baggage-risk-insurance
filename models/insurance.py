@@ -41,34 +41,54 @@ def claims_from_forecast(
 
 def tier_probabilities(plans, demand):
     """Compute multinomial-logit probabilities, including no purchase."""
-    names = [plan["name"] for plan in plans]
     shares = demand["reference_purchase_probabilities"]
-    total = sum((shares[n] for n in names))
+    names = []
+    total = 0.0
+
+    for plan in plans:
+        name = plan["name"]
+        purchase_probability = shares[name]
+        names.append(name)
+        total += purchase_probability
+
     no_purchase_probability = 1 - total
-    logits = [0.0]
     price_sensitivity = demand["log_price_sensitivity"]
     delay_sensitivity = demand["log_delay_benefit_sensitivity"]
     loss_sensitivity = demand["log_loss_benefit_sensitivity"]
+    logits = [0.0]
+
     for plan in plans:
+        name = plan["name"]
+        purchase_probability = shares[name]
         reference = plan["reference"]
-        price = plan["price"]
-        delay_benefit = plan["delay_benefit"]
-        loss_benefit = plan["loss_benefit"]
-        utility = (
-            -math.inf
-            if shares[plan["name"]] == 0
-            else math.log(shares[plan["name"]] / no_purchase_probability)
-        )
-        utility -= price_sensitivity * math.log(price / reference["price"])
-        utility += delay_sensitivity * math.log(
-            delay_benefit / reference["delay_benefit"]
-        )
-        utility += loss_sensitivity * math.log(loss_benefit / reference["loss_benefit"])
+        price_ratio = plan["price"] / reference["price"]
+        delay_ratio = plan["delay_benefit"] / reference["delay_benefit"]
+        loss_ratio = plan["loss_benefit"] / reference["loss_benefit"]
+
+        if purchase_probability == 0:
+            utility = -math.inf
+        else:
+            utility = math.log(purchase_probability / no_purchase_probability)
+
+        utility -= price_sensitivity * math.log(price_ratio)
+        utility += delay_sensitivity * math.log(delay_ratio)
+        utility += loss_sensitivity * math.log(loss_ratio)
         logits.append(utility)
+
     max_logit = max(logits)
-    exp_utilities = [math.exp(x - max_logit) for x in logits]
+    exp_utilities = []
+    for utility in logits:
+        exp_utility = math.exp(utility - max_logit)
+        exp_utilities.append(exp_utility)
+
     normalizer = sum(exp_utilities)
-    return dict(zip(["no_purchase"] + names, [x / normalizer for x in exp_utilities]))
+    choice_names = ["no_purchase"]
+    choice_names.extend(names)
+    probabilities = {}
+    for index, name in enumerate(choice_names):
+        probabilities[name] = exp_utilities[index] / normalizer
+
+    return probabilities
 
 
 def expected_portfolio(forecast, plans, assumptions):
