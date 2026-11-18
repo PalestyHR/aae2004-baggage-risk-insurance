@@ -3,10 +3,10 @@ import sys
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
-from baggage_project.risk import FrozenRiskPredictor
+from models.forecasting_model import FrozenRiskPredictor
 
 
 def compare(left, right, keys, values, tolerance=1e-6):
@@ -39,7 +39,7 @@ def main():
     )
     df = pd.read_csv(ROOT / "data/processed/lag1/test_real.csv")
     df = df[df.target_month == "2026-08-01"]
-    loaded = FrozenRiskPredictor(ROOT / "models").predict(df)
+    loaded = FrozenRiskPredictor(ROOT / "checkpoints").predict(df)
     saved = (
         pd.read_csv(ROOT / "results/reproduced_risk/predictions.csv")
         .set_index("row_id")

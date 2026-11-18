@@ -42,3 +42,6 @@ archive/scripts/latest_bts_pipeline_test.py
 archive/scripts/pricing_demand_module.py
 archive/scripts/pricing_strategy_comparison.py
 archive/scripts/profitability_frontier.py
+
+build/
+dist/

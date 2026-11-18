@@ -10,18 +10,12 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from lightgbm import LGBMRegressor
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
-
-def objective(targets, predictions):
-    """Return gradients and Hessians for the 1:2 under/over loss."""
-    errors = predictions - targets
-    penalty = np.where(errors < 0, 2 / 3, 4 / 3)
-    return penalty * errors, penalty
+from models.forecasting_model import FORECAST_PARAMETERS, ForecastingModel
 
 
 def count_metrics(targets, predictions):
@@ -70,17 +64,7 @@ def main():
             for _, r in data.iterrows()
         ]
     assert not data.is_synthetic.any() and data[feature_columns].notna().all().all()
-    model_parameters = dict(
-        n_estimators=200,
-        learning_rate=0.03,
-        num_leaves=7,
-        max_depth=3,
-        min_child_samples=20,
-        reg_lambda=1,
-        verbosity=-1,
-        n_jobs=2,
-        random_state=42,
-    )
+    model_parameters = FORECAST_PARAMETERS.copy()
     protocol = {
         "date": "2026-11-06",
         "population": "BTS domestic operating-carrier monthly records",
@@ -122,22 +106,6 @@ def main():
             train = data[data.date < date]
             test = data[data.date == date]
             assert train.date.max() < date
-            preprocessor = ColumnTransformer(
-                [
-                    (
-                        "id",
-                        OneHotEncoder(handle_unknown="ignore", sparse_output=False),
-                        ["airline_id"],
-                    ),
-                    (
-                        "num",
-                        StandardScaler(),
-                        [c for c in feature_columns if c != "airline_id"],
-                    ),
-                ]
-            )
-            train_features = preprocessor.fit_transform(train[feature_columns])
-            test_features = preprocessor.transform(test[feature_columns])
             fold_predictions = test[
                 [
                     "row_id",
@@ -155,41 +123,13 @@ def main():
             with warnings.catch_warnings(record=True) as captured_warnings:
                 warnings.simplefilter("always")
                 targets = train.target_rate_per_1000.to_numpy()
-                base_score = float(targets.mean())
-                risk_model = LGBMRegressor(**model_parameters, objective=objective).fit(
-                    train_features,
-                    targets,
-                    init_score=np.full(len(targets), base_score),
-                )
-                fold_predictions["rate_ml"] = np.maximum(
-                    0, risk_model.predict(test_features) + base_score
-                )
+                risk_model = ForecastingModel(feature_columns).fit(train)
+                fold_predictions["rate_ml"] = risk_model.predict(test)
+                preprocessor = risk_model.preprocessor
+                train_features = preprocessor.transform(train[feature_columns])
+                test_features = preprocessor.transform(test[feature_columns])
                 if pd.Timestamp(date) == pd.Timestamp("2026-08-01"):
-                    model_directory = ROOT / "models"
-                    model_directory.mkdir(exist_ok=True)
-                    risk_model.booster_.save_model(
-                        str(model_directory / "risk_2026_08_lightgbm.txt")
-                    )
-                    scaler = preprocessor.named_transformers_["num"]
-                    encoder = preprocessor.named_transformers_["id"]
-                    saved = {
-                        "base_score": base_score,
-                        "categorical_column": "airline_id",
-                        "categories": [int(x) for x in encoder.categories_[0]],
-                        "numeric_columns": [
-                            c for c in feature_columns if c != "airline_id"
-                        ],
-                        "mean": scaler.mean_.tolist(),
-                        "scale": scaler.scale_.tolist(),
-                        "training_last_month": train.target_month.max(),
-                        "forecast_month": "2026-08-01",
-                        "prediction_clip_min": 0,
-                        "feature_columns": feature_columns,
-                        "loss_under_over": [1, 2],
-                    }
-                    (model_directory / "risk_preprocessing.json").write_text(
-                        json.dumps(saved, indent=2), encoding="utf-8"
-                    )
+                    risk_model.save(ROOT / "checkpoints")
 
                 symmetric_model = LGBMRegressor(**model_parameters).fit(
                     train_features, targets

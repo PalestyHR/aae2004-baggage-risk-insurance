@@ -1,6 +1,6 @@
 import unittest
 import math
-from baggage_project.insurance import (
+from models.insurance import (
     claims_from_forecast,
     tier_probabilities,
     benefit_frontier,

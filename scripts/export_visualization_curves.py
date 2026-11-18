@@ -8,14 +8,14 @@ import json
 import hashlib
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT))
 import numpy as np
 import pandas as pd
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from baggage_project.risk import FrozenRiskPredictor
+from models.forecasting_model import FrozenRiskPredictor
 
 OUT = ROOT / "visualizations"
 OUT.mkdir(exist_ok=True)
@@ -36,7 +36,7 @@ contract = {
     "no_new_efficacy_claim": True,
 }
 (OUT / "provenance.json").write_text(json.dumps(contract, indent=2), encoding="utf-8")
-frozen = FrozenRiskPredictor(ROOT / "models")
+frozen = FrozenRiskPredictor(ROOT / "checkpoints")
 s = frozen.schema
 d = pd.read_csv(ROOT / "data/processed/lag1/all_real.csv")
 train = d[d.target_month < "2026-08-01"].copy()
@@ -272,7 +272,7 @@ summary = {
     "plots": 5,
     "no_test_based_iteration_selection": True,
     "model_sha256": hashlib.sha256(
-        (ROOT / "models/risk_2026_08_lightgbm.txt").read_bytes()
+        (ROOT / "checkpoints/risk_2026_08_lightgbm.txt").read_bytes()
     ).hexdigest(),
     "matplotlib_version": matplotlib.__version__,
 }

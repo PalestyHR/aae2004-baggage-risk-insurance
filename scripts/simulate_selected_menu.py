@@ -6,9 +6,9 @@ import json
 import copy
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT))
 import pandas as pd
-from baggage_project.insurance import simulate_cohort
+from models.insurance import simulate_cohort
 
 
 def main():

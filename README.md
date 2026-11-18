@@ -1,17 +1,25 @@
-# A Baggage Risk Management Framework for Cathay Pacific
+<h1 align="center">A Baggage Risk Management Framework<br>for Cathay Pacific</h1>
+
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#main-results">Results</a> ·
+  <a href="#installation">Installation</a> ·
+  <a href="#reproduction">Reproduction</a> ·
+  <a href="DATA_SOURCES.md">Data</a> ·
+  <a href="models/">Models</a>
+</p>
 
 Monthly baggage-risk forecasting and scenario-based pricing of optional baggage protection. The experiments use U.S. Bureau of Transportation Statistics (BTS) carrier-month data, with Cathay Pacific as the proposed application context.
 
 ## Overview
 
-1. Forecast the next month's baggage-mishandling rate with LightGBM.
-2. Forecast baggage and passenger volumes using historical exposure models.
-3. Convert the forecast risk into scenario claim probabilities.
-4. Optimise a three-tier protection menu and evaluate profitability.
+The framework combines monthly LightGBM risk forecasts, baggage and passenger-volume forecasts, scenario claim probabilities, and three-tier menu optimisation. The two model implementations are [`models/forecasting_model.py`](models/forecasting_model.py) and [`models/insurance.py`](models/insurance.py).
 
 [Model equations and data construction](MODEL_SUMMARY.md) · [Data sources](DATA_SOURCES.md) · [Full baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
 
 ## Main results
+
+### Baggage risk forecasting
 
 All methods are compared on the same **101 carrier-month records from January–August 2026**. Rate errors are weighted by loaded baggage volume.
 
@@ -26,6 +34,8 @@ All methods are compared on the same **101 carrier-month records from January–
 
 WMAE and WRMSE are measured in bags per 1,000 loaded bags. Our Model uses an underestimation-to-overestimation penalty ratio of **1:2**, selected using 2025 validation WMAE. The [penalty-ratio experiment](results/reference/asymmetric_loss_comparison/metrics.csv) records the alternatives.
 
+### Baggage protection pricing
+
 The August 2026 forecast supplies the insurance experiment with 12 airline-scale cases. The selected menu is **M0775**.
 
 | Plan | Premium (USD) | Delay allowance (USD) | Cumulative final-loss benefit (USD) |
@@ -35,6 +45,29 @@ The August 2026 forecast supplies the insurance experiment with 12 airline-scale
 | Premium | 11.00 | 200 | 1,200 |
 
 The search evaluates **1,836 menus**, retains **98 feasible menus**, and finds **7 Pareto-optimal menus**. Across six scenarios, the selected menu's combined monthly expected profit ranges from **USD 2.74 million to USD 4.02 million**. Scenario assumptions and full outputs are in [configs](configs/) and [insurance results](results/reference/insurance/).
+
+## Forecasting model
+
+[`ForecastingModel`](models/forecasting_model.py) contains the LightGBM settings, asymmetric squared-loss objective, one-hot encoding, standardisation, training, prediction and checkpoint export. The monthly expanding-window experiment is implemented in [`scripts/reproduce_risk.py`](scripts/reproduce_risk.py).
+
+```python
+import json
+from pathlib import Path
+
+import pandas as pd
+from models.forecasting_model import ForecastingModel
+
+features = json.loads(Path("configs/feature_spec.json").read_text())["core_features"]
+data = pd.read_csv("data/processed/lag1/all_real.csv")
+train = data[data.target_month < "2026-08-01"]
+test = data[data.target_month == "2026-08-01"]
+
+model = ForecastingModel(features)
+model.fit(train)
+predicted_rates = model.predict(test)
+```
+
+The LightGBM library supplies the tree learner. Saved weights and preprocessing parameters are provided in [`checkpoints/`](checkpoints/).
 
 ## Installation
 
@@ -65,7 +98,7 @@ The first command refits the forecast model with an expanding monthly window. Th
 
 | Command | Output |
 |---|---|
-| `reproduce_risk.py` | `results/reproduced_risk/` and the saved predictor in `models/` |
+| `reproduce_risk.py` | `results/reproduced_risk/` and the saved predictor in `checkpoints/` |
 | `reproduce_insurance.py` | `results/reproduced_insurance/` |
 | `check_reproduction.py` | `results/reproduction_check.json` |
 | `simulate_selected_menu.py` | `results/selected_menu_monte_carlo/` |
@@ -103,15 +136,19 @@ The supervised dataset has **1,226 real carrier-month records** and **30 core fe
 
 Detailed source tables, transformations and column definitions are linked from [DATA_SOURCES.md](DATA_SOURCES.md). Demand, claim conversion and cost inputs are specified scenario parameters in `configs/`.
 
+<details>
+<summary><strong>Repository structure and figure generation</strong></summary>
+
 ## Code and results
 
 ```text
 configs/              Feature definitions, assumptions and selected menu
-src/baggage_project/  Frozen predictor and insurance mathematics
+models/               Risk predictor and insurance model implementations (.py)
+src/baggage_project/  Compatibility imports for the original package path
 scripts/              Training, optimisation, simulation and plotting entry points
 tests/                Existing insurance calculation tests
 data/                 Processed datasets, baggage source CSV and source records
-models/               Saved August LightGBM predictor and preprocessing
+checkpoints/          Saved LightGBM weights (.txt) and preprocessing (.json)
 results/reference/    Forecasts, baseline experiments and selected-menu results
 visualizations/       Figures and numerical plotting data
 docs/                 Full model comparison
@@ -128,3 +165,5 @@ python scripts/draw_3d_ribbon_figures.py
 ```
 
 Iteration curves are reconstructed from the saved model's tree prefixes. The 2026 experiments form an exploratory rolling evaluation. Financial simulations describe the operating conditions specified in the configuration files.
+
+</details>

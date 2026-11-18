@@ -12,8 +12,9 @@ dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.setuptools]
+packages = ["models", "baggage_project"]
+package-dir = {models = "models", baggage_project = "src/baggage_project"}
 
 [tool.black]
 line-length = 88
