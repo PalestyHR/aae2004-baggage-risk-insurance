@@ -1,6 +1,4 @@
-"""Joint numerical menu design before marketing labels.
-Scenario-robust finite-grid frontier, not an empirically calibrated optimum.
-"""
+"""Optimise the three-tier protection menu across operating scenarios."""
 
 from pathlib import Path
 import sys

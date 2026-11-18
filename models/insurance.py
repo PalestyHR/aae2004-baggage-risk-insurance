@@ -244,7 +244,13 @@ def expected_portfolio(forecast, plans, assumptions):
     }
 
 
-def simulate_cohort(forecast, plans, assumptions, draws=20000, seed=42):
+def simulate_cohort(
+    forecast,
+    plans,
+    assumptions,
+    draws=20000,
+    seed=42,
+):
     """Simulate purchases and mutually exclusive claims under shared risk states."""
 
     expected = expected_portfolio(forecast, plans, assumptions)

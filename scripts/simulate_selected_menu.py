@@ -1,4 +1,4 @@
-"""Additional implementation check for the adopted M0775 menu, scenario only."""
+"""Simulate monthly profit for the selected baggage protection menu."""
 
 from pathlib import Path
 import sys

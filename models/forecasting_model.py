@@ -81,6 +81,7 @@ class ForecastingModel:
         targets = target_column.to_numpy()
         target_mean = targets.mean()
         self.base_score = float(target_mean)
+
         self.training_last_month = month_column.max()
 
         fitted_transformers = self.preprocessor.named_transformers_
@@ -116,6 +117,7 @@ class ForecastingModel:
         carrier_categories = fitted_categories[0]
         fitted_mean = self.scaler.mean_
         fitted_scale = self.scaler.scale_
+
         mean_values = fitted_mean.tolist()
         scale_values = fitted_scale.tolist()
         categories = []

@@ -40,7 +40,17 @@ PALETTE = [
 ]
 
 
-def ribbon(name, title, x, series, xlabels, xlabel, zlabel, shortlabels=None, azim=-53):
+def ribbon(
+    name,
+    title,
+    x,
+    series,
+    xlabels,
+    xlabel,
+    zlabel,
+    shortlabels=None,
+    azim=-53,
+):
     fig = plt.figure(figsize=(11, 8.2))
     ax = fig.add_axes([0.02, 0.03, 0.83, 0.86], projection="3d")
     labels = list(series)
@@ -61,13 +71,39 @@ def ribbon(name, title, x, series, xlabels, xlabel, zlabel, shortlabels=None, az
     for j, label in enumerate(labels):
         vals = np.asarray(series[label])
         col = PALETTE[j]
-        ax.plot(x, np.full(len(x), j), vals, color=col, lw=1.45, zorder=10 - j)
-        ax.plot([x[0], x[0]], [j, j], [0, vals[0]], color=col, lw=0.7, alpha=0.8)
-        ax.plot([x[-1], x[-1]], [j, j], [0, vals[-1]], color=col, lw=0.7, alpha=0.8)
+        ax.plot(
+            x,
+            np.full(len(x), j),
+            vals,
+            color=col,
+            lw=1.45,
+            zorder=10 - j,
+        )
+        ax.plot(
+            [x[0], x[0]],
+            [j, j],
+            [0, vals[0]],
+            color=col,
+            lw=0.7,
+            alpha=0.8,
+        )
+        ax.plot(
+            [x[-1], x[-1]],
+            [j, j],
+            [0, vals[-1]],
+            color=col,
+            lw=0.7,
+            alpha=0.8,
+        )
 
     ax.set_xlim(float(x[0]), float(x[-1]))
     ax.set_ylim(-0.25, len(labels) - 0.75)
-    ax.set_zlim(0, max(float(np.max(v)) for v in series.values()) * 1.12)
+    curve_maxima = []
+
+    for v in series.values():
+        curve_maxima.append(float(np.max(v)))
+
+    ax.set_zlim(0, max(curve_maxima) * 1.12)
     ax.set_xticks(x if len(x) <= 12 else np.linspace(x[0], x[-1], 5))
 
     if xlabels is not None:
@@ -96,10 +132,14 @@ def ribbon(name, title, x, series, xlabels, xlabel, zlabel, shortlabels=None, az
         fontweight="bold",
         fontsize=18,
     )
-    handles = [
-        Patch(facecolor=PALETTE[i], edgecolor=PALETTE[i], alpha=0.40, label=label)
-        for i, label in enumerate(labels)
-    ]
+    legend_handles = []
+
+    for i, label in enumerate(labels):
+        legend_handles.append(
+            Patch(facecolor=PALETTE[i], edgecolor=PALETTE[i], alpha=0.4, label=label)
+        )
+
+    handles = legend_handles
     fig.legend(
         handles=handles, loc="upper left", bbox_to_anchor=(0.79, 0.92), fontsize=8.5
     )
@@ -119,12 +159,14 @@ methods = {
     "LightGBM": "Symmetric LightGBM",
     "adopted": "Our Model",
 }
-series = {
-    label: monthly[monthly.model_id == code]
-    .sort_values("month")
-    .weighted_MAE.to_numpy()
-    for code, label in methods.items()
-}
+monthly_series = {}
+
+for code, label in methods.items():
+    monthly_series[label] = (
+        monthly[monthly.model_id == code].sort_values("month").weighted_MAE.to_numpy()
+    )
+
+series = monthly_series
 ribbon(
     "01_monthly_model_errors",
     "Monthly prediction error",
@@ -236,14 +278,18 @@ ss = {
     "beta2.0_higher": "beta 2 · higher risk",
     "beta3.0_higher": "beta 3 · higher risk",
 }
-series = {
-    label: profits[profits.scenario == code]
-    .set_index("carrier")
-    .loc[carrier_order]
-    .expected_profit.to_numpy()
-    / 1e6
-    for code, label in ss.items()
-}
+profit_series = {}
+
+for code, label in ss.items():
+    profit_series[label] = (
+        profits[profits.scenario == code]
+        .set_index("carrier")
+        .loc[carrier_order]
+        .expected_profit.to_numpy()
+        / 1000000.0
+    )
+
+series = profit_series
 ribbon(
     "04_insurance_scenario_profits",
     "M0775 net contribution after system costs",

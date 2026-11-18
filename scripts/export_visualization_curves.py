@@ -1,6 +1,4 @@
-"""Recover diagnostics from frozen tree prefixes; no fitting or model selection.
-Exports PNG/SVG and CSV only. August curves are held-out test diagnostics.
-"""
+"""Recover iteration metrics and plot forecasting and insurance results."""
 
 from pathlib import Path
 import sys
@@ -45,17 +43,33 @@ test = d[d.target_month == "2026-08-01"].copy()
 
 
 def matrix(frame):
-    ids = frame.airline_id.to_numpy()
-    cat = (ids[:, None] == np.asarray(s["categories"])[None, :]).astype(float)
-    x = (frame[s["numeric_columns"]].to_numpy() - np.asarray(s["mean"])) / np.asarray(
-        s["scale"]
-    )
+    categorical_column = s["categorical_column"]
+    numeric_columns = s["numeric_columns"]
+    categories = np.asarray(s["categories"])
+    mean = np.asarray(s["mean"])
 
-    return np.concatenate([cat, x], axis=1)
+    scale = np.asarray(s["scale"])
+
+    carrier_column = frame[categorical_column]
+    numeric_frame = frame[numeric_columns]
+    carrier_ids = carrier_column.to_numpy()
+    numeric_values = numeric_frame.to_numpy()
+
+    matches = carrier_ids[:, None] == categories[None, :]
+    categorical_values = matches.astype(float)
+    numeric_values = (numeric_values - mean) / scale
+    feature_groups = [categorical_values, numeric_values]
+
+    return np.concatenate(feature_groups, axis=1)
 
 
 sets = {"train": train, "test_august": test}
-Xs = {name: matrix(frame) for name, frame in sets.items()}
+feature_matrices = {}
+
+for name, frame in sets.items():
+    feature_matrices[name] = matrix(frame)
+
+Xs = feature_matrices
 assert frozen.booster.num_trees() == 200 and len(test) == 12
 rows = []
 
@@ -155,7 +169,13 @@ for ax, key, title in zip(
 ):
     for name, label in [("train", "Training"), ("test_august", "August test")]:
         g = curves[curves["set"] == name]
-        ax.plot(g.iteration, g[key], color=colors[name], label=label, lw=1.7)
+        ax.plot(
+            g.iteration,
+            g[key],
+            color=colors[name],
+            label=label,
+            lw=1.7,
+        )
 
     ax.set(
         xlabel="Boosting iterations", ylabel="Bags per 1,000 enplaned bags", title=title
@@ -268,8 +288,20 @@ for risk, label, color in [
     ("higher", "Higher risk", "#C67443"),
 ]:
     g = sc[sc.risk == risk].sort_values("beta")
-    axes[0].plot(g.beta, g.total_expected_profit / 1e6, "o-", color=color, label=label)
-    axes[1].plot(g.beta, g.pooled_margin * 100, "o-", color=color, label=label)
+    axes[0].plot(
+        g.beta,
+        g.total_expected_profit / 1e6,
+        "o-",
+        color=color,
+        label=label,
+    )
+    axes[1].plot(
+        g.beta,
+        g.pooled_margin * 100,
+        "o-",
+        color=color,
+        label=label,
+    )
 
 for ax in axes:
     ax.set_xlabel("Assumed price sensitivity (beta)")

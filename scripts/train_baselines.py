@@ -78,13 +78,22 @@ def estimator(name):
 def evaluate(records):
     errors = records.prediction - records.target_rate_per_1000
     weights = records.target_enplaned_bags
+    absolute_errors = abs(errors)
+    squared_errors = errors**2
+
+    weighted_mae = np.average(absolute_errors, weights=weights)
+    mae = absolute_errors.mean()
+    mse = squared_errors.mean()
+    rmse = np.sqrt(mse)
+
+    bias = np.average(errors, weights=weights)
 
     return {
         "n": len(records),
-        "weighted_MAE": float(np.average(abs(errors), weights=weights)),
-        "MAE": float(abs(errors).mean()),
-        "RMSE": float(np.sqrt((errors**2).mean())),
-        "weighted_bias": float(np.average(errors, weights=weights)),
+        "weighted_MAE": float(weighted_mae),
+        "MAE": float(mae),
+        "RMSE": float(rmse),
+        "weighted_bias": float(bias),
     }
 
 
@@ -92,8 +101,11 @@ def main():
     DATA = ROOT / "data/processed"
     OUT = ROOT / "results/reproduced_baselines"
     OUT.mkdir(exist_ok=True)
-    spec = json.loads((DATA / "feature_spec.json").read_text())
+    spec_file = DATA / "feature_spec.json"
+    spec_text = spec_file.read_text()
+    spec = json.loads(spec_text)
     feature_columns = spec["core_features"]
+
     data = pd.read_csv(DATA / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
     assert not data.is_synthetic.any()

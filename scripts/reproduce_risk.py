@@ -1,6 +1,4 @@
-"""BTS risk + volume pipeline. Cathay is application context, not tested population.
-No compensation amount, purchase rate or eligibility conversion is assumed.
-"""
+"""Train and evaluate monthly baggage-risk and volume forecasts."""
 
 from pathlib import Path
 import sys
@@ -19,19 +17,40 @@ from models.forecasting_model import FORECAST_PARAMETERS, ForecastingModel
 
 
 def count_metrics(targets, predictions):
-    mask = np.isfinite(targets) & np.isfinite(predictions)
-    targets = np.asarray(targets)[mask]
-    predictions = np.asarray(predictions)[mask]
+    target_values = np.asarray(targets)
+    predicted_values = np.asarray(predictions)
+    valid_targets = np.isfinite(target_values)
+    valid_predictions = np.isfinite(predicted_values)
+
+    valid = valid_targets & valid_predictions
+
+    targets = target_values[valid]
+    predictions = predicted_values[valid]
     errors = predictions - targets
+    absolute_errors = abs(errors)
+
+    squared_errors = errors**2
+
+    mean_error = absolute_errors.mean()
+    mean_squared_error = squared_errors.mean()
+    root_mean_squared_error = np.sqrt(mean_squared_error)
+    total_absolute_error = absolute_errors.sum()
+
+    observed_total = targets.sum()
+    predicted_total = predictions.sum()
+    error_total = errors.sum()
+    percentage_error = 100 * total_absolute_error / observed_total
+
+    percentage_bias = 100 * error_total / observed_total
 
     return {
         "n": len(targets),
-        "MAE": float(abs(errors).mean()),
-        "RMSE": float(np.sqrt((errors**2).mean())),
-        "WAPE_percent": float(100 * abs(errors).sum() / targets.sum()),
-        "observed_total": float(targets.sum()),
-        "predicted_total": float(predictions.sum()),
-        "aggregate_bias_percent": float(100 * errors.sum() / targets.sum()),
+        "MAE": float(mean_error),
+        "RMSE": float(root_mean_squared_error),
+        "WAPE_percent": float(percentage_error),
+        "observed_total": float(observed_total),
+        "predicted_total": float(predicted_total),
+        "aggregate_bias_percent": float(percentage_bias),
     }
 
 
@@ -39,10 +58,12 @@ def main():
     DATA = ROOT / "data/processed"
     OUT = ROOT / "results/reproduced_risk"
     OUT.mkdir(exist_ok=True)
-    feature_columns = json.loads((DATA / "feature_spec.json").read_text())[
-        "core_features"
-    ]
+    feature_columns_file = DATA / "feature_spec.json"
+    feature_columns_text = feature_columns_file.read_text()
+    feature_columns_config = json.loads(feature_columns_text)
+    feature_columns = feature_columns_config["core_features"]
     # Align observations and lagged exposure features before monthly fitting.
+
     data = pd.read_csv(DATA / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
     observations = pd.read_csv(DATA / "carrier_month_observed_NOT_model_input.csv")

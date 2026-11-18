@@ -202,7 +202,13 @@ for i, (ax, group, title) in enumerate(
         -0.15, 1.12, chr(97 + i), transform=ax.transAxes, fontweight="bold", fontsize=14
     )
 
-fig.subplots_adjust(left=0.07, right=0.93, top=0.75, bottom=0.23, wspace=0.37)
+fig.subplots_adjust(
+    left=0.07,
+    right=0.93,
+    top=0.75,
+    bottom=0.23,
+    wspace=0.37,
+)
 fig.suptitle("Model performance profiles", y=0.99, fontsize=16, fontweight="bold")
 fig.text(
     0.5,
@@ -362,7 +368,13 @@ axs[1].set_xticks(
 axs[0].legend(ncol=3, fontsize=8.5, loc="upper center", bbox_to_anchor=(0.5, 1.32))
 panel(axs[0], "a")
 panel(axs[1], "b")
-fig.subplots_adjust(top=0.83, left=0.11, right=0.97, bottom=0.08, hspace=0.35)
+fig.subplots_adjust(
+    top=0.83,
+    left=0.11,
+    right=0.97,
+    bottom=0.08,
+    hspace=0.35,
+)
 save(fig, "03_multi_model_monthly_lines")
 
 order = metrics.sort_values("rate_weighted_MAE").index.tolist()
@@ -397,7 +409,12 @@ ax.set_xticks(
         "Aug",
     ],
 )
-ax.set_yticks(np.arange(10), [names[n] for n in order])
+method_labels = []
+
+for n in order:
+    method_labels.append(names[n])
+
+ax.set_yticks(np.arange(10), method_labels)
 ax.tick_params(length=0, pad=9)
 
 for i in range(10):
@@ -417,7 +434,14 @@ from matplotlib.patches import Rectangle
 
 i = order.index("adopted")
 ax.add_patch(
-    Rectangle((-0.5, i - 0.5), 8, 1, fill=False, edgecolor=colors["adopted"], lw=2.2)
+    Rectangle(
+        (-0.5, i - 0.5),
+        8,
+        1,
+        fill=False,
+        edgecolor=colors["adopted"],
+        lw=2.2,
+    )
 )
 ax.get_yticklabels()[i].set_color(colors["adopted"])
 ax.get_yticklabels()[i].set_weight("bold")
@@ -436,7 +460,12 @@ for name, g in pred.groupby("model_id"):
 error = pd.DataFrame(error)
 error.to_csv(OUT / "source_data/case_absolute_errors.csv", index=False)
 fig, ax = plt.subplots(figsize=(12, 5))
-datasets = [error[error.model_id == n].absolute_rate_error.to_numpy() for n in order]
+error_arrays = []
+
+for n in order:
+    error_arrays.append(error[error.model_id == n].absolute_rate_error.to_numpy())
+
+datasets = error_arrays
 vi = ax.violinplot(datasets, positions=np.arange(10), widths=0.78, showextrema=False)
 
 for body, name in zip(vi["bodies"], order):
@@ -467,7 +496,12 @@ for i, (name, values) in enumerate(zip(order, datasets)):
         zorder=3,
     )
 
-ax.set_xticks(np.arange(10), [names[n] for n in order], rotation=28, ha="right")
+method_labels = []
+
+for n in order:
+    method_labels.append(names[n])
+
+ax.set_xticks(np.arange(10), method_labels, rotation=28, ha="right")
 ax.set(
     ylabel="Absolute rate error (bags per 1,000)",
     title="Error distributions over 101 carrier-month cases",
@@ -603,7 +637,13 @@ for ax in axs:
 
 panel(axs[0], "a")
 panel(axs[1], "b")
-fig.subplots_adjust(left=0.07, right=0.98, bottom=0.16, top=0.84, wspace=0.30)
+fig.subplots_adjust(
+    left=0.07,
+    right=0.98,
+    bottom=0.16,
+    top=0.84,
+    wspace=0.30,
+)
 save(fig, "07_insurance_composite")
 
 notes = """# 新版可视化素材

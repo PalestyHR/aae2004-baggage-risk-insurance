@@ -30,7 +30,14 @@ class InsuranceTests(unittest.TestCase):
         )
 
     def test_claim_probabilities(self):
-        risk = claims_from_forecast(20, 1, 1, 1, 0.5, 0.02)
+        risk = claims_from_forecast(
+            20,
+            1,
+            1,
+            1,
+            0.5,
+            0.02,
+        )
         self.assertAlmostEqual(risk["delay_claim_probability"], 0.01)
         self.assertAlmostEqual(risk["loss_claim_probability"], 0.0004)
         self.assertAlmostEqual(risk["no_paid_claim_probability"], 0.9896)

@@ -1,4 +1,4 @@
-"""Controlled asymmetric squared-loss experiment, not profit optimization."""
+"""Compare asymmetric loss ratios using expanding monthly training windows."""
 
 from pathlib import Path
 import sys
@@ -112,9 +112,11 @@ def main():
     DATA = ROOT / "data/processed"
     OUT = ROOT / "results/reproduced_loss_ratios"
     OUT.mkdir(exist_ok=True)
-    feature_columns = json.loads((DATA / "feature_spec.json").read_text())[
-        "core_features"
-    ]
+    feature_columns_file = DATA / "feature_spec.json"
+    feature_columns_text = feature_columns_file.read_text()
+    feature_columns_config = json.loads(feature_columns_text)
+    feature_columns = feature_columns_config["core_features"]
+
     data = pd.read_csv(DATA / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
     assert not data.is_synthetic.any()
