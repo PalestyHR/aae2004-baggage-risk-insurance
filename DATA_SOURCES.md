@@ -17,6 +17,6 @@ Source entry points:
 - https://www.ncei.noaa.gov/data/global-summary-of-the-day/access/
 - https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv
 
-`data/processed/source_manifest.json` preserves precise download URLs and checksums. Each third-party source retains its terms. Full third-party PDFs, course materials and browser/session HTML are not redistributed here. Government-origin aggregate observations and our derived tables are included for this private research project; verify terms before making any public release.
+`data/processed/source_manifest.json` preserves precise download URLs and checksums. Each third-party source retains its terms. Full third-party PDFs, course materials and browser/session HTML are not redistributed here. The repository contains aggregate observations and derived tables. Source terms apply to the corresponding data.
 
 Training reproduction starts from the included processed snapshots. Rebuilding all web downloads is a separate operation; historical download and build scripts in `archive/scripts/data_*` retain the original workspace layout and may require adapting paths. They are records of collection, not a promise that external URLs will remain available.

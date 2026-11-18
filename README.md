@@ -1,63 +1,130 @@
-# AAE2004 Baggage Risk and Protection Models
+# A Baggage Risk Management Framework for Cathay Pacific
 
-## Project resources
+Monthly baggage-risk forecasting and scenario-based pricing of optional baggage protection. The experiments use U.S. Bureau of Transportation Statistics (BTS) carrier-month data, with Cathay Pacific as the proposed application context.
 
-- [Model definitions and experimental results](MODEL_SUMMARY.md)
-- [January–August 2026 baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
-- [Processed datasets](data/processed/) and [data sources](DATA_SOURCES.md)
-- [Figures and plot source data](visualizations/)
+## Overview
 
-This project uses public U.S. BTS records to evaluate monthly baggage-mishandling forecasts. Cathay Pacific is the proposed application context, not the tested population. Financial outputs are scenario estimates, not observed sales or underwriting results.
+1. Forecast the next month's baggage-mishandling rate with LightGBM.
+2. Forecast baggage and passenger volumes using historical exposure models.
+3. Convert the forecast risk into scenario claim probabilities.
+4. Optimise a three-tier protection menu and evaluate profitability.
 
-## Adopted design
+[Model equations and data construction](MODEL_SUMMARY.md) · [Data sources](DATA_SOURCES.md) · [Full baseline comparison](docs/Model1_Baseline_Comparison_2026_Jan_Aug.md)
 
-- Forecast pipeline: 30 features; monthly expanding LightGBM; asymmetric under/over loss **1:2**; validated blend forecasts for traffic and baggage exposure.
-- Full January–August 2026 test: rate WMAE **0.637574**, WRMSE **0.886649**; count WAPE **15.835726%**.
-- August 2026 case: rate WMAE **0.347635 bags per 1,000**; count WAPE **8.935854%**. Earlier rolling tests remain in the evidence files.
-- Product: optional fixed extra support payments, not reimbursement of declared baggage value.
-- Menu **M0775**, all amounts USD: prices **3.75 / 6 / 11**, delay benefits **50 / 100 / 200**, final-loss cumulative benefits **300 / 600 / 1,200**.
-- The financial design is conditional on uncalibrated demand, claim conversion and cost assumptions. It does not guarantee profitability.
+## Main results
 
-## Run
+All methods are compared on the same **101 carrier-month records from January–August 2026**. Rate errors are weighted by loaded baggage volume.
 
-Use Python 3.12. Install the pinned numerical environment:
+| Model | WMAE ↓ | WRMSE ↓ | Count WAPE (%) ↓ |
+|---|---:|---:|---:|
+| Seasonal naive | 0.8603 | 0.9995 | 20.354 |
+| 50/50 historical blend | 0.6972 | 0.8879 | 17.977 |
+| Histogram Gradient Boosting | **0.6204** | **0.8458** | 16.155 |
+| LightGBM, symmetric loss | 0.6475 | 0.8755 | 15.969 |
+| XGBoost | 0.6353 | 0.8828 | 16.012 |
+| **Our Model** | **0.6376** | **0.8866** | **15.836** |
 
-```sh
+WMAE and WRMSE are measured in bags per 1,000 loaded bags. Our Model uses an underestimation-to-overestimation penalty ratio of **1:2**, selected using 2025 validation WMAE. The [penalty-ratio experiment](results/reference/asymmetric_loss_comparison/metrics.csv) records the alternatives.
+
+The August 2026 forecast supplies the insurance experiment with 12 airline-scale cases. The selected menu is **M0775**.
+
+| Plan | Premium (USD) | Delay allowance (USD) | Cumulative final-loss benefit (USD) |
+|---|---:|---:|---:|
+| Basic | 3.75 | 50 | 300 |
+| Standard | 6.00 | 100 | 600 |
+| Premium | 11.00 | 200 | 1,200 |
+
+The search evaluates **1,836 menus**, retains **98 feasible menus**, and finds **7 Pareto-optimal menus**. Across six scenarios, the selected menu's combined monthly expected profit ranges from **USD 2.74 million to USD 4.02 million**. Scenario assumptions and full outputs are in [configs](configs/) and [insurance results](results/reference/insurance/).
+
+## Installation
+
+Use Python 3.12.
+
+```bash
 python -m venv .venv
-# Activate .venv for your shell, then:
+```
+
+Activate the environment with `.venv\Scripts\Activate.ps1` on PowerShell or `source .venv/bin/activate` on Linux/macOS, then install dependencies.
+
+```bash
 python -m pip install -r requirements.txt
 python -m pip install --no-deps -e .
+```
+
+## Reproduction
+
+Run these commands from the repository root, in order.
+
+```bash
 python scripts/reproduce_risk.py
 python scripts/reproduce_insurance.py
 python scripts/check_reproduction.py
+```
+
+The first command refits the forecast model with an expanding monthly window. The second runs menu optimisation and the additional demand/cost scenarios. The last compares the regenerated predictions, selected menu and financial outputs with the included reference results.
+
+| Command | Output |
+|---|---|
+| `reproduce_risk.py` | `results/reproduced_risk/` and the saved predictor in `models/` |
+| `reproduce_insurance.py` | `results/reproduced_insurance/` |
+| `check_reproduction.py` | `results/reproduction_check.json` |
+| `simulate_selected_menu.py` | `results/selected_menu_monte_carlo/` |
+| `export_baseline_comparison.py` | `results/baseline_comparison*.csv` |
+
+Run the selected-menu Monte Carlo experiment and existing tests with:
+
+```bash
+python scripts/simulate_selected_menu.py
 python -m unittest discover -s tests -v
 ```
 
-Optional scenario simulation: `python scripts/simulate_selected_menu.py`.
+Monte Carlo uses 30,000 draws for each of six scenarios and 12 airline cases. The baseline export recomputes metrics from the saved model predictions.
 
-Curves and editable source data are in `visualizations/`. Install `requirements-viz.txt` and run `python scripts/export_visualization_curves.py` to regenerate them. Per-round risk diagnostics are reconstructed from frozen tree prefixes; they are not original saved training logs.
+To retrain all baseline methods or repeat the seven penalty-ratio comparisons:
 
-Reproduced outputs go under `results/reproduced_*` (ignored by Git), preserving `results/reference`. The risk script also exports a text LightGBM model and preprocessing JSON in `models/`; no pickle is required. The insurance script uses reproduced forecasts when available, otherwise the frozen reference interface.
+```bash
+python scripts/train_baselines.py
+python scripts/compare_loss_ratios.py
+```
 
-## Files
+These commands write to `results/reproduced_baselines/` and `results/reproduced_loss_ratios/`. Each uses the same chronological folds and configurations as its reference experiment.
 
-| Path | Contents |
-|---|---|
-| `visualizations/` | Plot exports and numerical source records |
-| `data/processed/` | Real train/validation/test sets, optional synthetic training copies, dictionary and source manifests |
-| `data/raw/` | Original user-supplied BTS baggage CSV |
-| `data/reference/` | Small factual market-reference tables; no fitted price elasticity |
-| `models/` | Frozen August risk booster and preprocessing |
-| `src/baggage_project/` | Risk loading and insurance mathematics |
-| `configs/` | Feature spec, scenario assumptions and current selected menu |
-| `results/reference/` | Full numerical history, including explicitly superseded experiments |
-| `results/selected_menu_monte_carlo/` | Conditional simulations of the adopted menu |
-| `archive/scripts/` | Historical source snapshots, not maintained portable entry points |
+## Data
 
-## Data and interpretation
+The supervised dataset has **1,226 real carrier-month records** and **30 core features**.
 
-The real supervised dataset contains **1,226 carrier-month cases**: 957 train, 168 validation, 101 test. Synthetic copies are separate and unused in the adopted forecasting model. Never use current target volume or synthetic flags as predictive features.
+| Split | Target years | Records |
+|---|---|---:|
+| Initial training | 2020–2024 | 957 |
+| Validation | 2025 | 168 |
+| Rolling test | January–August 2026 | 101 |
 
-The 2026 test period has been inspected in earlier experiments. This is exploratory evaluation. August traffic truth is unavailable; passenger-volume testing ends in July. Mishandling includes multiple incident categories and does not identify permanent loss or policy claims.
+2019 observations initialise historical features. Monthly refits use earlier target months. Feature preprocessing is fitted on each training window. Synthetic feature-masking copies are stored separately and are excluded from the adopted model. Passenger-volume labels are available through July 2026.
 
-Raw large external downloads, third-party full reports, classroom PDFs and local environments are omitted. Source URLs, hashes, transformations and historical collection scripts are retained. See [DATA_SOURCES.md](DATA_SOURCES.md). No blanket redistribution licence is asserted for third-party material.
+Detailed source tables, transformations and column definitions are linked from [DATA_SOURCES.md](DATA_SOURCES.md). Demand, claim conversion and cost inputs are specified scenario parameters in `configs/`.
+
+## Code and results
+
+```text
+configs/              Feature definitions, assumptions and selected menu
+src/baggage_project/  Frozen predictor and insurance mathematics
+scripts/              Training, optimisation, simulation and plotting entry points
+tests/                Existing insurance calculation tests
+data/                 Processed datasets, baggage source CSV and source records
+models/               Saved August LightGBM predictor and preprocessing
+results/reference/    Forecasts, baseline experiments and selected-menu results
+visualizations/       Figures and numerical plotting data
+docs/                 Full model comparison
+archive/scripts/      Original data collection and preparation records
+```
+
+For figure regeneration, install `requirements-viz.txt`, then run:
+
+```bash
+python scripts/export_baseline_comparison.py
+python scripts/export_visualization_curves.py
+python scripts/draw_visual_style_v2.py
+python scripts/draw_3d_ribbon_figures.py
+```
+
+Iteration curves are reconstructed from the saved model's tree prefixes. The 2026 experiments form an exploratory rolling evaluation. Financial simulations describe the operating conditions specified in the configuration files.

@@ -20,3 +20,25 @@ reports/
 writing_materials/
 HANDOFF.md
 scripts/prepare_writing_materials.py
+
+# Superseded experiments retained locally
+results/reference/early_experiments
+results/reference/superseded_pricing_comparison
+results/reference/profitability_frontier
+results/reference/insurance_design_history
+archive/scripts/BTS_2026_holdout/boosting_comparison.py
+archive/scripts/BTS_2026_holdout/periodic_learning.py
+archive/scripts/BTS_2026_holdout/run_analysis.py
+archive/scripts/BTS_2026_holdout/simple_baselines.py
+archive/scripts/asymmetric_loss_comparison.py
+archive/scripts/insurance_design_v1/insurance_model.py
+archive/scripts/insurance_design_v1/optimize_unlabelled_menu.py
+archive/scripts/insurance_design_v1/prepare_design.py
+archive/scripts/insurance_design_v1/run_profit_tests.py
+archive/scripts/insurance_design_v1/summarize_pareto.py
+archive/scripts/insurance_design_v1/test_insurance_model.py
+archive/scripts/integrated_model_comparison.py
+archive/scripts/latest_bts_pipeline_test.py
+archive/scripts/pricing_demand_module.py
+archive/scripts/pricing_strategy_comparison.py
+archive/scripts/profitability_frontier.py
