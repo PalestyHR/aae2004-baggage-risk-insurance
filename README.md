@@ -69,7 +69,7 @@ python -m pip install --no-deps -e .
 python scripts/reproduce.py
 ```
 
-The command trains the forecasting model and nine baselines, repeats seven loss ratios under both weighting schemes, optimises the protection menu, runs 72 Monte Carlo cases, and rebuilds the comparison table from the new predictions. It checks the results against the included references and stops if a step fails.
+The command trains the forecasting model and nine baselines, repeats seven loss ratios under both weighting schemes, optimises the protection menu, runs 72 Monte Carlo cases, and rebuilds the comparison table from the new predictions. The insurance search consumes the newly generated forecasts, and Monte Carlo consumes those forecasts and the newly selected menu. The command checks the results against the included references and stops if a step fails.
 
 A successful run ends with **`Reproduction complete: PASS`**. The verification summary is saved in `results/reproduction_check.json`. Expected selections are **1:2** for the under/over loss ratio and **M0775** for the protection menu.
 
@@ -91,6 +91,13 @@ A successful run ends with **`Reproduction complete: PASS`**. The verification s
 | Loss-ratio comparison | `python scripts/compare_loss_ratios.py` | `results/reproduced_loss_ratios/` |
 | Monte Carlo simulation | `python scripts/simulate_selected_menu.py` | `results/selected_menu_monte_carlo/` |
 | Existing tests | `python -m unittest discover -s tests -v` | Terminal results |
+
+Standalone insurance optimisation and Monte Carlo commands use the published reference inputs by default. To use a different forecast or a newly selected menu, pass the input paths explicitly:
+
+```bash
+python scripts/reproduce_insurance.py --forecast results/reproduced_risk/forecast_interface_2026_08.csv
+python scripts/simulate_selected_menu.py --forecast results/reproduced_risk/forecast_interface_2026_08.csv --menu results/reproduced_insurance/selected_menu.json
+```
 
 Monte Carlo uses 30,000 draws for each of six scenarios and 12 airline cases. Baseline training and loss-ratio experiments use the recorded chronological folds and configurations.
 

@@ -195,7 +195,6 @@ def expected_portfolio(forecast, plans, assumptions):
     claims = 0
     expense = 0
     sales = 0
-
     paid_policies = 0
 
     for tier in tier_rows:
@@ -210,7 +209,6 @@ def expected_portfolio(forecast, plans, assumptions):
     budget = revenue - expense - system_cost - target_profit
     profit_margin = None
     loss_ratio = None
-
     paid_policy_fraction = None
 
     if revenue:
@@ -236,7 +234,7 @@ def expected_portfolio(forecast, plans, assumptions):
         "expected_profit": profit,
         "expected_profit_margin": profit_margin,
         "expected_loss_ratio": loss_ratio,
-        "expected_paid_policy_fraction": (paid_policies / sales if sales else None),
+        "expected_paid_policy_fraction": paid_policy_fraction,
         "allowable_total_payout_at_target_profit": budget,
         "payout_budget_slack": budget - claims,
         "meets_target_expected_profit": profit >= target_profit,
@@ -270,17 +268,8 @@ def simulate_cohort(
     system_cost = float(assumptions["period_system_cost"])
     states = assumptions["risk_states"]
 
-    purchase_probabilities = []
-
-    for name in names:
-        probability = choice[name]
-        purchase_probabilities.append(probability)
-
-    state_probabilities = []
-
-    for state in states:
-        probability = state["probability"]
-        state_probabilities.append(probability)
+    purchase_probabilities = [choice[name] for name in names]
+    state_probabilities = [state["probability"] for state in states]
 
     state_count = len(states)
     counts = rng.multinomial(eligible_count, purchase_probabilities, size=draws)
@@ -306,13 +295,14 @@ def simulate_cohort(
             delay_probability = risk["delay_claim_probability"]
             loss_probability = risk["loss_claim_probability"]
             lost = rng.binomial(policy_counts[state_indices], loss_probability)
+            # Delay is sampled only among policies without a final-loss claim.
+            conditional_delay_probability = (
+                delay_probability / (1 - loss_probability)
+                if loss_probability < 1
+                else 0
+            )
             delayed = rng.binomial(
-                policy_counts[state_indices] - lost,
-                (
-                    delay_probability / (1 - loss_probability)
-                    if loss_probability < 1
-                    else 0
-                ),
+                policy_counts[state_indices] - lost, conditional_delay_probability
             )
 
             profits[state_indices] -= (

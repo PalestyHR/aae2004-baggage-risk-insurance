@@ -33,6 +33,22 @@ FORECAST_PARAMETERS = {
 }
 
 
+def make_preprocessor(feature_columns):
+    """Encode carrier IDs and scale numeric features within each training fold."""
+
+    numeric_columns = [name for name in feature_columns if name != CARRIER_COLUMN]
+    return ColumnTransformer(
+        [
+            (
+                "id",
+                OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                [CARRIER_COLUMN],
+            ),
+            ("num", StandardScaler(), numeric_columns),
+        ]
+    )
+
+
 def asymmetric_squared_loss(targets, predictions):
     """Return LightGBM gradients and Hessians for under:over penalties of 1:2."""
 
@@ -51,19 +67,10 @@ class ForecastingModel:
 
     def __init__(self, feature_columns):
         self.feature_columns = list(feature_columns)
-        self.numeric_columns = []
-
-        for name in self.feature_columns:
-            if name != CARRIER_COLUMN:
-                self.numeric_columns.append(name)
-
-        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
-        scaler = StandardScaler()
-        transformers = [
-            ("id", encoder, [CARRIER_COLUMN]),
-            ("num", scaler, self.numeric_columns),
+        self.numeric_columns = [
+            name for name in self.feature_columns if name != CARRIER_COLUMN
         ]
-        self.preprocessor = ColumnTransformer(transformers)
+        self.preprocessor = make_preprocessor(self.feature_columns)
 
         self.regressor = lgb.LGBMRegressor(
             **FORECAST_PARAMETERS,
@@ -74,20 +81,16 @@ class ForecastingModel:
         """Fit on historical carrier-month rows containing the target rate."""
 
         feature_frame = frame[self.feature_columns]
-        target_column = frame[TARGET_COLUMN]
-        month_column = frame[MONTH_COLUMN]
-
         features = self.preprocessor.fit_transform(feature_frame)
-        targets = target_column.to_numpy()
-        target_mean = targets.mean()
-        self.base_score = float(target_mean)
-
-        self.training_last_month = month_column.max()
+        targets = frame[TARGET_COLUMN].to_numpy()
+        self.base_score = float(targets.mean())
+        self.training_last_month = frame[MONTH_COLUMN].max()
 
         fitted_transformers = self.preprocessor.named_transformers_
         self.encoder = fitted_transformers["id"]
         self.scaler = fitted_transformers["num"]
 
+        # Custom-objective trees predict residuals around this training-only mean.
         initial_scores = np.full(len(targets), self.base_score)
         self.regressor.fit(features, targets, init_score=initial_scores)
 
@@ -109,30 +112,16 @@ class ForecastingModel:
         path = Path(model_directory)
         path.mkdir(parents=True, exist_ok=True)
         model_path = path / MODEL_FILENAME
-        model_file = str(model_path)
-        booster = self.regressor.booster_
-        booster.save_model(model_file)
-
-        fitted_categories = self.encoder.categories_
-        carrier_categories = fitted_categories[0]
-        fitted_mean = self.scaler.mean_
-        fitted_scale = self.scaler.scale_
-
-        mean_values = fitted_mean.tolist()
-        scale_values = fitted_scale.tolist()
-        categories = []
-
-        for value in carrier_categories:
-            category = int(value)
-            categories.append(category)
+        self.regressor.booster_.save_model(str(model_path))
+        categories = [int(value) for value in self.encoder.categories_[0]]
 
         schema = {
             "base_score": self.base_score,
             "categorical_column": CARRIER_COLUMN,
             "categories": categories,
             "numeric_columns": self.numeric_columns,
-            "mean": mean_values,
-            "scale": scale_values,
+            "mean": self.scaler.mean_.tolist(),
+            "scale": self.scaler.scale_.tolist(),
             "training_last_month": self.training_last_month,
             "forecast_month": forecast_month,
             "prediction_clip_min": MINIMUM_RATE,
@@ -151,26 +140,19 @@ class FrozenRiskPredictor:
         path = Path(model_directory)
         preprocessing_file = path / PREPROCESSING_FILENAME
         model_path = path / MODEL_FILENAME
-        model_file = str(model_path)
 
-        preprocessing_text = preprocessing_file.read_text()
-        schema = json.loads(preprocessing_text)
+        schema = json.loads(preprocessing_file.read_text(encoding="utf-8"))
         self.schema = schema
-        self.booster = lgb.Booster(model_file=model_file)
+        self.booster = lgb.Booster(model_file=str(model_path))
 
         self.categorical_column = schema["categorical_column"]
         self.numeric_columns = schema["numeric_columns"]
         self.base_score = schema["base_score"]
         self.minimum_rate = schema["prediction_clip_min"]
 
-        categories = schema["categories"]
-        mean = schema["mean"]
-        scale = schema["scale"]
-
-        category_values = np.asarray(categories)
-        self.category_row = category_values.reshape(1, -1)
-        self.mean = np.asarray(mean)
-        self.scale = np.asarray(scale)
+        self.category_row = np.asarray(schema["categories"]).reshape(1, -1)
+        self.mean = np.asarray(schema["mean"])
+        self.scale = np.asarray(schema["scale"])
 
     def predict(self, frame):
         """Predict monthly mishandling rates with the saved preprocessing."""

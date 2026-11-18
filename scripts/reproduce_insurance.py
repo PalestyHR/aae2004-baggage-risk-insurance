@@ -5,7 +5,7 @@ import sys
 import json
 import itertools
 import copy
-import hashlib
+import argparse
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -14,39 +14,68 @@ import pandas as pd
 from models.insurance import expected_portfolio
 
 
+def select_pareto_frontier(design_results):
+    """Rank feasible menus by their worst normalized profit/margin objective."""
+
+    feasible = design_results[design_results.feasible].copy()
+    assert len(feasible)
+    objective = feasible[["robust_expected_profit", "robust_margin"]].to_numpy()
+    keep = []
+
+    for x in objective:
+        no_worse = np.all(objective >= x, axis=1)
+        strictly_better = np.any(objective > x, axis=1)
+        dominates = no_worse & strictly_better
+        dominated = np.any(dominates)
+        keep.append(not dominated)
+
+    frontier = feasible.loc[keep].copy()
+
+    for col in ["robust_expected_profit", "robust_margin"]:
+        minimum = frontier[col].min()
+        maximum = frontier[col].max()
+        frontier["norm_" + col] = (
+            (frontier[col] - minimum) / (maximum - minimum)
+            if maximum > minimum
+            else 1.0
+        )
+
+    frontier["balance_score"] = frontier[
+        ["norm_robust_expected_profit", "norm_robust_margin"]
+    ].min(axis=1)
+    frontier = frontier.sort_values(
+        ["balance_score", "robust_expected_profit"], ascending=False
+    )
+    return feasible, frontier
+
+
 def main():
-    HERE = ROOT
-    OUT = ROOT / "results/reproduced_insurance"
-    OUT.mkdir(exist_ok=True)
-    FORECAST = ROOT / "results/reproduced_risk/forecast_interface_2026_08.csv"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--forecast",
+        type=Path,
+        default=ROOT / "results/reference/model1/forecast_interface_2026_08.csv",
+        help="Forecast CSV to optimise against; defaults to the published reference.",
+    )
+    args = parser.parse_args()
+    forecast_file = args.forecast
+    output_directory = ROOT / "results/reproduced_insurance"
+    output_directory.mkdir(parents=True, exist_ok=True)
 
-    if not FORECAST.exists():
-        FORECAST = ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
-
-    forecasts = pd.read_csv(FORECAST)
+    forecasts = pd.read_csv(forecast_file)
     assumptions_file = ROOT / "configs/insurance_assumptions.json"
-    assumptions_text = assumptions_file.read_text()
-    assumptions_config = json.loads(assumptions_text)
+    assumptions_config = json.loads(assumptions_file.read_text(encoding="utf-8"))
 
     base_assumptions = assumptions_config["base_assumptions"]
 
     plans_file = ROOT / "configs/insurance_design_template.json"
-    plans_text = plans_file.read_text()
-    plans_config = json.loads(plans_text)
+    plans_config = json.loads(plans_file.read_text(encoding="utf-8"))
     reference_plans = plans_config["plans"]
 
     reference_prices = np.array([3.0, 6.0, 11.0])
     reference_delay_benefits = np.array([50.0, 100.0, 200.0])
     reference_loss_benefits = np.array([300.0, 600.0, 1200.0])
-    factors = [
-        0.75,
-        1,
-        1.25,
-        1.5,
-        2,
-        2.5,
-        3,
-    ]
+    factors = [0.75, 1, 1.25, 1.5, 2, 2.5, 3]
 
     benefits = [1, 1.25, 1.5]
     eligible_counts = np.floor(forecasts.passenger_segments.to_numpy() * 0.2).astype(
@@ -54,11 +83,11 @@ def main():
     )
     mishandling_rates = forecasts.risk_rate_per_1000.to_numpy() / 1000
     assert (eligible_counts <= forecasts.bag_loads).all()
-    scenario_settings = []
+    scenarios = []
 
     for beta in [1.0, 2.0, 3.0]:
         for risk, rho, sl in [("base", 1.0, 0.05), ("higher", 2.0, 0.1)]:
-            scenario_settings.append(
+            scenarios.append(
                 {
                     "name": f"beta{beta}_{risk}",
                     "beta": beta,
@@ -68,7 +97,6 @@ def main():
                 }
             )
 
-    scenarios = scenario_settings
     protocol = {
         "decision_variables": "three independent price multipliers; common delay multiplier; common loss multiplier",
         "currency": "USD",
@@ -91,12 +119,21 @@ def main():
         ],
         "scenarios": scenarios,
         "shared_assumptions": base_assumptions,
-        "selection": "among nondominated points maximize min(normalized robust_profit, normalized robust_margin); equal-priority preference, not unique optimum",
+        "selection": (
+            "among nondominated points maximize min(normalized "
+            "robust_profit, normalized robust_margin); equal-priority "
+            "preference, not unique optimum"
+        ),
         "risk_forecast": "frozen August2026 forecasts; no model refit and no realized August outcomes used",
         "business_status": "hypothetical demand, eligible pool and cost assumptions, not Cathay evidence",
-        "caution": "robust only to the six listed scenarios; no guaranteed cash-flow solvency or 95% profit-probability constraint",
+        "caution": (
+            "robust only to the six listed scenarios; no guaranteed "
+            "cash-flow solvency or 95% profit-probability constraint"
+        ),
     }
-    (OUT / "protocol.json").write_text(json.dumps(protocol, indent=2), encoding="utf-8")
+    (output_directory / "protocol.json").write_text(
+        json.dumps(protocol, indent=2), encoding="utf-8"
+    )
     designs = []
     outcomes = []
 
@@ -207,42 +244,14 @@ def main():
 
     design_results = pd.DataFrame(designs)
     scenario_results = pd.DataFrame(outcomes)
-    feasible = design_results[design_results.feasible].copy()
-    assert len(feasible)
-    objective = feasible[["robust_expected_profit", "robust_margin"]].to_numpy()
-    keep = []
-
-    for x in objective:
-        no_worse = np.all(objective >= x, axis=1)
-        strictly_better = np.any(objective > x, axis=1)
-        dominates = no_worse & strictly_better
-        dominated = np.any(dominates)
-        keep.append(not dominated)
-
-    frontier = feasible.loc[keep].copy()
-
-    for col in ["robust_expected_profit", "robust_margin"]:
-        minimum = frontier[col].min()
-        maximum = frontier[col].max()
-        frontier["norm_" + col] = (
-            (frontier[col] - minimum) / (maximum - minimum)
-            if maximum > minimum
-            else 1.0
-        )
-
-    frontier["balance_score"] = frontier[
-        ["norm_robust_expected_profit", "norm_robust_margin"]
-    ].min(axis=1)
-    frontier = frontier.sort_values(
-        ["balance_score", "robust_expected_profit"], ascending=False
-    )
+    feasible, frontier = select_pareto_frontier(design_results)
     selected = frontier.iloc[0].to_dict()
     design_id = selected["design_id"]
-    design_results.to_csv(OUT / "all_designs.csv", index=False)
-    scenario_results.to_csv(OUT / "scenario_results.csv", index=False)
-    frontier.to_csv(OUT / "pareto_frontier.csv", index=False)
+    design_results.to_csv(output_directory / "all_designs.csv", index=False)
+    scenario_results.to_csv(output_directory / "scenario_results.csv", index=False)
+    frontier.to_csv(output_directory / "pareto_frontier.csv", index=False)
     selected_out = scenario_results[scenario_results.design_id == design_id]
-    selected_out.to_csv(OUT / "selected_scenarios.csv", index=False)
+    selected_out.to_csv(output_directory / "selected_scenarios.csv", index=False)
     chosen = []
     plan_names = ["Basic", "Standard", "Premium"]
 
@@ -260,7 +269,7 @@ def main():
             }
         )
 
-    (OUT / "selected_menu.json").write_text(
+    (output_directory / "selected_menu.json").write_text(
         json.dumps(
             {
                 "selection": selected,
@@ -272,19 +281,8 @@ def main():
         ),
         encoding="utf-8",
     )
-    plan_rows = []
-
-    for plan in chosen:
-        plan_fields = {}
-
-        for field, value in plan.items():
-            if field != "reference":
-                plan_fields[field] = value
-
-        plan_rows.append(plan_fields)
-
-    plan_table = pd.DataFrame(plan_rows)
-    plan_table.to_csv(OUT / "selected_menu.csv", index=False)
+    plan_table = pd.DataFrame(chosen).drop(columns="reference")
+    plan_table.to_csv(output_directory / "selected_menu.csv", index=False)
     individual = []
 
     for scenario in scenarios:
@@ -327,7 +325,9 @@ def main():
         )
         assert abs(group_results.revenue.sum() - expected.total_revenue) < 1e-6
 
-    operator_results.to_csv(OUT / "selected_operator_results.csv", index=False)
+    operator_results.to_csv(
+        output_directory / "selected_operator_results.csv", index=False
+    )
     extra = []
 
     for purchase_probability, system_cost in itertools.product(
@@ -354,7 +354,9 @@ def main():
                 }
             )
 
-    pd.DataFrame(extra).to_csv(OUT / "selected_extra_sensitivity.csv", index=False)
+    pd.DataFrame(extra).to_csv(
+        output_directory / "selected_extra_sensitivity.csv", index=False
+    )
     assert np.allclose(
         scenario_results.total_expected_profit,
         scenario_results.total_revenue
@@ -362,22 +364,25 @@ def main():
         - scenario_results.total_variable_cost
         - scenario_results.total_system_cost,
     )
-    loss_flags = []
-
-    for x in extra:
-        loss_flags.append(x["expected_profit"] < 0)
+    loss_flags = [case["expected_profit"] < 0 for case in extra]
 
     summary = {
         "candidate_count": len(design_results),
         "feasible_count": len(feasible),
         "pareto_count": len(frontier),
         "selected_id": design_id,
-        "checks": "all scenario accounting identities; selected independently reconciled via insurance_model; nondominance checked against all feasible points",
+        "checks": (
+            "all scenario accounting identities; selected independently "
+            "reconciled via insurance_model; nondominance checked against "
+            "all feasible points"
+        ),
         "extra_sensitivity_negative_cases": int(sum(loss_flags)),
         "extra_sensitivity_count": len(extra),
-        "source_forecast_sha256": hashlib.sha256(FORECAST.read_bytes()).hexdigest(),
+        "source_forecast": str(forecast_file),
     }
-    (OUT / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (output_directory / "summary.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
     print(json.dumps(summary, indent=2))
     print(json.dumps(chosen, indent=2))
     print(selected_out.to_string(index=False))

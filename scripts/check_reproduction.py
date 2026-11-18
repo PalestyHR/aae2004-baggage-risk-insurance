@@ -1,3 +1,5 @@
+"""Verify complete numerical outputs against the published experiment."""
+
 from pathlib import Path
 import argparse
 import sys
@@ -67,12 +69,10 @@ def main():
     saved = ordered_predictions.to_numpy()
     assert np.allclose(loaded, saved, rtol=1e-9, atol=1e-7)
     new_file = ROOT / "results/reproduced_insurance/selected_menu.json"
-    new_text = new_file.read_text()
-    new = json.loads(new_text)
+    new = json.loads(new_file.read_text(encoding="utf-8"))
     ref_file = ROOT / "configs/selected_menu_v2.json"
 
-    ref_text = ref_file.read_text()
-    ref = json.loads(ref_text)
+    ref = json.loads(ref_file.read_text(encoding="utf-8"))
     assert new["selection"]["design_id"] == ref["selection"]["design_id"] == "M0775"
 
     for key in ["robust_expected_profit", "robust_margin"]:
@@ -130,7 +130,9 @@ def main():
         result["monte_carlo_cases"] = len(simulations)
         result["draws_per_case"] = 30000
 
-    (ROOT / "results/reproduction_check.json").write_text(json.dumps(result, indent=2))
+    (ROOT / "results/reproduction_check.json").write_text(
+        json.dumps(result, indent=2), encoding="utf-8"
+    )
     print(json.dumps(result, indent=2))
 
 

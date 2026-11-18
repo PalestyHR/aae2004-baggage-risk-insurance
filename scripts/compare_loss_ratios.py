@@ -3,17 +3,17 @@
 from pathlib import Path
 import sys
 import json
-import hashlib
 import warnings
 
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from lightgbm import LGBMRegressor
 import lightgbm
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from models.forecasting_model import FORECAST_PARAMETERS, make_preprocessor
 
 RATIOS = [
     (1, 4),
@@ -24,20 +24,9 @@ RATIOS = [
     (2, 1),
     (4, 1),
 ]
-PARAMS = dict(
-    n_estimators=200,
-    learning_rate=0.03,
-    num_leaves=7,
-    max_depth=3,
-    min_child_samples=20,
-    reg_lambda=1,
-    verbosity=-1,
-    n_jobs=2,
-    random_state=42,
-)
 
 
-def coeffs(under, over):
+def loss_coefficients(under, over):
     return 2 * under / (under + over), 2 * over / (under + over)
 
 
@@ -45,7 +34,7 @@ class AsymmetricSquaredLoss:
     """LightGBM objective with configurable under/over coefficients."""
 
     def __init__(self, under, over):
-        self.under, self.over = coeffs(under, over)
+        self.under, self.over = loss_coefficients(under, over)
 
     def __call__(self, targets, predictions, weight):
         errors = predictions - targets
@@ -62,7 +51,7 @@ def objective_checks():
     eps = 1e-5
 
     for under, over in RATIOS:
-        a, b = coeffs(under, over)
+        a, b = loss_coefficients(under, over)
         fn = AsymmetricSquaredLoss(under, over)
         loss = lambda z: 0.5 * weights * np.where(z - y < 0, a, b) * (z - y) ** 2
         grad, hess = fn(y, predictions_frame, weights)
@@ -109,15 +98,16 @@ def metrics(predictions_frame, threshold):
 
 
 def main():
-    DATA = ROOT / "data/processed"
-    OUT = ROOT / "results/reproduced_loss_ratios"
-    OUT.mkdir(exist_ok=True)
+    data_directory = ROOT / "data/processed"
+    output_directory = ROOT / "results/reproduced_loss_ratios"
+    output_directory.mkdir(exist_ok=True)
     feature_columns_file = ROOT / "configs/feature_spec.json"
-    feature_columns_text = feature_columns_file.read_text()
-    feature_columns_config = json.loads(feature_columns_text)
+    feature_columns_config = json.loads(
+        feature_columns_file.read_text(encoding="utf-8")
+    )
     feature_columns = feature_columns_config["core_features"]
 
-    data = pd.read_csv(DATA / "lag1/all_real.csv")
+    data = pd.read_csv(data_directory / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
     assert not data.is_synthetic.any()
     threshold = float(
@@ -131,18 +121,17 @@ def main():
         "training_weights": ["uniform", "volume_normalized_to_training_mean"],
         "init": "same training weighted mean in every ratio within each fold/weighting arm",
         "selection": "2025 weighted MAE, include symmetric 1:1; select per weighting arm and overall before 2026",
-        "params": PARAMS,
+        "params": FORECAST_PARAMETERS,
         "high_risk_threshold_train_only": threshold,
         "features": feature_columns,
         "synthetic_rows_used": False,
         "realized_test_exposure": "evaluation weights only, never predictor",
         "2026_status": "previously inspected exploratory test",
-        "source_sha256": hashlib.sha256(
-            (DATA / "lag1/all_real.csv").read_bytes()
-        ).hexdigest(),
         "lightgbm_version": lightgbm.__version__,
     }
-    (OUT / "protocol.json").write_text(json.dumps(protocol, indent=2), encoding="utf-8")
+    (output_directory / "protocol.json").write_text(
+        json.dumps(protocol, indent=2), encoding="utf-8"
+    )
     objective_checks()
     predictions = []
     summary = []
@@ -158,22 +147,7 @@ def main():
             train = data[data.date < date]
             test = data[data.date == date]
             assert train.date.max() < test.date.min()
-            numeric_columns = []
-
-            for c in feature_columns:
-                if c != "airline_id":
-                    numeric_columns.append(c)
-
-            preprocessor = ColumnTransformer(
-                [
-                    (
-                        "id",
-                        OneHotEncoder(handle_unknown="ignore", sparse_output=False),
-                        ["airline_id"],
-                    ),
-                    ("num", StandardScaler(), numeric_columns),
-                ]
-            )
+            preprocessor = make_preprocessor(feature_columns)
             train_features = preprocessor.fit_transform(train[feature_columns])
             test_features = preprocessor.transform(test[feature_columns])
             y = train.target_rate_per_1000.to_numpy()
@@ -190,15 +164,16 @@ def main():
 
                 with warnings.catch_warnings(record=True) as captured_warnings:
                     warnings.simplefilter("always")
-                    builtin = LGBMRegressor(**PARAMS, objective="regression").fit(
-                        train_features, y, sample_weight=weights
-                    )
+                    builtin = LGBMRegressor(
+                        **FORECAST_PARAMETERS, objective="regression"
+                    ).fit(train_features, y, sample_weight=weights)
                     builtin_predictions = np.maximum(0, builtin.predict(test_features))
 
                     for under, over in RATIOS:
                         name = f"{under:g}:{over:g}"
                         model = LGBMRegressor(
-                            **PARAMS, objective=AsymmetricSquaredLoss(under, over)
+                            **FORECAST_PARAMETERS,
+                            objective=AsymmetricSquaredLoss(under, over),
                         )
                         model.fit(
                             train_features,
@@ -206,10 +181,12 @@ def main():
                             sample_weight=weights,
                             init_score=np.full(len(train), base_score),
                         )
-                        pred = np.maximum(0, model.predict(test_features) + base_score)
+                        fold_rates = np.maximum(
+                            0, model.predict(test_features) + base_score
+                        )
 
                         if under == over:
-                            diff = float(np.max(abs(pred - builtin_predictions)))
+                            diff = float(np.max(abs(fold_rates - builtin_predictions)))
                             checks.append(
                                 {
                                     "month": str(date),
@@ -228,7 +205,7 @@ def main():
                                 "target_enplaned_bags",
                             ]
                         ].copy()
-                        fold_predictions["prediction"] = pred
+                        fold_predictions["prediction"] = fold_rates
                         fold_predictions["year"] = year
                         fold_predictions["weighting"] = weighting
 
@@ -236,7 +213,7 @@ def main():
                         fold_predictions["training_max_month"] = (
                             train.target_month.max()
                         )
-                        assert np.isfinite(pred).all()
+                        assert np.isfinite(fold_rates).all()
                         year_predictions.append(fold_predictions)
 
                     warning_records = []
@@ -268,12 +245,10 @@ def main():
                 if x["year"] == 2025:
                     year_results.append(x)
 
-            candidates = year_results
-
             for weighting in ["uniform", "volume"]:
                 weighted_candidates = []
 
-                for x in candidates:
+                for x in year_results:
                     if x["weighting"] == weighting:
                         weighted_candidates.append(x)
 
@@ -281,8 +256,8 @@ def main():
                     weighted_candidates, key=lambda x: x["weighted_MAE"]
                 )
 
-            selected["overall"] = min(candidates, key=lambda x: x["weighted_MAE"])
-            (OUT / "selection_before_2026.json").write_text(
+            selected["overall"] = min(year_results, key=lambda x: x["weighted_MAE"])
+            (output_directory / "selection_before_2026.json").write_text(
                 json.dumps(selected, indent=2), encoding="utf-8"
             )
             selection_rows = []
@@ -315,8 +290,8 @@ def main():
         )
 
     all_predictions = pd.concat(predictions, ignore_index=True)
-    all_predictions.to_csv(OUT / "predictions.csv", index=False)
-    pd.DataFrame(summary).to_csv(OUT / "metrics.csv", index=False)
+    all_predictions.to_csv(output_directory / "predictions.csv", index=False)
+    pd.DataFrame(summary).to_csv(output_directory / "metrics.csv", index=False)
     monthly = []
 
     for keys, records in all_predictions.groupby(
@@ -329,8 +304,8 @@ def main():
             )
         )
 
-    pd.DataFrame(monthly).to_csv(OUT / "monthly.csv", index=False)
-    (OUT / "implementation_checks.json").write_text(
+    pd.DataFrame(monthly).to_csv(output_directory / "monthly.csv", index=False)
+    (output_directory / "implementation_checks.json").write_text(
         json.dumps(
             {
                 "gradient_hessian_finite_difference": "passed",

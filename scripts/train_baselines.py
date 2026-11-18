@@ -1,13 +1,12 @@
+"""Evaluate nine baselines on the recorded expanding monthly folds."""
+
 from pathlib import Path
 import sys
 import json
 import warnings
-import time
 
 import numpy as np
 import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.linear_model import ElasticNet, PoissonRegressor
 from sklearn.ensemble import (
     RandomForestRegressor,
@@ -18,6 +17,9 @@ from lightgbm import LGBMRegressor
 from xgboost import XGBRegressor
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from models.forecasting_model import FORECAST_PARAMETERS, make_preprocessor
 
 
 def estimator(name):
@@ -49,17 +51,7 @@ def estimator(name):
         )
 
     if name == "LightGBM":
-        return LGBMRegressor(
-            n_estimators=200,
-            learning_rate=0.03,
-            num_leaves=7,
-            max_depth=3,
-            min_child_samples=20,
-            reg_lambda=1,
-            verbosity=-1,
-            n_jobs=2,
-            random_state=42,
-        )
+        return LGBMRegressor(**FORECAST_PARAMETERS)
 
     if name == "XGBoost":
         return XGBRegressor(
@@ -73,6 +65,8 @@ def estimator(name):
             n_jobs=2,
             random_state=42,
         )
+
+    raise ValueError(f"Unknown baseline model: {name}")
 
 
 def evaluate(records):
@@ -98,15 +92,14 @@ def evaluate(records):
 
 
 def main():
-    DATA = ROOT / "data/processed"
-    OUT = ROOT / "results/reproduced_baselines"
-    OUT.mkdir(exist_ok=True)
+    data_directory = ROOT / "data/processed"
+    output_directory = ROOT / "results/reproduced_baselines"
+    output_directory.mkdir(exist_ok=True)
     spec_file = ROOT / "configs/feature_spec.json"
-    spec_text = spec_file.read_text()
-    spec = json.loads(spec_text)
+    spec = json.loads(spec_file.read_text(encoding="utf-8"))
     feature_columns = spec["core_features"]
 
-    data = pd.read_csv(DATA / "lag1/all_real.csv")
+    data = pd.read_csv(data_directory / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
     assert not data.is_synthetic.any()
     names = [
@@ -134,28 +127,11 @@ def main():
                 assert train.date.max() < test.date.min()
 
                 if name == "blend50":
-                    pred = 0.5 * (test.recent_rate + test.rate_year_ago)
+                    predictions = 0.5 * (test.recent_rate + test.rate_year_ago)
                 elif name == "seasonal_naive":
-                    pred = test.rate_year_ago
+                    predictions = test.rate_year_ago
                 else:
-                    numeric_columns = []
-
-                    for c in feature_columns:
-                        if c != "airline_id":
-                            numeric_columns.append(c)
-
-                    preprocessor = ColumnTransformer(
-                        [
-                            (
-                                "id",
-                                OneHotEncoder(
-                                    handle_unknown="ignore", sparse_output=False
-                                ),
-                                ["airline_id"],
-                            ),
-                            ("num", StandardScaler(), numeric_columns),
-                        ]
-                    )
+                    preprocessor = make_preprocessor(feature_columns)
                     train_features = preprocessor.fit_transform(train[feature_columns])
                     test_features = preprocessor.transform(test[feature_columns])
                     model = estimator(name)
@@ -174,7 +150,7 @@ def main():
                         model.fit(
                             train_features, train.target_rate_per_1000, **fit_options
                         )
-                        pred = np.maximum(0, model.predict(test_features))
+                        predictions = np.maximum(0, model.predict(test_features))
                         warning_records = []
 
                         for weights in captured_warnings:
@@ -198,7 +174,7 @@ def main():
                         "target_enplaned_bags",
                     ]
                 ].copy()
-                fold_predictions["prediction"] = np.asarray(pred)
+                fold_predictions["prediction"] = np.asarray(predictions)
                 fold_predictions["model"] = name
                 fold_predictions["year"] = year
                 assert np.isfinite(fold_predictions.prediction).all()
@@ -206,17 +182,17 @@ def main():
 
             predictions_frame = pd.concat(parts)
             rows.append(predictions_frame)
-            s = {"year": year, "model": name, **evaluate(predictions_frame)}
-            scores.append(s)
-            print(s, flush=True)
+            score = {"year": year, "model": name, **evaluate(predictions_frame)}
+            scores.append(score)
+            print(score, flush=True)
 
         if year == 2025:
             choice = min(scores, key=lambda x: x["weighted_MAE"])["model"]
             print("PRE-TEST CHOICE", choice, flush=True)
 
     predictions_frame = pd.concat(rows, ignore_index=True)
-    predictions_frame.to_csv(OUT / "predictions.csv", index=False)
-    pd.DataFrame(scores).to_csv(OUT / "metrics.csv", index=False)
+    predictions_frame.to_csv(output_directory / "predictions.csv", index=False)
+    pd.DataFrame(scores).to_csv(output_directory / "metrics.csv", index=False)
     monthly = []
 
     for (year, model, month), records in predictions_frame.groupby(
@@ -226,8 +202,8 @@ def main():
             {"year": int(year), "model": model, "month": month, **evaluate(records)}
         )
 
-    pd.DataFrame(monthly).to_csv(OUT / "monthly.csv", index=False)
-    (OUT / "audit.json").write_text(
+    pd.DataFrame(monthly).to_csv(output_directory / "monthly.csv", index=False)
+    (output_directory / "audit.json").write_text(
         json.dumps(
             {
                 "choice_on_2025": choice,

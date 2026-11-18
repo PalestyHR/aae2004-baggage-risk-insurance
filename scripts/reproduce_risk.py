@@ -3,7 +3,6 @@
 from pathlib import Path
 import sys
 import json
-import hashlib
 import warnings
 
 import numpy as np
@@ -55,18 +54,21 @@ def count_metrics(targets, predictions):
 
 
 def main():
-    DATA = ROOT / "data/processed"
-    OUT = ROOT / "results/reproduced_risk"
-    OUT.mkdir(exist_ok=True)
+    data_directory = ROOT / "data/processed"
+    output_directory = ROOT / "results/reproduced_risk"
+    output_directory.mkdir(exist_ok=True)
     feature_columns_file = ROOT / "configs/feature_spec.json"
-    feature_columns_text = feature_columns_file.read_text()
-    feature_columns_config = json.loads(feature_columns_text)
+    feature_columns_config = json.loads(
+        feature_columns_file.read_text(encoding="utf-8")
+    )
     feature_columns = feature_columns_config["core_features"]
     # Align observations and lagged exposure features before monthly fitting.
 
-    data = pd.read_csv(DATA / "lag1/all_real.csv")
+    data = pd.read_csv(data_directory / "lag1/all_real.csv")
     data["date"] = pd.to_datetime(data.target_month)
-    observations = pd.read_csv(DATA / "carrier_month_observed_NOT_model_input.csv")
+    observations = pd.read_csv(
+        data_directory / "carrier_month_observed_NOT_model_input.csv"
+    )
 
     observations["target_month"] = observations.date
     data = data.merge(
@@ -77,20 +79,24 @@ def main():
     )
     observed_index = observations.set_index(["airline_id", "t"])
 
-    for c, source in [
+    for feature_name, source in [
         ("bags_year_ago", "enplaned_bags"),
         ("passengers_year_ago", "passenger_segments"),
     ]:
         historical_volumes = []
 
-        for _, r in data.iterrows():
+        for _, record in data.iterrows():
             historical_volumes.append(
                 observed_index.loc[
-                    (r.airline_id, 12 * r.date.year + r.date.month - 1 - 12), source
+                    (
+                        record.airline_id,
+                        12 * record.date.year + record.date.month - 1 - 12,
+                    ),
+                    source,
                 ]
             )
 
-        data[c] = historical_volumes
+        data[feature_name] = historical_volumes
 
     assert not data.is_synthetic.any() and data[feature_columns].notna().all().all()
     model_parameters = FORECAST_PARAMETERS.copy()
@@ -99,7 +105,11 @@ def main():
         "population": "BTS domestic operating-carrier monthly records",
         "application_context_only": "Cathay",
         "features": feature_columns,
-        "risk": "LightGBM asymmetric squared loss under:over=1:2, equal row weights, a+b=2, mean initialization; selected previously on 2025",
+        "risk": (
+            "LightGBM asymmetric squared loss under:over=1:2, equal row "
+            "weights, a+b=2, mean initialization; selected previously on "
+            "2025"
+        ),
         "volume_candidates": [
             "LightGBM direct squared loss",
             "last year same month",
@@ -123,7 +133,9 @@ def main():
         "test_status": "exploratory: 2026 already inspected",
         "parameters": model_parameters,
     }
-    (OUT / "protocol.json").write_text(json.dumps(protocol, indent=2), encoding="utf-8")
+    (output_directory / "protocol.json").write_text(
+        json.dumps(protocol, indent=2), encoding="utf-8"
+    )
     records = []
     metrics = []
     choices = {}
@@ -172,13 +184,13 @@ def main():
                     0, symmetric_model.predict(test_features)
                 )
 
-                for name, col in [
+                for name, target_column in [
                     ("bags", "target_enplaned_bags"),
                     ("passengers", "passenger_segments"),
                 ]:
-                    valid = train[col].notna().to_numpy()
+                    valid = train[target_column].notna().to_numpy()
                     model = LGBMRegressor(**model_parameters).fit(
-                        train_features[valid], train.loc[valid, col]
+                        train_features[valid], train.loc[valid, target_column]
                     )
                     fold_predictions[name + "_lgb"] = np.maximum(
                         0, model.predict(test_features)
@@ -186,8 +198,8 @@ def main():
 
                 warning_records = []
 
-                for weights in captured_warnings:
-                    warning_records.append(str(weights.message))
+                for warning in captured_warnings:
+                    warning_records.append(str(warning.message))
 
                 training_warnings.extend(warning_records)
 
@@ -239,7 +251,7 @@ def main():
                     "method"
                 ]
 
-            (OUT / "volume_selection_before_2026.json").write_text(
+            (output_directory / "volume_selection_before_2026.json").write_text(
                 json.dumps(choices, indent=2), encoding="utf-8"
             )
             print("2025 volume selection", choices, flush=True)
@@ -300,8 +312,8 @@ def main():
         records.append(predictions)
 
     predictions = pd.concat(records, ignore_index=True)
-    predictions.to_csv(OUT / "predictions.csv", index=False)
-    pd.DataFrame(metrics).to_csv(OUT / "metrics.csv", index=False)
+    predictions.to_csv(output_directory / "predictions.csv", index=False)
+    pd.DataFrame(metrics).to_csv(output_directory / "metrics.csv", index=False)
     monthly = []
 
     for month, month_predictions in predictions[predictions.year == 2026].groupby(
@@ -323,7 +335,9 @@ def main():
             }
         )
 
-    pd.DataFrame(monthly).to_csv(OUT / "monthly_totals_2026.csv", index=False)
+    pd.DataFrame(monthly).to_csv(
+        output_directory / "monthly_totals_2026.csv", index=False
+    )
     frontier = predictions[predictions.year == 2026][
         [
             "row_id",
@@ -338,21 +352,21 @@ def main():
     frontier["insured_claim_count"] = "UNKNOWN"
     frontier["permanent_loss_count"] = "NOT_IDENTIFIED"
     frontier["payout_budget_formula"] = (
-        "forecast_passenger_segments * eligible_itinerary_factor * purchase_rate * premium - nonclaim_costs - target_profit"
+        "forecast_passenger_segments * eligible_itinerary_factor * "
+        "purchase_rate * premium - nonclaim_costs - target_profit"
     )
 
     frontier["average_benefit_ceiling_formula"] = (
         "payout_budget / expected_covered_claims; only when budget>=0 and claims>0"
     )
-    frontier.to_csv(OUT / "profitability_inputs_no_payout_assumption.csv", index=False)
-    (OUT / "audit.json").write_text(
+    frontier.to_csv(
+        output_directory / "profitability_inputs_no_payout_assumption.csv", index=False
+    )
+    (output_directory / "audit.json").write_text(
         json.dumps(
             {
                 "selected_volume_methods": choices,
                 "warnings": training_warnings,
-                "data_sha256": hashlib.sha256(
-                    (DATA / "lag1/all_real.csv").read_bytes()
-                ).hexdigest(),
                 "risk_retrained": True,
                 "no_synthetic_rows": True,
                 "no_business_parameters_filled": True,
@@ -397,7 +411,7 @@ def main():
     )
 
     interface["population"] = "BTS US domestic, not Cathay"
-    interface.to_csv(OUT / "forecast_interface_2026_08.csv", index=False)
+    interface.to_csv(output_directory / "forecast_interface_2026_08.csv", index=False)
 
 
 if __name__ == "__main__":

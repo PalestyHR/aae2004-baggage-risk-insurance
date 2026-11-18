@@ -16,13 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 class InsuranceTests(unittest.TestCase):
     def setUp(self):
         plans_file = ROOT / "configs/selected_menu_v2.json"
-        plans_text = plans_file.read_text()
-        plans_config = json.loads(plans_text)
+        plans_config = json.loads(plans_file.read_text(encoding="utf-8"))
         self.plans = plans_config["plans"]
 
         assumptions_file = ROOT / "configs/insurance_assumptions.json"
-        assumptions_text = assumptions_file.read_text()
-        assumptions_config = json.loads(assumptions_text)
+        assumptions_config = json.loads(assumptions_file.read_text(encoding="utf-8"))
         self.assumptions = assumptions_config["base_assumptions"]
 
         forecast_file = ROOT / "results/reference/model1/forecast_interface_2026_08.csv"

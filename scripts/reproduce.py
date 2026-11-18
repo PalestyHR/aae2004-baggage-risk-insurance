@@ -13,8 +13,24 @@ def main():
         ("Forecasting model", ["scripts/reproduce_risk.py"]),
         ("Baseline models", ["scripts/train_baselines.py"]),
         ("Loss-ratio comparison", ["scripts/compare_loss_ratios.py"]),
-        ("Insurance optimisation", ["scripts/reproduce_insurance.py"]),
-        ("Monte Carlo simulation", ["scripts/simulate_selected_menu.py"]),
+        (
+            "Insurance optimisation",
+            [
+                "scripts/reproduce_insurance.py",
+                "--forecast",
+                "results/reproduced_risk/forecast_interface_2026_08.csv",
+            ],
+        ),
+        (
+            "Monte Carlo simulation",
+            [
+                "scripts/simulate_selected_menu.py",
+                "--forecast",
+                "results/reproduced_risk/forecast_interface_2026_08.csv",
+                "--menu",
+                "results/reproduced_insurance/selected_menu.json",
+            ],
+        ),
         (
             "Baseline comparison table",
             ["scripts/export_baseline_comparison.py", "--reproduced"],

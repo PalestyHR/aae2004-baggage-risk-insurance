@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import json
 import copy
+import argparse
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -12,19 +13,29 @@ from models.insurance import simulate_cohort
 
 
 def main():
-    OUT = ROOT / "results/selected_menu_monte_carlo"
-    OUT.mkdir(exist_ok=True)
-    forecasts = pd.read_csv(
-        ROOT / "results/reference/model1/forecast_interface_2026_08.csv"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--forecast",
+        type=Path,
+        default=ROOT / "results/reference/model1/forecast_interface_2026_08.csv",
+        help="Forecast CSV; defaults to the published reference.",
     )
-    plans_file = ROOT / "configs/selected_menu_v2.json"
-    plans_text = plans_file.read_text()
-    plans_config = json.loads(plans_text)
+    parser.add_argument(
+        "--menu",
+        type=Path,
+        default=ROOT / "configs/selected_menu_v2.json",
+        help="Menu JSON; defaults to the published selected menu.",
+    )
+    args = parser.parse_args()
+    output_directory = ROOT / "results/selected_menu_monte_carlo"
+    output_directory.mkdir(parents=True, exist_ok=True)
+    forecasts = pd.read_csv(args.forecast)
+    plans_file = args.menu
+    plans_config = json.loads(plans_file.read_text(encoding="utf-8"))
 
     plans = plans_config["plans"]
     assumptions_file = ROOT / "configs/insurance_assumptions.json"
-    assumptions_text = assumptions_file.read_text()
-    assumptions_config = json.loads(assumptions_text)
+    assumptions_config = json.loads(assumptions_file.read_text(encoding="utf-8"))
 
     base_assumptions = assumptions_config["base_assumptions"]
     forecast_records = forecasts.to_dict("records")
@@ -40,13 +51,9 @@ def main():
             demand["log_price_sensitivity"] = price_sensitivity
             assumptions["conditional_loss_share"] = loss_share
 
-            plan_values = {}
-
-            for plan in plans:
-                name = plan["name"]
-                plan_values[name] = risk_multiplier
-
-            assumptions["tier_hazard_multipliers"] = plan_values
+            assumptions["tier_hazard_multipliers"] = {
+                plan["name"]: risk_multiplier for plan in plans
+            }
 
             for case_index, row in enumerate(forecast_records):
                 risk_seed_offset = 1000 if risk == "higher" else 0
@@ -73,7 +80,7 @@ def main():
                 )
 
     results = pd.DataFrame(rows)
-    results.to_csv(OUT / "results.csv", index=False)
+    results.to_csv(output_directory / "results.csv", index=False)
     summary = (
         results.groupby("scenario")
         .agg(
@@ -84,9 +91,17 @@ def main():
         )
         .reset_index()
     )
-    summary.to_csv(OUT / "summary.csv", index=False)
-    (OUT / "notes.txt").write_text(
-        "Adopted M0775 menu; 72 single-operator single-cohort scenarios, 30000 draws each. Same uncalibrated risk/demand/cost assumptions as optimization. All means reconcile within six Monte Carlo standard errors. This is not annual empirical profitability or a certification of 95% profit probability. No parameter/forecast uncertainty has been calibrated.\n",
+    summary.to_csv(output_directory / "summary.csv", index=False)
+    (output_directory / "notes.txt").write_text(
+        (
+            "Selected input menu; 72 single-operator single-cohort "
+            "scenarios, 30000 draws each. Same uncalibrated "
+            "risk/demand/cost assumptions as optimization. All means "
+            "reconcile within six Monte Carlo standard errors. This is not "
+            "annual empirical profitability or a certification of 95% "
+            "profit probability. No parameter/forecast uncertainty has been"
+            " calibrated.\n"
+        ),
         encoding="utf-8",
     )
     print(summary.to_string(index=False))
